@@ -105,6 +105,7 @@ public partial class AirlinesReservationSystemContext : DbContext
             entity.Property(e => e.City).HasMaxLength(100);
             entity.Property(e => e.Country).HasMaxLength(100);
             entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Status).HasMaxLength(50);
         });
 
         modelBuilder.Entity<BookingInformation>(entity =>
