@@ -9,6 +9,7 @@ using BusinessObjects.Models;
 using DAO;
 using Service.Services.AIrlineServices;
 using Newtonsoft.Json;
+using Service;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -19,20 +20,16 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         {
         }
 
-        public IList<Airline> Airline { get; set; } = default!;
+        public PaginatedList<Airline> Airline { get; set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
             using (var httpClient = new HttpClient())
             {
                 var response = await APIHelper.GetAsJsonAsync<List<Airline>>(httpClient, APIHelper.Url + "airline");
                 if (response != null)
                 {
-                    Airline = response;
-                }
-                else
-                {
-                    Airline = new List<Airline>();
+                    Airline = PaginatedList<Airline>.Create(response, pageIndex ?? 1, 6);
                 }
             }
         }
