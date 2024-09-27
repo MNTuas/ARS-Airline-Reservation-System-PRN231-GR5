@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AirlinesReservationSystem\AirlinesReservationSystem.csproj" />
-    <ProjectReference Include="..\BusinessObjects\BusinessObjects.csproj" />
+    <ProjectReference Include="..\Service\Service.csproj" />
   </ItemGroup>
 
   <ItemGroup>

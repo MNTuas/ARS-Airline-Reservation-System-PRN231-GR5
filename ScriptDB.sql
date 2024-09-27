@@ -1,188 +1,200 @@
-use master
-
--- Create the database
+USE master
+-- Create the AirlinesReservationSystem database
 CREATE DATABASE AirlinesReservationSystem;
 GO
 
--- Use the created database
+-- Use the AirlinesReservationSystem database
 USE AirlinesReservationSystem;
 GO
 
--- Table: Airlines
+-- Create Airlines table
 CREATE TABLE Airlines (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    Name NVARCHAR(100) NOT NULL
+    Id CHAR(36) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL
 );
 GO
 
--- Table: Airport
+-- Create Airport table
 CREATE TABLE Airport (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    Name NVARCHAR(100) NOT NULL,
-    City NVARCHAR(100) NOT NULL,
-    Country NVARCHAR(100) NOT NULL,
-	Status NVARCHAR (50) 
+    Id CHAR(36) PRIMARY KEY,
+    Name NVARCHAR(255) NOT NULL,
+    City NVARCHAR(255) NOT NULL,
+    Country NVARCHAR(255) NOT NULL,
+    Status NVARCHAR(50) NOT NULL
 );
 GO
 
--- Table: Route
+-- Create Route table
 CREATE TABLE Route (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    [From] CHAR(36) NOT NULL,
-    [To] CHAR(36) NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
+    [From] CHAR(36) NOT NULL, -- Foreign key to Airport.Id
+    [To] CHAR(36) NOT NULL,   -- Foreign key to Airport.Id
     FOREIGN KEY ([From]) REFERENCES Airport(Id),
     FOREIGN KEY ([To]) REFERENCES Airport(Id)
 );
 GO
 
--- Indexes on Route table
-CREATE INDEX IDX_Route_From ON Route([From]);
-CREATE INDEX IDX_Route_To ON Route([To]);
-GO
-
--- Table: Airplane
+-- Create Airplane table
 CREATE TABLE Airplane (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
     Code NVARCHAR(50) NOT NULL,
-    Type NVARCHAR(50) NOT NULL,
+    Type NVARCHAR(255) NOT NULL,
     AvailableSeat INT NOT NULL,
-    AirlinesId CHAR(36) NOT NULL,
+    AirlinesId CHAR(36) NOT NULL, -- Foreign key to Airlines.Id
     FOREIGN KEY (AirlinesId) REFERENCES Airlines(Id)
 );
 GO
 
--- Index on Airplane table
-CREATE INDEX IDX_Airplane_AirlinesId ON Airplane(AirlinesId);
-GO
-
--- Table: Rank
+-- Create Rank table
 CREATE TABLE Rank (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
     Type NVARCHAR(50) NOT NULL,
-    Description NVARCHAR(255) NOT NULL,
-    Discount DECIMAL(5, 2) NULL
+    Description NVARCHAR(255),
+    Discount FLOAT
 );
 GO
 
--- Table: User
+-- Create User table
 CREATE TABLE [User] (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    Avatar NVARCHAR(MAX) NOT NULL,
-    Name NVARCHAR(100) NOT NULL,
-    PhoneNumber NVARCHAR(50) NOT NULL,
-    Email NVARCHAR(100) NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
+    Avatar NVARCHAR(255),
+    Name NVARCHAR(255) NOT NULL,
+    PhoneNumber NVARCHAR(20) NOT NULL,
+    Email NVARCHAR(255) NOT NULL,
     Password NVARCHAR(255) NOT NULL,
     Address NVARCHAR(255) NOT NULL,
     Point INT NOT NULL,
-    RankId CHAR(36) NOT NULL,
+    RankId CHAR(36) NOT NULL, -- Foreign key to Rank.Id
     Role NVARCHAR(50) NOT NULL,
     Status NVARCHAR(50) NOT NULL,
     FOREIGN KEY (RankId) REFERENCES Rank(Id)
 );
 GO
 
--- Indexes on User table
-CREATE INDEX IDX_User_Email ON [User](Email);
-CREATE INDEX IDX_User_PhoneNumber ON [User](PhoneNumber);
-CREATE INDEX IDX_User_RankId ON [User](RankId);
-GO
-
--- Table: Passenger
+-- Create Passenger table
 CREATE TABLE Passenger (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    FirstName NVARCHAR(50) NOT NULL,
-    LastName NVARCHAR(50) NOT NULL,
-    Gender NVARCHAR(10) NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
+    FirstName NVARCHAR(255) NOT NULL,
+    LastName NVARCHAR(255) NOT NULL,
+    Gender NVARCHAR(50) NOT NULL,
     Dob DATE NOT NULL,
-    Country NVARCHAR(50) NOT NULL
+    Country NVARCHAR(255) NOT NULL,
+    Type NVARCHAR(50) NOT NULL
 );
 GO
 
--- Table: Relatives
+-- Create Relatives table
 CREATE TABLE Relatives (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    UserId CHAR(36) NOT NULL,
-    PassengerId CHAR(36) NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
+    UserId CHAR(36) NOT NULL, -- Foreign key to User.Id
+    PassengerId CHAR(36) NOT NULL, -- Foreign key to Passenger.Id
     FOREIGN KEY (UserId) REFERENCES [User](Id),
     FOREIGN KEY (PassengerId) REFERENCES Passenger(Id)
 );
 GO
 
--- Indexes on Relatives table
-CREATE INDEX IDX_Relatives_UserId ON Relatives(UserId);
-CREATE INDEX IDX_Relatives_PassengerId ON Relatives(PassengerId);
-GO
-
--- Table: Flight
+-- Create Flight table
 CREATE TABLE Flight (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    AirplaneId CHAR(36) NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
+    AirplaneId CHAR(36) NOT NULL, -- Foreign key to Airplane.Id
     DepartureTime DATETIME NOT NULL,
     ArrivalTime DATETIME NOT NULL,
-    RouteId CHAR(36) NOT NULL,
+    RouteId CHAR(36) NOT NULL, -- Foreign key to Route.Id
     Status NVARCHAR(50) NOT NULL,
-    Class NVARCHAR(50) NOT NULL,
-    Quantity INT NOT NULL,
-    Price DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (AirplaneId) REFERENCES Airplane(Id),
     FOREIGN KEY (RouteId) REFERENCES Route(Id)
 );
 GO
 
--- Indexes on Flight table
-CREATE INDEX IDX_Flight_AirplaneId ON Flight(AirplaneId);
-CREATE INDEX IDX_Flight_RouteId ON Flight(RouteId);
+-- Create FlightClass table
+CREATE TABLE FlightClass (
+    Id CHAR(36) PRIMARY KEY,
+    FlightId CHAR(36) NOT NULL, -- Foreign key to Flight.Id
+    Class NVARCHAR(50) NOT NULL,
+    Quantity INT NOT NULL,
+    Price DECIMAL(18,2) NOT NULL,
+    FOREIGN KEY (FlightId) REFERENCES Flight(Id)
+);
 GO
 
--- Table: BookingInformation
+-- Create BookingInformation table
 CREATE TABLE BookingInformation (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    CreatedDate DATETIME NOT NULL,
-    FlightId CHAR(36) NOT NULL,
-    UserId CHAR(36) NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
+    FlightId CHAR(36) NOT NULL, -- Foreign key to Flight.Id
+    CreatedDate DATE NOT NULL,
+    FlightClassId CHAR(36) NOT NULL, -- Foreign key to FlightClass.Id
+    UserId CHAR(36) NOT NULL, -- Foreign key to User.Id
     Status NVARCHAR(50) NOT NULL,
     FOREIGN KEY (FlightId) REFERENCES Flight(Id),
+    FOREIGN KEY (FlightClassId) REFERENCES FlightClass(Id),
     FOREIGN KEY (UserId) REFERENCES [User](Id)
 );
 GO
 
--- Indexes on BookingInformation table
-CREATE INDEX IDX_BookingInformation_FlightId ON BookingInformation(FlightId);
-CREATE INDEX IDX_BookingInformation_UserId ON BookingInformation(UserId);
-GO
-
--- Table: PassengerOfBooking
+-- Create PassengerOfBooking table
 CREATE TABLE PassengerOfBooking (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    PassengerId CHAR(36) NOT NULL,
-    BookingId CHAR(36) NOT NULL,
+    Id CHAR(36) PRIMARY KEY,
+    PassengerId CHAR(36) NOT NULL, -- Foreign key to Passenger.Id
+    BookingId CHAR(36) NOT NULL, -- Foreign key to BookingInformation.Id
     FOREIGN KEY (PassengerId) REFERENCES Passenger(Id),
     FOREIGN KEY (BookingId) REFERENCES BookingInformation(Id)
 );
 GO
 
--- Indexes on PassengerOfBooking table
-CREATE INDEX IDX_PassengerOfBooking_PassengerId ON PassengerOfBooking(PassengerId);
-CREATE INDEX IDX_PassengerOfBooking_BookingId ON PassengerOfBooking(BookingId);
-GO
-
--- Table: PaymentRecord
+-- Create PaymentRecord table
 CREATE TABLE PaymentRecord (
-    Id CHAR(36) PRIMARY KEY NOT NULL,
-    BookingId CHAR(36) NOT NULL,
-    UserId CHAR(36) NOT NULL,
-    Price DECIMAL(10, 2) NOT NULL,
-    Discount DECIMAL(5, 2) NULL,
-    FinalPrice DECIMAL(10, 2) NOT NULL,
-    CreatedDate DATETIME NOT NULL,
-    PayDate DATETIME NULL,
+    Id CHAR(36) PRIMARY KEY,
+    BookingId CHAR(36) NOT NULL, -- Foreign key to BookingInformation.Id
+    UserId CHAR(36) NOT NULL, -- Foreign key to User.Id
+    Price DECIMAL(18,2) NOT NULL,
+    Discount FLOAT,
+    FinalPrice DECIMAL(18,2) NOT NULL,
+    CreatedDate DATE NOT NULL,
+    PayDate DATE,
     Status NVARCHAR(50) NOT NULL,
     FOREIGN KEY (BookingId) REFERENCES BookingInformation(Id),
     FOREIGN KEY (UserId) REFERENCES [User](Id)
 );
 GO
 
--- Indexes on PaymentRecord table
-CREATE INDEX IDX_PaymentRecord_BookingId ON PaymentRecord(BookingId);
-CREATE INDEX IDX_PaymentRecord_UserId ON PaymentRecord(UserId);
+-- Add appropriate indexes for performance
+
+-- Index on Email in User for faster lookup
+CREATE INDEX IDX_User_Email ON [User] (Email);
+GO
+
+-- Index on PhoneNumber in User for fast retrieval
+CREATE INDEX IDX_User_PhoneNumber ON [User] (PhoneNumber);
+GO
+
+-- Index on Route From and To
+CREATE INDEX IDX_Route_From_To ON Route ([From], [To]);
+GO
+
+-- Index on DepartureTime in Flight
+CREATE INDEX IDX_Flight_DepartureTime ON Flight (DepartureTime);
+GO
+
+-- Index on ArrivalTime in Flight
+CREATE INDEX IDX_Flight_ArrivalTime ON Flight (ArrivalTime);
+GO
+
+-- Index on FlightId and FlightClassId in BookingInformation
+CREATE INDEX IDX_BookingInformation_FlightId_FlightClassId ON BookingInformation (FlightId, FlightClassId);
+GO
+
+-- Index on PassengerId in PassengerOfBooking
+CREATE INDEX IDX_PassengerOfBooking_PassengerId ON PassengerOfBooking (PassengerId);
+GO
+
+-- Index on BookingId in PassengerOfBooking
+CREATE INDEX IDX_PassengerOfBooking_BookingId ON PassengerOfBooking (BookingId);
+GO
+
+-- Index on CreatedDate in PaymentRecord
+CREATE INDEX IDX_PaymentRecord_CreatedDate ON PaymentRecord (CreatedDate);
+GO
+
+-- Index on PayDate in PaymentRecord
+CREATE INDEX IDX_PaymentRecord_PayDate ON PaymentRecord (PayDate);
 GO
