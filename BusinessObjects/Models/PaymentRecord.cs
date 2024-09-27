@@ -13,13 +13,13 @@ public partial class PaymentRecord
 
     public decimal Price { get; set; }
 
-    public decimal? Discount { get; set; }
+    public double? Discount { get; set; }
 
     public decimal FinalPrice { get; set; }
 
-    public DateTime CreatedDate { get; set; }
+    public DateOnly CreatedDate { get; set; }
 
-    public DateTime? PayDate { get; set; }
+    public DateOnly? PayDate { get; set; }
 
     public string Status { get; set; } = null!;
 

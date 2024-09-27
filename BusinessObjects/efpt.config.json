@@ -1,0 +1,90 @@
+﻿{
+   "CodeGenerationMode": 4,
+   "ContextClassName": "AirlinesReservationSystemContext",
+   "ContextNamespace": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "BusinessObjects",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 2,
+   "SelectedToBeGenerated": 0,
+   "T4TemplatePath": null,
+   "Tables": [
+      {
+         "Name": "[dbo].[Airlines]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Airplane]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Airport]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[BookingInformation]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Flight]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Passenger]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PassengerOfBooking]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PaymentRecord]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Rank]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Relatives]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Route]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[User]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": null,
+   "UncountableWords": null,
+   "UseAsyncStoredProcedureCalls": true,
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDateOnlyTimeOnly": true,
+   "UseDbContextSplitting": false,
+   "UseDecimalDataAnnotationForSprocResult": true,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": true,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UsePrefixNavigationNaming": false,
+   "UseSchemaFolders": false,
+   "UseSchemaNamespaces": false,
+   "UseSpatial": false,
+   "UseT4": false
+}

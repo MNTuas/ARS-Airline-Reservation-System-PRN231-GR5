@@ -5,6 +5,7 @@ using Repository.Repositories.AirporRepositories;
 using Service.Services.AIrlineServices;
 using Service.Services.AuthService;
 using Service.Services.AirportService;
+using Service.Services.EmailServices;
 using Service.Services.FlightServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +28,22 @@ builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
 builder.Services.AddScoped<IAirportService, AirportService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+//=========================================== CORS ================================================
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "AllowAll",
+                      policy =>
+                      {
+                          policy
+                          //.WithOrigins("http://localhost:3000")
+                          .AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                          //.AllowCredentials();
+                      });
+});
 
 var app = builder.Build();
 
@@ -41,6 +58,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
+app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapControllers();
