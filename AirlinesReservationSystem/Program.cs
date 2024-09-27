@@ -1,7 +1,9 @@
 using Repository.Repositories.AirlineRepositories;
-using Repository.Repositories.AirporRepositories;
+using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.FlightRepositories;
+using Repository.Repositories.AirporRepositories;
 using Service.Services.AIrlineServices;
+using Service.Services.AuthService;
 using Service.Services.AirportService;
 using Service.Services.FlightServices;
 
@@ -18,11 +20,13 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IFlightRepository, FlightRepository>();
 builder.Services.AddTransient<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddTransient<IAuthRepository, AuthRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
 builder.Services.AddScoped<IAirportService, AirportService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 
@@ -34,6 +38,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
