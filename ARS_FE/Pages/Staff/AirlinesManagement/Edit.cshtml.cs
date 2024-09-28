@@ -13,11 +13,8 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
     public class EditModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
-
-        public EditModel(DAO.AirlinesReservationSystemContext context)
+        public EditModel()
         {
-            _context = context;
         }
 
         [BindProperty]
@@ -30,17 +27,23 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 return NotFound();
             }
 
-            var airline =  await _context.Airlines.FirstOrDefaultAsync(m => m.Id == id);
-            if (airline == null)
+            using (var httpClient = new HttpClient())
             {
-                return NotFound();
+
+                var response = await APIHelper.GetAsJsonAsync<Airline>(httpClient, APIHelper.Url + $"airline/{id}");
+
+                if (response != null)
+                {
+                    Airline = response;
+                    return Page();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            Airline = airline;
-            return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -48,30 +51,22 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 return Page();
             }
 
-            _context.Attach(Airline).State = EntityState.Modified;
+            using (var httpClient = new HttpClient())
+            {
+                var airlineName = Airline.Name;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AirlineExists(Airline.Id))
+                var response = await APIHelper.PutAsJson(httpClient, APIHelper.Url + $"airline/{Airline.Id}", airlineName);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    return NotFound();
+                    return RedirectToPage("./Index");
                 }
                 else
                 {
-                    throw;
+                    ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
+                    return Page();
                 }
             }
-
-            return RedirectToPage("./Index");
-        }
-
-        private bool AirlineExists(string id)
-        {
-            return _context.Airlines.Any(e => e.Id == id);
         }
     }
 }

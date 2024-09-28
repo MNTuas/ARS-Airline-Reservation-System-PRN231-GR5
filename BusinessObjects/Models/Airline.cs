@@ -9,5 +9,7 @@ public partial class Airline
 
     public string Name { get; set; } = null!;
 
+    public string Status { get; set; } = null!;
+
     public virtual ICollection<Airplane> Airplanes { get; set; } = new List<Airplane>();
 }
