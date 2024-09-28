@@ -22,6 +22,11 @@ namespace Service.Services.AIrlineServices
             return await _airlineRepository.GetAllAirlines();
         }
 
+        public async Task<Airline> GetAirlineInfo(string id)
+        {
+            return await _airlineRepository.GetById(id);
+        }
+
         public async Task AddAirlines(string name)
         {
             await _airlineRepository.Insert(new Airline
@@ -30,5 +35,13 @@ namespace Service.Services.AIrlineServices
                 Name = name
             });
         }
+
+        public async Task UpdateAirlines(string id, string name)
+        {
+            var airline = await _airlineRepository.GetById(id);
+            airline.Name = name;
+            await _airlineRepository.Update(airline);
+        }
+     
     }
 }
