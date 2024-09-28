@@ -14,6 +14,13 @@ namespace ARS_FE
             var content = new StringContent(dataAsString, Encoding.UTF8, "application/json");
             return await httpClient.PostAsync(url, content);
         }
+        
+        public static async Task<HttpResponseMessage> PutAsJson<T>(this HttpClient httpClient, string url, T data)
+        {
+            var dataAsString = System.Text.Json.JsonSerializer.Serialize(data);
+            var content = new StringContent(dataAsString, Encoding.UTF8, "application/json");
+            return await httpClient.PutAsync(url, content);
+        }
 
         public static async Task<T?> GetAsJsonAsync<T>(this HttpClient httpClient, string url)
         {

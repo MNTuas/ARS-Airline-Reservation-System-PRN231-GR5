@@ -15,5 +15,10 @@ namespace Repository.Repositories.AirlineRepositories
             var list = await Get();
             return list.ToList();
         }
+
+        public async Task<Airline> GetById(string id)
+        {
+            return await GetSingle(a => a.Id.Equals(id));
+        }
     }
 }

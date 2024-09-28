@@ -10,7 +10,8 @@ GO
 -- Create Airlines table
 CREATE TABLE Airlines (
     Id CHAR(36) PRIMARY KEY,
-    Name NVARCHAR(255) NOT NULL
+    Name NVARCHAR(255) NOT NULL,
+	Status VARCHAR(50) NOT NULL
 );
 GO
 
@@ -197,4 +198,18 @@ GO
 
 -- Index on PayDate in PaymentRecord
 CREATE INDEX IDX_PaymentRecord_PayDate ON PaymentRecord (PayDate);
+GO
+
+-- Insert sample data into Airlines table
+INSERT INTO Airlines (Id, Name) VALUES
+('7f7c7a2a-0e35-4e25-a858-85a1f9676f01', 'Vietnam Airlines', 'Active'),
+('b9f4346f-e1b6-4b7e-a5f9-348db6c752a2', 'Pacific Airlines', 'Active'),
+('e65f9924-f915-4203-b8ff-8a18d75e2af3', 'Bamboo Airways', 'Active'),
+('88ab9914-ec2a-4bfa-bf3f-b77bcac98711', 'VietJet Air', 'Active'),
+('0a6c8ae1-17fa-41ae-82e6-c63f4fbb8db7', 'AirAsia', 'Active'),
+('51e4f0de-dbbc-4e9f-81c7-d192ba2d216d', 'Singapore Airlines', 'Active'),
+('950d019c-60d2-40b5-994e-e4f0a5a87b12', 'Qatar Airways', 'Active'),
+('fe66f785-bae7-4e6e-ae07-87ec68815b88', 'Emirates', 'Active'),
+('5c6d1b27-cb0d-49e7-9ae3-4b657f3a3566', 'Cathay Pacific', 'Active'),
+('db1e3766-d994-44e7-a6a4-44a82f99b6e9', 'Thai Airways', 'Active');
 GO
