@@ -13,5 +13,6 @@ namespace Service.Services.AIrlineServices
         Task<Airline> GetAirlineInfo(string id);
         Task AddAirlines(string name);
         Task UpdateAirlines(string id, string name);
+        Task ChangeAirlinesStatus(string id, string status);
     }
 }
