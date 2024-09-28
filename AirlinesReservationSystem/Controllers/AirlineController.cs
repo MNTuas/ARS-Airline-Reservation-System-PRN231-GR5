@@ -44,5 +44,13 @@ namespace AirlinesReservationSystem.Controllers
             await _airlineService.UpdateAirlines(id, name);
             return Ok("Update airline successfully");
         }
+
+        [HttpPut]
+        [Route("{id}/status")]
+        public async Task<IActionResult> ChangeAirlinesStatus(string id, [FromBody] string status)
+        {
+            await _airlineService.ChangeAirlinesStatus(id, status);
+            return Ok("Update airlines's status successfully");
+        }
     }
 }

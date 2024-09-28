@@ -32,7 +32,8 @@ namespace Service.Services.AIrlineServices
             await _airlineRepository.Insert(new Airline
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = name
+                Name = name,
+                Status = "Active"
             });
         }
 
@@ -42,6 +43,12 @@ namespace Service.Services.AIrlineServices
             airline.Name = name;
             await _airlineRepository.Update(airline);
         }
-     
+
+        public async Task ChangeAirlinesStatus(string id, string status)
+        {
+            var airline = await _airlineRepository.GetById(id);
+            airline.Status = status;
+            await _airlineRepository.Update(airline);
+        }
     }
 }
