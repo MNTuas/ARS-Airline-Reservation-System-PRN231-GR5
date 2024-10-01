@@ -16,8 +16,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //========================================== REPOSITORY ===========================================
-builder.Services.AddTransient<IFlightRepository, FlightRepository>();
-builder.Services.AddTransient<IAirlineRepository, AirlineRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 
 //=========================================== SERVICE =============================================
