@@ -16,46 +16,44 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
     public class IndexModel : PageModel
     {
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public IndexModel()
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
+            _httpClientFactory = httpClientFactory;
         }
 
         public PaginatedList<AllAirlinesResponseModel> Airline { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
-            using (var httpClient = new HttpClient())
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var response = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline");
+            if (response != null)
             {
-                var response = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(httpClient, APIHelper.Url + "airline");
-                if (response != null)
-                {
-                    Airline = PaginatedList<AllAirlinesResponseModel>.Create(response, pageIndex ?? 1, 6);
-                    return Page();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response, pageIndex ?? 1, 6);
+                return Page();
+            }
+            else
+            {
+                return BadRequest();
             }
         }
 
         public async Task<IActionResult> OnPostChangeStatus(string id, string currentStatus, int pageIndex)
         {
-            using (var httpClient = new HttpClient())
+            var client = _httpClientFactory.CreateClient("ApiClient");
+
+            string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
+
+            var response = await APIHelper.PutAsJson(client, $"airline/{id}/status", newStatus);
+            if (response.IsSuccessStatusCode)
             {
-                string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
-
-                var response = await APIHelper.PutAsJson(httpClient, APIHelper.Url + $"airline/{id}/status", newStatus);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToPage(new { pageIndex });
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                return RedirectToPage(new { pageIndex });
+            }
+            else
+            {
+                return BadRequest();
             }
         }
     }
