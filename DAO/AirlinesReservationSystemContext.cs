@@ -27,6 +27,8 @@ public partial class AirlinesReservationSystemContext : DbContext
 
     public virtual DbSet<Flight> Flights { get; set; }
 
+    public virtual DbSet<FlightClass> FlightClasses { get; set; }
+
     public virtual DbSet<Passenger> Passengers { get; set; }
 
     public virtual DbSet<PassengerOfBooking> PassengerOfBookings { get; set; }
@@ -58,22 +60,23 @@ public partial class AirlinesReservationSystemContext : DbContext
     {
         modelBuilder.Entity<Airline>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC07AB7891D9");
+            entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC07A1A9CFD1");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
-            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Airplane>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC076F7C6550");
+            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC0793AEE40C");
 
             entity.ToTable("Airplane");
-
-            entity.HasIndex(e => e.AirlinesId, "IDX_Airplane_AirlinesId");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
@@ -84,7 +87,7 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength();
             entity.Property(e => e.Code).HasMaxLength(50);
-            entity.Property(e => e.Type).HasMaxLength(50);
+            entity.Property(e => e.Type).HasMaxLength(255);
 
             entity.HasOne(d => d.Airlines).WithMany(p => p.Airplanes)
                 .HasForeignKey(d => d.AirlinesId)
@@ -94,7 +97,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Airport>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airport__3214EC079A4753E5");
+            entity.HasKey(e => e.Id).HasName("PK__Airport__3214EC07BBC39024");
 
             entity.ToTable("Airport");
 
@@ -102,26 +105,28 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
-            entity.Property(e => e.City).HasMaxLength(100);
-            entity.Property(e => e.Country).HasMaxLength(100);
-            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.City).HasMaxLength(255);
+            entity.Property(e => e.Country).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status).HasMaxLength(50);
         });
 
         modelBuilder.Entity<BookingInformation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__BookingI__3214EC078F45D205");
+            entity.HasKey(e => e.Id).HasName("PK__BookingI__3214EC073295BA90");
 
             entity.ToTable("BookingInformation");
 
-            entity.HasIndex(e => e.FlightId, "IDX_BookingInformation_FlightId");
-
-            entity.HasIndex(e => e.UserId, "IDX_BookingInformation_UserId");
+            entity.HasIndex(e => new { e.FlightId, e.FlightClassId }, "IDX_BookingInformation_FlightId_FlightClassId");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
-            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.FlightClassId)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .IsFixedLength();
             entity.Property(e => e.FlightId)
                 .HasMaxLength(36)
                 .IsUnicode(false)
@@ -132,26 +137,31 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength();
 
+            entity.HasOne(d => d.FlightClass).WithMany(p => p.BookingInformations)
+                .HasForeignKey(d => d.FlightClassId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__BookingIn__Fligh__412EB0B6");
+
             entity.HasOne(d => d.Flight).WithMany(p => p.BookingInformations)
                 .HasForeignKey(d => d.FlightId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookingIn__Fligh__3D5E1FD2");
+                .HasConstraintName("FK__BookingIn__Fligh__403A8C7D");
 
             entity.HasOne(d => d.User).WithMany(p => p.BookingInformations)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__BookingIn__UserI__3E52440B");
+                .HasConstraintName("FK__BookingIn__UserI__4222D4EF");
         });
 
         modelBuilder.Entity<Flight>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Flight__3214EC07D3F8D95B");
+            entity.HasKey(e => e.Id).HasName("PK__Flight__3214EC071C4F2738");
 
             entity.ToTable("Flight");
 
-            entity.HasIndex(e => e.AirplaneId, "IDX_Flight_AirplaneId");
+            entity.HasIndex(e => e.ArrivalTime, "IDX_Flight_ArrivalTime");
 
-            entity.HasIndex(e => e.RouteId, "IDX_Flight_RouteId");
+            entity.HasIndex(e => e.DepartureTime, "IDX_Flight_DepartureTime");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
@@ -162,9 +172,7 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength();
             entity.Property(e => e.ArrivalTime).HasColumnType("datetime");
-            entity.Property(e => e.Class).HasMaxLength(50);
             entity.Property(e => e.DepartureTime).HasColumnType("datetime");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
             entity.Property(e => e.RouteId)
                 .HasMaxLength(36)
                 .IsUnicode(false)
@@ -182,9 +190,32 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasConstraintName("FK__Flight__RouteId__3A81B327");
         });
 
+        modelBuilder.Entity<FlightClass>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__FlightCl__3214EC0713F0CFB8");
+
+            entity.ToTable("FlightClass");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Class).HasMaxLength(50);
+            entity.Property(e => e.FlightId)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.Flight).WithMany(p => p.FlightClasses)
+                .HasForeignKey(d => d.FlightId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__FlightCla__Fligh__3D5E1FD2");
+        });
+
         modelBuilder.Entity<Passenger>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Passenge__3214EC07646FACCD");
+            entity.HasKey(e => e.Id).HasName("PK__Passenge__3214EC075122E992");
 
             entity.ToTable("Passenger");
 
@@ -192,15 +223,16 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
-            entity.Property(e => e.Country).HasMaxLength(50);
-            entity.Property(e => e.FirstName).HasMaxLength(50);
-            entity.Property(e => e.Gender).HasMaxLength(10);
-            entity.Property(e => e.LastName).HasMaxLength(50);
+            entity.Property(e => e.Country).HasMaxLength(255);
+            entity.Property(e => e.FirstName).HasMaxLength(255);
+            entity.Property(e => e.Gender).HasMaxLength(50);
+            entity.Property(e => e.LastName).HasMaxLength(255);
+            entity.Property(e => e.Type).HasMaxLength(50);
         });
 
         modelBuilder.Entity<PassengerOfBooking>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Passenge__3214EC0719B7350E");
+            entity.HasKey(e => e.Id).HasName("PK__Passenge__3214EC072E6F31C3");
 
             entity.ToTable("PassengerOfBooking");
 
@@ -224,23 +256,23 @@ public partial class AirlinesReservationSystemContext : DbContext
             entity.HasOne(d => d.Booking).WithMany(p => p.PassengerOfBookings)
                 .HasForeignKey(d => d.BookingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Passenger__Booki__4222D4EF");
+                .HasConstraintName("FK__Passenger__Booki__45F365D3");
 
             entity.HasOne(d => d.Passenger).WithMany(p => p.PassengerOfBookings)
                 .HasForeignKey(d => d.PassengerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Passenger__Passe__412EB0B6");
+                .HasConstraintName("FK__Passenger__Passe__44FF419A");
         });
 
         modelBuilder.Entity<PaymentRecord>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__PaymentR__3214EC0703F04ECE");
+            entity.HasKey(e => e.Id).HasName("PK__PaymentR__3214EC0721422C65");
 
             entity.ToTable("PaymentRecord");
 
-            entity.HasIndex(e => e.BookingId, "IDX_PaymentRecord_BookingId");
+            entity.HasIndex(e => e.CreatedDate, "IDX_PaymentRecord_CreatedDate");
 
-            entity.HasIndex(e => e.UserId, "IDX_PaymentRecord_UserId");
+            entity.HasIndex(e => e.PayDate, "IDX_PaymentRecord_PayDate");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
@@ -250,11 +282,8 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
-            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
-            entity.Property(e => e.Discount).HasColumnType("decimal(5, 2)");
-            entity.Property(e => e.FinalPrice).HasColumnType("decimal(10, 2)");
-            entity.Property(e => e.PayDate).HasColumnType("datetime");
-            entity.Property(e => e.Price).HasColumnType("decimal(10, 2)");
+            entity.Property(e => e.FinalPrice).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Status).HasMaxLength(50);
             entity.Property(e => e.UserId)
                 .HasMaxLength(36)
@@ -264,17 +293,17 @@ public partial class AirlinesReservationSystemContext : DbContext
             entity.HasOne(d => d.Booking).WithMany(p => p.PaymentRecords)
                 .HasForeignKey(d => d.BookingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PaymentRe__Booki__44FF419A");
+                .HasConstraintName("FK__PaymentRe__Booki__48CFD27E");
 
             entity.HasOne(d => d.User).WithMany(p => p.PaymentRecords)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__PaymentRe__UserI__45F365D3");
+                .HasConstraintName("FK__PaymentRe__UserI__49C3F6B7");
         });
 
         modelBuilder.Entity<Rank>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Rank__3214EC07AE6AC1DB");
+            entity.HasKey(e => e.Id).HasName("PK__Rank__3214EC077E29E1D6");
 
             entity.ToTable("Rank");
 
@@ -283,17 +312,12 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .IsUnicode(false)
                 .IsFixedLength();
             entity.Property(e => e.Description).HasMaxLength(255);
-            entity.Property(e => e.Discount).HasColumnType("decimal(5, 2)");
             entity.Property(e => e.Type).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Relative>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Relative__3214EC073AA3EE40");
-
-            entity.HasIndex(e => e.PassengerId, "IDX_Relatives_PassengerId");
-
-            entity.HasIndex(e => e.UserId, "IDX_Relatives_UserId");
+            entity.HasKey(e => e.Id).HasName("PK__Relative__3214EC0766C2237F");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
@@ -321,13 +345,11 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Route>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Route__3214EC07F8C8CBD5");
+            entity.HasKey(e => e.Id).HasName("PK__Route__3214EC07F9CF7218");
 
             entity.ToTable("Route");
 
-            entity.HasIndex(e => e.From, "IDX_Route_From");
-
-            entity.HasIndex(e => e.To, "IDX_Route_To");
+            entity.HasIndex(e => new { e.From, e.To }, "IDX_Route_From_To");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
@@ -355,7 +377,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__User__3214EC071EADD4DD");
+            entity.HasKey(e => e.Id).HasName("PK__User__3214EC0715C2DD6C");
 
             entity.ToTable("User");
 
@@ -363,17 +385,16 @@ public partial class AirlinesReservationSystemContext : DbContext
 
             entity.HasIndex(e => e.PhoneNumber, "IDX_User_PhoneNumber");
 
-            entity.HasIndex(e => e.RankId, "IDX_User_RankId");
-
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
             entity.Property(e => e.Address).HasMaxLength(255);
-            entity.Property(e => e.Email).HasMaxLength(100);
-            entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Avatar).HasMaxLength(255);
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.Name).HasMaxLength(255);
             entity.Property(e => e.Password).HasMaxLength(255);
-            entity.Property(e => e.PhoneNumber).HasMaxLength(50);
+            entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             entity.Property(e => e.RankId)
                 .HasMaxLength(36)
                 .IsUnicode(false)

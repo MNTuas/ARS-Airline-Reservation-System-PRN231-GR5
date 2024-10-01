@@ -22,11 +22,35 @@ namespace AirlinesReservationSystem.Controllers
             return Ok(response);
         }
 
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetAirlinesInfo(string id)
+        {
+            var response = await _airlineService.GetDetailsAirlineInfo(id);
+            return Ok(response);
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddNewAirlines([FromBody] string name)
         {
             await _airlineService.AddAirlines(name);
             return Ok("Add airline successfully");
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateAirlines(string id, [FromBody] string name)
+        {
+            await _airlineService.UpdateAirlines(id, name);
+            return Ok("Update airline successfully");
+        }
+
+        [HttpPut]
+        [Route("{id}/status")]
+        public async Task<IActionResult> ChangeAirlinesStatus(string id, [FromBody] string status)
+        {
+            await _airlineService.ChangeAirlinesStatus(id, status);
+            return Ok("Update airlines's status successfully");
         }
     }
 }

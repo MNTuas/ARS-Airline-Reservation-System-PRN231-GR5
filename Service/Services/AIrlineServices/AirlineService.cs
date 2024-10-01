@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using BusinessObjects.ResponseModels;
 using Repository.Repositories.AirlineRepositories;
 using System;
 using System.Collections.Generic;
@@ -17,9 +18,14 @@ namespace Service.Services.AIrlineServices
             _airlineRepository = airlineRepository;
         }
 
-        public async Task<List<Airline>> GetAllAirlines()
+        public async Task<List<AllAirlinesResponseModel>> GetAllAirlines()
         {
             return await _airlineRepository.GetAllAirlines();
+        }
+
+        public async Task<AirlinesResponseModel> GetDetailsAirlineInfo(string id)
+        {
+            return await _airlineRepository.GetDetailsById(id);
         }
 
         public async Task AddAirlines(string name)
@@ -27,8 +33,23 @@ namespace Service.Services.AIrlineServices
             await _airlineRepository.Insert(new Airline
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = name
+                Name = name,
+                Status = "Active"
             });
+        }
+
+        public async Task UpdateAirlines(string id, string name)
+        {
+            var airline = await _airlineRepository.GetById(id);
+            airline.Name = name;
+            await _airlineRepository.Update(airline);
+        }
+
+        public async Task ChangeAirlinesStatus(string id, string status)
+        {
+            var airline = await _airlineRepository.GetById(id);
+            airline.Status = status;
+            await _airlineRepository.Update(airline);
         }
     }
 }

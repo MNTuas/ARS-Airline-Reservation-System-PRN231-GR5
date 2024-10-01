@@ -17,15 +17,11 @@ public partial class Flight
 
     public string Status { get; set; } = null!;
 
-    public string Class { get; set; } = null!;
-
-    public int Quantity { get; set; }
-
-    public decimal Price { get; set; }
-
     public virtual Airplane Airplane { get; set; } = null!;
 
     public virtual ICollection<BookingInformation> BookingInformations { get; set; } = new List<BookingInformation>();
+
+    public virtual ICollection<FlightClass> FlightClasses { get; set; } = new List<FlightClass>();
 
     public virtual Route Route { get; set; } = null!;
 }

@@ -7,15 +7,19 @@ public partial class BookingInformation
 {
     public string Id { get; set; } = null!;
 
-    public DateTime CreatedDate { get; set; }
-
     public string FlightId { get; set; } = null!;
+
+    public DateOnly CreatedDate { get; set; }
+
+    public string FlightClassId { get; set; } = null!;
 
     public string UserId { get; set; } = null!;
 
     public string Status { get; set; } = null!;
 
     public virtual Flight Flight { get; set; } = null!;
+
+    public virtual FlightClass FlightClass { get; set; } = null!;
 
     public virtual ICollection<PassengerOfBooking> PassengerOfBookings { get; set; } = new List<PassengerOfBooking>();
 

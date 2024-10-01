@@ -7,7 +7,7 @@ public partial class User
 {
     public string Id { get; set; } = null!;
 
-    public string Avatar { get; set; } = null!;
+    public string? Avatar { get; set; }
 
     public string Name { get; set; } = null!;
 

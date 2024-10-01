@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using BusinessObjects.ResponseModels;
 using Repository.Repositories.GenericRepositories;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,8 @@ namespace Repository.Repositories.AirlineRepositories
 {
     public interface IAirlineRepository : IGenericRepository<Airline>
     {
-        Task<List<Airline>> GetAllAirlines();
+        Task<List<AllAirlinesResponseModel>> GetAllAirlines();
+        Task<Airline> GetById(string id);
+        Task<AirlinesResponseModel> GetDetailsById(string id);
     }
 }
