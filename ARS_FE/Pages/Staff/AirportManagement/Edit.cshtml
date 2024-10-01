@@ -1,0 +1,50 @@
+﻿@page
+@model ARS_FE.Pages.Staff.AirportManagement.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Airport</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Airport.Id" />
+            <div class="form-group">
+                <label asp-for="Airport.Name" class="control-label"></label>
+                <input asp-for="Airport.Name" class="form-control" />
+                <span asp-validation-for="Airport.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Airport.City" class="control-label"></label>
+                <input asp-for="Airport.City" class="form-control" />
+                <span asp-validation-for="Airport.City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Airport.Country" class="control-label"></label>
+                <input asp-for="Airport.Country" class="form-control" />
+                <span asp-validation-for="Airport.Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Airport.Status" class="control-label"></label>
+                <input asp-for="Airport.Status" class="form-control" />
+                <span asp-validation-for="Airport.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

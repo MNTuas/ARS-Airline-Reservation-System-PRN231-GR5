@@ -1,5 +1,7 @@
 using Repository.Repositories.AirlineRepositories;
+using Repository.Repositories.AirporRepositories;
 using Service.Services.AIrlineServices;
+using Service.Services.AirportService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +10,10 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
+
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddScoped<IAirportService, AirportService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
