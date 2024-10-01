@@ -1,10 +1,12 @@
 using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AirporRepositories;
 using Repository.Repositories.FlightRepositories;
+using Repository.Repositories.RankRepositories;
 using Service.Services.AIrlineServices;
 using Service.Services.AirportService;
 using Service.Services.EmailServices;
 using Service.Services.FlightServices;
+using Service.Services.RankServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +21,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddTransient<IFlightRepository, FlightRepository>();
 builder.Services.AddTransient<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddScoped<IRankRepository, RankRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
 builder.Services.AddScoped<IAirportService, AirportService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IRankService, RankService>();
+
 
 //=========================================== CORS ================================================
 builder.Services.AddCors(options =>

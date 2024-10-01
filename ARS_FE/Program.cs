@@ -1,5 +1,7 @@
 using Repository.Repositories.AirlineRepositories;
+using Repository.Repositories.RankRepositories;
 using Service.Services.AIrlineServices;
+using Service.Services.RankServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
