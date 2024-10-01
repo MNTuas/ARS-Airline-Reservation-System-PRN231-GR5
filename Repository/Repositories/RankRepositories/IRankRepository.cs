@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Repositories.AuthRepositories
+namespace Repository.Repositories.RankRepositories
 {
-    public interface IAuthRepository : IGenericRepository<User>
+    public interface IRankRepository : IGenericRepository<Rank>
     {
     }
 }
