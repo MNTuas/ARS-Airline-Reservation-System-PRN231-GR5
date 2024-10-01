@@ -13,8 +13,11 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
     public class EditModel : PageModel
     {
-        public EditModel()
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public EditModel(IHttpClientFactory httpClientFactory)
         {
+            _httpClientFactory = httpClientFactory;
         }
 
         [BindProperty]
@@ -26,21 +29,17 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return NotFound();
             }
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            using (var httpClient = new HttpClient())
+            var response = await APIHelper.GetAsJsonAsync<Airline>(client, $"airline/{id}");
+            if (response != null)
             {
-
-                var response = await APIHelper.GetAsJsonAsync<Airline>(httpClient, APIHelper.Url + $"airline/{id}");
-
-                if (response != null)
-                {
-                    Airline = response;
-                    return Page();
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                Airline = response;
+                return Page();
+            }
+            else
+            {
+                return BadRequest();
             }
         }
 
@@ -51,21 +50,20 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 return Page();
             }
 
-            using (var httpClient = new HttpClient())
+            var client = _httpClientFactory.CreateClient("ApiClient");
+
+            var airlineName = Airline.Name;
+
+            var response = await APIHelper.PutAsJson(client, $"airline/{Airline.Id}", airlineName);
+
+            if (response.IsSuccessStatusCode)
             {
-                var airlineName = Airline.Name;
-
-                var response = await APIHelper.PutAsJson(httpClient, APIHelper.Url + $"airline/{Airline.Id}", airlineName);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToPage("./Index");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
-                    return Page();
-                }
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
+                return Page();
             }
         }
     }

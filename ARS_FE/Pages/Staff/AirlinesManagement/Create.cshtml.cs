@@ -9,14 +9,17 @@ using BusinessObjects.Models;
 using DAO;
 using System.Text;
 using System.Text.Json;
+using System.Net.Http;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
     public class CreateModel : PageModel
     {
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public CreateModel()
+        public CreateModel(IHttpClientFactory httpClientFactory)
         {
+            _httpClientFactory = httpClientFactory;
         }
 
         public IActionResult OnGet()
@@ -33,23 +36,22 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return Page();
             }
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            using (var httpClient = new HttpClient())
+            var airlineName = AirlineName;
+
+            var response = await APIHelper.PostAsJson(client, "airline", airlineName);
+
+            if (response.IsSuccessStatusCode)
             {
-                var airlineName = AirlineName; 
-
-                var response = await APIHelper.PostAsJson(httpClient, APIHelper.Url + "airline", airlineName);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToPage("./Index");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");
-                    return Page();
-                }
+                return RedirectToPage("./Index");
             }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");
+                return Page();
+            }
+
         }
 
     }

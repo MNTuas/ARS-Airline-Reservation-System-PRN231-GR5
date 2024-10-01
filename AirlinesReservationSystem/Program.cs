@@ -15,11 +15,9 @@ using Repository.Repositories.RankRepositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -29,7 +27,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
         In = ParameterLocation.Header,
         Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
+        Type = SecuritySchemeType.Http,
         BearerFormat = "Jwt",
         Scheme = "bearer"
     });

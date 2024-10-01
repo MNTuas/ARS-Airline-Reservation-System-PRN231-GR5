@@ -21,8 +21,8 @@ namespace Service.Services.AuthService
         private readonly IAuthRepository _authRepository;
         private readonly IRankRepository _rankRepository;
         private readonly IConfiguration _configuration;
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration, IRankRepository rankRepository) 
-        { 
+        public AuthService(IAuthRepository authRepository, IConfiguration configuration, IRankRepository rankRepository)
+        {
             _authRepository = authRepository;
             _rankRepository = rankRepository;
             _configuration = configuration;
@@ -40,7 +40,7 @@ namespace Service.Services.AuthService
                         Message = "Email is already used!!!",
                     };
                 }
-                if(request.Password != request.ConfirmPassword)
+                if (request.Password != request.ConfirmPassword)
                 {
                     return new Result<User>
                     {
@@ -98,7 +98,7 @@ namespace Service.Services.AuthService
                     Data = user
                 };
             }
-            catch(Exception)  
+            catch (Exception)
             {
                 return new Result<User>
                 {
@@ -130,10 +130,10 @@ namespace Service.Services.AuthService
                     };
                 }
                 var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, request.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+                    {
+                        new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role),
+                        new Claim(ClaimTypes.Email, user.Email),
+                    };
                 var token = GenerateJwtToken(authClaims);
                 return new Result<User>
                 {
