@@ -26,7 +26,7 @@ namespace AirlinesReservationSystem.Controllers
         [Route("{id}")]
         public async Task<IActionResult> GetAirlinesInfo(string id)
         {
-            var response = await _airlineService.GetAirlineInfo(id);
+            var response = await _airlineService.GetDetailsAirlineInfo(id);
             return Ok(response);
         }
 

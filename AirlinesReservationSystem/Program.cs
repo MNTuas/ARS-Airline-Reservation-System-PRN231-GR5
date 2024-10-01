@@ -70,11 +70,11 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddHttpClient();
 
 //========================================== REPOSITORY ===========================================
-builder.Services.AddTransient<IFlightRepository, FlightRepository>();
-builder.Services.AddTransient<IAirlineRepository, AirlineRepository>();
-builder.Services.AddTransient<IAirportRepository, AirportRepository>();
-builder.Services.AddTransient<IAuthRepository, AuthRepository>();
-builder.Services.AddTransient<IRankRepository, RankRepository>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
+builder.Services.AddScoped<IRankRepository, RankRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();

@@ -7,37 +7,45 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.ResponseModels;
+using Service;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
     public class DetailsModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
-
-        public DetailsModel(DAO.AirlinesReservationSystemContext context)
+        public DetailsModel()
         {
-            _context = context;
         }
 
-        public Airline Airline { get; set; } = default!;
+        public AirlinesResponseModel Airline { get; set; } = default!;
+        public PaginatedList<AirplaneResponseModel> Airplanes { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string id)
+        public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var airline = await _context.Airlines.FirstOrDefaultAsync(m => m.Id == id);
-            if (airline == null)
+            using (var httpClient = new HttpClient())
             {
-                return NotFound();
+                var response = await APIHelper.GetAsJsonAsync<AirlinesResponseModel>(httpClient, APIHelper.Url + $"airline/{id}");
+
+                if (response != null)
+                {
+                    Airline = response;
+
+                    Airplanes = PaginatedList<AirplaneResponseModel>.Create(Airline.Airplanes, pageIndex ?? 1, 5);
+
+                    return Page();
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            else
-            {
-                Airline = airline;
-            }
-            return Page();
         }
     }
+
 }
