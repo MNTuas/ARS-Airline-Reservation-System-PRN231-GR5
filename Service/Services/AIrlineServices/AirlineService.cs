@@ -22,13 +22,33 @@ namespace Service.Services.AIrlineServices
             return await _airlineRepository.GetAllAirlines();
         }
 
+        public async Task<Airline> GetAirlineInfo(string id)
+        {
+            return await _airlineRepository.GetById(id);
+        }
+
         public async Task AddAirlines(string name)
         {
             await _airlineRepository.Insert(new Airline
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = name
+                Name = name,
+                Status = "Active"
             });
+        }
+
+        public async Task UpdateAirlines(string id, string name)
+        {
+            var airline = await _airlineRepository.GetById(id);
+            airline.Name = name;
+            await _airlineRepository.Update(airline);
+        }
+
+        public async Task ChangeAirlinesStatus(string id, string status)
+        {
+            var airline = await _airlineRepository.GetById(id);
+            airline.Status = status;
+            await _airlineRepository.Update(airline);
         }
     }
 }

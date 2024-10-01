@@ -22,7 +22,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         public PaginatedList<Airline> Airline { get; set; } = default!;
 
-        public async Task OnGetAsync(int? pageIndex)
+        public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             using (var httpClient = new HttpClient())
             {
@@ -30,6 +30,30 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 if (response != null)
                 {
                     Airline = PaginatedList<Airline>.Create(response, pageIndex ?? 1, 6);
+                    return Page();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+        }
+
+        public async Task<IActionResult> OnPostChangeStatus(string id, string currentStatus, int pageIndex)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
+
+                var response = await APIHelper.PutAsJson(httpClient, APIHelper.Url + $"airline/{id}/status", newStatus);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToPage(new { pageIndex });
+                }
+                else
+                {
+                    return BadRequest();
                 }
             }
         }
