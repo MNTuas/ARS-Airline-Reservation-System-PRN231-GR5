@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Models;
 using DAO;
-using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.RequestModels;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
@@ -34,7 +35,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             {
                 return Page();
             }
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
             var n = new CreateAirportRequest
             {
@@ -55,6 +56,19 @@ namespace ARS_FE.Pages.Staff.AirportManagement
                 return Page();
             }
 
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
 
     }
