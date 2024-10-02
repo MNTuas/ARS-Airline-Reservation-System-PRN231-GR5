@@ -27,32 +27,47 @@
 
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-            <div class="container">
-                <a class="navbar-brand" href="index.html">Vacation<span>Travel Agency</span></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="oi oi-menu"></span> Menu
-                </button>
+    <head>
+        <style>
+            /* Ensures header has a solid black background */
+            #ftco-navbar {
+                background-color: bisque !important; /* Black color */
+                opacity: 1 !important; /* Remove any transparency */
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+                <div class="container">
+                    <a class="navbar-brand" href="index.html">Vacation<span>Travel Agency</span></a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="oi oi-menu"></span> Menu
+                    </button>
 
-                <div class="collapse navbar-collapse" id="ftco-nav">
-                    <ul class="navbar-nav ml-auto">
-                        <li class="nav-item active"><a href="index.html" class="nav-link">Home</a></li>
-                        <li class="nav-item"><a class="nav-link" asp-page="/Staff/AirportManagement/Index">Airport</a></li>                      
-                        <li class="nav-item cta"><a asp-page="/" class="nav-link">Book Now</a></li>
-
-                    </ul>
+                    <div class="collapse navbar-collapse" id="ftco-nav">
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item"><a class="nav-link" asp-page="/Staff/AirlinesManagement/Index">Airline</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-page="/Staff/AirportManagement/Index">Airport</a></li>
+                            
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-        <!-- END nav -->
+            </nav>
+        </header>
+    </body>
 
+        <!-- END nav -->
     </header>
+
+ 
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
+
 
   
     <!-- loader -->

@@ -7,16 +7,17 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.RequestModels.Airport;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
     public class CreateModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public CreateModel(DAO.AirlinesReservationSystemContext context)
+        public CreateModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         public IActionResult OnGet()
@@ -25,20 +26,36 @@ namespace ARS_FE.Pages.Staff.AirportManagement
         }
 
         [BindProperty]
-        public Airport Airport { get; set; } = default!;
+        public CreateAirportRequest createAirportRequest { get; set; } = default!;
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            _context.Airports.Add(Airport);
-            await _context.SaveChangesAsync();
+            var n = new CreateAirportRequest
+            {
+                Name = createAirportRequest.Name,
+                City = createAirportRequest.City,
+                Country = createAirportRequest.Country,
+            };
 
-            return RedirectToPage("./Index");
+            var response = await APIHelper.PostAsJson(client, "Airport", n);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
+                return Page();
+            }
+
         }
+
     }
 }

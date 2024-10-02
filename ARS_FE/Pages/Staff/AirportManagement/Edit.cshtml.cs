@@ -8,20 +8,22 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.RequestModels.Airport;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
     public class EditModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public EditModel(DAO.AirlinesReservationSystemContext context)
+        public EditModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         [BindProperty]
-        public Airport Airport { get; set; } = default!;
+        public UpdateAirportRequest updateAirportRequest { get; set; } = default!;
+        public Airport airport { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -29,49 +31,47 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             {
                 return NotFound();
             }
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var airport =  await _context.Airports.FirstOrDefaultAsync(m => m.Id == id);
-            if (airport == null)
+            var response = await APIHelper.GetAsJsonAsync<Airport>(client, $"Airport/{id}");
+            if (response != null)
             {
-                return NotFound();
+                airport = response;
+                return Page();
             }
-            Airport = airport;
-            return Page();
+            else
+            {
+                return BadRequest();
+            }
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(UpdateAirportRequest updateAirportRequest)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _context.Attach(Airport).State = EntityState.Modified;
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            try
+            var n = new UpdateAirportRequest
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+                Name = updateAirportRequest.Name,
+                City = updateAirportRequest.City,
+                Country = updateAirportRequest.Country,
+            };
+
+            var response = await APIHelper.PutAsJson(client, $"airport/{airport.Id}", n);
+
+            if (response.IsSuccessStatusCode)
             {
-                if (!AirportExists(Airport.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
-
-            return RedirectToPage("./Index");
-        }
-
-        private bool AirportExists(string id)
-        {
-            return _context.Airports.Any(e => e.Id == id);
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
+                return Page();
+            }
         }
     }
 }

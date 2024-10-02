@@ -2,41 +2,32 @@
 @model ARS_FE.Pages.Staff.AirportManagement.CreateModel
 
 @{
+    Layout = "_LayoutManage";
     ViewData["Title"] = "Create";
 }
 
 <h1>Create</h1>
 
-<h4>Airport</h4>
+<h4>Airline</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Airport.Id" class="control-label"></label>
-                <input asp-for="Airport.Id" class="form-control" />
-                <span asp-validation-for="Airport.Id" class="text-danger"></span>
+                <label asp-for="createAirportRequest.Name" class="control-label"></label>
+                <input asp-for="createAirportRequest.Name" class="form-control" />
+                <span asp-validation-for="createAirportRequest.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Airport.Name" class="control-label"></label>
-                <input asp-for="Airport.Name" class="form-control" />
-                <span asp-validation-for="Airport.Name" class="text-danger"></span>
+                <label asp-for="createAirportRequest.City" class="control-label"></label>
+                <input asp-for="createAirportRequest.City" class="form-control" />
+                <span asp-validation-for="createAirportRequest.City" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Airport.City" class="control-label"></label>
-                <input asp-for="Airport.City" class="form-control" />
-                <span asp-validation-for="Airport.City" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Airport.Country" class="control-label"></label>
-                <input asp-for="Airport.Country" class="form-control" />
-                <span asp-validation-for="Airport.Country" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Airport.Status" class="control-label"></label>
-                <input asp-for="Airport.Status" class="form-control" />
-                <span asp-validation-for="Airport.Status" class="text-danger"></span>
+                <label asp-for="createAirportRequest.Country" class="control-label"></label>
+                <input asp-for="createAirportRequest.Country" class="form-control" />
+                <span asp-validation-for="createAirportRequest.Country" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -50,5 +41,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
