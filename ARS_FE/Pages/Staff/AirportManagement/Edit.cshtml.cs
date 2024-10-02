@@ -22,7 +22,6 @@ namespace ARS_FE.Pages.Staff.AirportManagement
         }
 
         [BindProperty]
-        public UpdateAirportRequest updateAirportRequest { get; set; } = default!;
         public Airport airport { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -45,7 +44,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(UpdateAirportRequest updateAirportRequest)
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -56,9 +55,9 @@ namespace ARS_FE.Pages.Staff.AirportManagement
 
             var n = new UpdateAirportRequest
             {
-                Name = updateAirportRequest.Name,
-                City = updateAirportRequest.City,
-                Country = updateAirportRequest.Country,
+                Name = airport.Name,
+                City = airport.City,
+                Country = airport.Country,
             };
 
             var response = await APIHelper.PutAsJson(client, $"airport/{airport.Id}", n);

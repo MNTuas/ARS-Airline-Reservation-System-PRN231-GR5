@@ -1,5 +1,5 @@
 ﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Airport;
 using FFilms.Application.Shared.Response;
 using System;
 using System.Collections.Generic;
@@ -13,5 +13,8 @@ namespace Service.Services.AirportService
     {
         Task<List<Airport>> GetAllAirport();
         Task<Result<Airport>> AddAirport(CreateAirportRequest createAirportRequest);
+        Task<Airport> GetDetailsAirportInfo(string id);
+        Task UpdateAirports(string id, UpdateAirportRequest updateAirportRequest);
+        Task ChangeAirportsStatus(string id, string status);
     }
 }
