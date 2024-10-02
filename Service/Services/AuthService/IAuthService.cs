@@ -12,6 +12,6 @@ namespace Service.Services.AuthService
     public interface IAuthService
     {
         Task<Result<User>> RegisterAsync(RegisterRequest request);
-        Task<Result<User>> LoginAsync(LoginRequest request);
+        Task<Result<string>> LoginAsync(LoginRequest request);
     }
 }
