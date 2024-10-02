@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Models;
 using DAO;
-using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.RequestModels;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {

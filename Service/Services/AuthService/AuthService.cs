@@ -108,14 +108,14 @@ namespace Service.Services.AuthService
             }
         }
 
-        public async Task<Result<User>> LoginAsync(LoginRequest request)
+        public async Task<Result<string>> LoginAsync(LoginRequest request)
         {
             try
             {
                 var user = await _authRepository.GetSingle(x => x.Email == request.Email);
                 if (user == null)
                 {
-                    return new Result<User>
+                    return new Result<string>
                     {
                         Success = false,
                         Message = "Wrong email!!!",
@@ -123,7 +123,7 @@ namespace Service.Services.AuthService
                 }
                 if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
                 {
-                    return new Result<User>
+                    return new Result<string>
                     {
                         Success = false,
                         Message = "Wrong password!!!",
@@ -131,20 +131,20 @@ namespace Service.Services.AuthService
                 }
                 var authClaims = new List<Claim>
                     {
-                        new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role),
-                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(ClaimTypes.Role, user.Role),
+                        new Claim("Email", user.Email),
                     };
                 var token = GenerateJwtToken(authClaims);
-                return new Result<User>
+                return new Result<string>
                 {
                     Success = true,
-                    Message = new JwtSecurityTokenHandler().WriteToken(token),
-                    Data = user
+                    Message = "Login successfully",
+                    Data = new JwtSecurityTokenHandler().WriteToken(token).ToString()
                 };
             }
             catch (Exception ex)
             {
-                return new Result<User>
+                return new Result<string>
                 {
                     Success = false,
                     Message = $"Something went wrong: {ex.Message}",

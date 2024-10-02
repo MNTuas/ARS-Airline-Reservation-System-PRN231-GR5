@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using BusinessObjects.RequestModels.Airport;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
@@ -22,7 +21,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
         }
 
         [BindProperty]
-        public UpdateAirportRequest updateAirportRequest { get; set; } = default!;
+        //public UpdateAirportRequest updateAirportRequest { get; set; } = default!;
         public Airport airport { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -45,33 +44,33 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             }
         }
 
-        public async Task<IActionResult> OnPostAsync(UpdateAirportRequest updateAirportRequest)
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+        //public async Task<IActionResult> OnPostAsync(UpdateAirportRequest updateAirportRequest)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return Page();
+        //    }
 
-            var client = _httpClientFactory.CreateClient("ApiClient");
+        //    var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var n = new UpdateAirportRequest
-            {
-                Name = updateAirportRequest.Name,
-                City = updateAirportRequest.City,
-                Country = updateAirportRequest.Country,
-            };
+        //    var n = new UpdateAirportRequest
+        //    {
+        //        Name = updateAirportRequest.Name,
+        //        City = updateAirportRequest.City,
+        //        Country = updateAirportRequest.Country,
+        //    };
 
-            var response = await APIHelper.PutAsJson(client, $"airport/{airport.Id}", n);
+        //    var response = await APIHelper.PutAsJson(client, $"airport/{airport.Id}", n);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToPage("./Index");
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
-                return Page();
-            }
-        }
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return RedirectToPage("./Index");
+        //    }
+        //    else
+        //    {
+        //        ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
+        //        return Page();
+        //    }
+        //}
     }
 }

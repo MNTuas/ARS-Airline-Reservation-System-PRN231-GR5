@@ -25,7 +25,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = _httpClientFactory.CreateClient("ApiClient");  
             var response = await APIHelper.GetAsJsonAsync<List<Airport>>(client, "Airport");
             if (response != null)
             {
