@@ -11,6 +11,8 @@ using Service.Services.AIrlineServices;
 using Newtonsoft.Json;
 using Service;
 using BusinessObjects.ResponseModels;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -27,7 +29,8 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
+
             var response = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline");
             if (response != null)
             {
@@ -42,9 +45,8 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         public async Task<IActionResult> OnPostChangeStatus(string id, string currentStatus, int pageIndex)
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
-
             string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
+            var client = CreateAuthorizedClient();
 
             var response = await APIHelper.PutAsJson(client, $"airline/{id}/status", newStatus);
             if (response.IsSuccessStatusCode)
@@ -55,6 +57,19 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return BadRequest();
             }
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }

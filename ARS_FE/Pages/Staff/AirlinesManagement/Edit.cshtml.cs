@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -29,7 +30,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return NotFound();
             }
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
             var response = await APIHelper.GetAsJsonAsync<Airline>(client, $"airline/{id}");
             if (response != null)
@@ -50,7 +51,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 return Page();
             }
 
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
             var airlineName = Airline.Name;
 
@@ -65,6 +66,19 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
                 return Page();
             }
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }
