@@ -1,10 +1,11 @@
 ﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Airport;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AirportService;
 
-namespace AirlinesReservationSystem.Controllers
+namespace AirportReservationSystem.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -18,14 +19,14 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAirlines()
+        public async Task<IActionResult> GetAllAirport()
         {
             var response = await _airportService.GetAllAirport();
             return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddNewAirlines(CreateAirportRequest createAirportRequest)
+        public async Task<IActionResult> AddNewAirport(CreateAirportRequest createAirportRequest)
         {
            var results = await _airportService.AddAirport(createAirportRequest);
            if(results.Success != false)
@@ -42,6 +43,31 @@ namespace AirlinesReservationSystem.Controllers
                 Status = results.Success,
                 Message = results.Message
             });
+        }
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetAirportInfo(string id)
+        {
+            var response = await _airportService.GetDetailsAirportInfo(id);
+            return Ok(response);
+        }
+
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateAirport(string id, UpdateAirportRequest updateAirportRequest)
+        {
+            await _airportService.UpdateAirports(id, updateAirportRequest);
+            return Ok("Update airport successfully");
+        }
+
+        [HttpPut]
+        [Route("{id}/status")]
+        public async Task<IActionResult> ChangeAirportStatus(string id, [FromBody] string status)
+        {
+            await _airportService.ChangeAirportsStatus(id, status);
+            return Ok("Update Airport's status successfully");
         }
     }
 }

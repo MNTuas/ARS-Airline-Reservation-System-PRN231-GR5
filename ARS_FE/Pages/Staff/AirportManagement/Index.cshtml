@@ -1,47 +1,51 @@
 ﻿@page
-@model ARS_FE.Pages.Staff.AirlinesManagement.IndexModel
+@model ARS_FE.Pages.Staff.AirportManagement.IndexModel
 
 @{
     Layout = "_LayoutManage";
-    ViewData["Title"] = "Airlines";
+    ViewData["Title"] = "Airports";
 
-    var prevDisabled = !Model.Airline.HasPreviousPage ? "disabled" : "";
-    var nextDisabled = !Model.Airline.HasNextPage ? "disabled" : "";
+    var prevDisabled = !Model.Airport.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Airport.HasNextPage ? "disabled" : "";
 
-    var minPage = Math.Max(1, Model.Airline.PageIndex - 2);
-    var maxPage = Math.Min(minPage + 4, Model.Airline.TotalPages);
+    var minPage = Math.Max(1, Model.Airport.PageIndex - 2);
+    var maxPage = Math.Min(minPage + 4, Model.Airport.TotalPages);
 
-    var currentPageIndex = Model.Airline.PageIndex;
+    var currentPageIndex = Model.Airport.PageIndex;
 }
 
 <div class="container mt-4">
-    <h1 class="text-center mb-4">Airlines Management</h1>
+    <h1 class="text-center mb-4">Airports Management</h1>
 
     <div class="text-right mb-3">
-        <a asp-page="Create" class="btn btn-primary">Create Airlines</a>
+        <a asp-page="Create" class="btn btn-primary">Create Airport</a>
     </div>
 
     <table class="table table-hover table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Airline[0].Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Airport[0].Name)</th>
+                <th class="text-center">City</th>
+                <th class="text-center">Country</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
         <tbody>
-            @if (Model.Airline.Count == 0)
+            @if (Model.Airport.Count == 0)
             {
                 <tr>
-                    <td colspan="3" class="text-center">No airlines found.</td>
+                    <td colspan="3" class="text-center">No Airports found.</td>
                 </tr>
             }
             else
             {
-                @foreach (var item in Model.Airline)
+                @foreach (var item in Model.Airport)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>                        
+                        <td>@Html.DisplayFor(modelItem => item.City)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Country)</td>
                         <td class="text-center">
                             <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
                                 @item.Status
@@ -51,11 +55,7 @@
                             <div class="btn-group" role="group">
                                 <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm mr-2">Edit</a>
                                 <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm mr-2">Details</a>
-                                <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
-                                    <button type="submit" class="btn btn-sm @(item.Status == "Active" ? "btn-danger" : "btn-success")">
-                                        @(item.Status == "Active" ? "Deactivate" : "Activate")
-                                    </button>
-                                </form>
+                                
                             </div>
                         </td>
                     </tr>
@@ -72,14 +72,14 @@
                     <li class="page-item @prevDisabled">
                         <a class="page-link" aria-label="Previous"
                            asp-page="./Index"
-                           asp-route-pageIndex="@(Model.Airline.PageIndex - 1)">
+                           asp-route-pageIndex="@(Model.Airport.PageIndex - 1)">
                             <span aria-hidden="true"><i class="bi bi-arrow-left"></i> Previous</span>
                         </a>
                     </li>
 
                     @for (var i = minPage; i <= maxPage; i++)
                     {
-                        <li class="page-item @(Model.Airline.PageIndex == i ? "active" : "")">
+                        <li class="page-item @(Model.Airport.PageIndex == i ? "active" : "")">
                             <a class="page-link" asp-page="./Index"
                                asp-route-pageIndex="@i">@i</a>
                         </li>
@@ -88,7 +88,7 @@
                     <li class="page-item @nextDisabled">
                         <a class="page-link" aria-label="Next"
                            asp-page="./Index"
-                           asp-route-pageIndex="@(Model.Airline.PageIndex + 1)">
+                           asp-route-pageIndex="@(Model.Airport.PageIndex + 1)">
                             <span aria-hidden="true">Next <i class="bi bi-arrow-right"></i></span>
                         </a>
                     </li>
@@ -97,3 +97,4 @@
         </div>
     </div>
 </div>
+

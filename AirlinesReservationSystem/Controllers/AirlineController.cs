@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AIrlineServices;
 
@@ -16,6 +17,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetAllAirlines()
         {
             var response = await _airlineService.GetAllAirlines();
@@ -24,13 +26,15 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetAirlinesInfo(string id)
         {
-            var response = await _airlineService.GetAirlineInfo(id);
+            var response = await _airlineService.GetDetailsAirlineInfo(id);
             return Ok(response);
         }
 
         [HttpPost]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> AddNewAirlines([FromBody] string name)
         {
             await _airlineService.AddAirlines(name);
@@ -39,6 +43,7 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> UpdateAirlines(string id, [FromBody] string name)
         {
             await _airlineService.UpdateAirlines(id, name);
@@ -47,6 +52,7 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpPut]
         [Route("{id}/status")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> ChangeAirlinesStatus(string id, [FromBody] string status)
         {
             await _airlineService.ChangeAirlinesStatus(id, status);

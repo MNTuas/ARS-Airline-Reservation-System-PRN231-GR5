@@ -7,14 +7,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using Service.Services.AIrlineServices;
-using Newtonsoft.Json;
 using Service;
 using BusinessObjects.ResponseModels;
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authorization;
 
-namespace ARS_FE.Pages.Staff.AirlinesManagement
+namespace ARS_FE.Pages.Staff.AirportManagement
 {
     public class IndexModel : PageModel
     {
@@ -25,16 +21,15 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<AllAirlinesResponseModel> Airline { get; set; } = default!;
+        public PaginatedList<Airport> Airport { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
-            var client = CreateAuthorizedClient();
-
-            var response = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline");
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var response = await APIHelper.GetAsJsonAsync<List<Airport>>(client, "Airport");
             if (response != null)
             {
-                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response, pageIndex ?? 1, 6);
+                Airport = PaginatedList<Airport>.Create(response, pageIndex ?? 1, 6);
                 return Page();
             }
             else
@@ -45,10 +40,11 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         public async Task<IActionResult> OnPostChangeStatus(string id, string currentStatus, int pageIndex)
         {
-            string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
-            var client = CreateAuthorizedClient();
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var response = await APIHelper.PutAsJson(client, $"airline/{id}/status", newStatus);
+            string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
+
+            var response = await APIHelper.PutAsJson(client, $"Airport/{id}/status", newStatus);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage(new { pageIndex });
@@ -58,18 +54,6 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 return BadRequest();
             }
         }
-
-        private HttpClient CreateAuthorizedClient()
-        {
-            var client = _httpClientFactory.CreateClient("ApiClient");
-            var token = HttpContext.Session.GetString("JWToken");
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            return client;
-        }
     }
 }
+

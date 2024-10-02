@@ -7,12 +7,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Models;
 using DAO;
-using System.Text;
-using System.Text.Json;
-using System.Net.Http;
-using System.Net.Http.Headers;
+using BusinessObjects.RequestModels.Airport;
 
-namespace ARS_FE.Pages.Staff.AirlinesManagement
+namespace ARS_FE.Pages.Staff.AirportManagement
 {
     public class CreateModel : PageModel
     {
@@ -29,7 +26,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         }
 
         [BindProperty]
-        public string AirlineName { get; set; } = default!;
+        public CreateAirportRequest createAirportRequest { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -37,11 +34,16 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return Page();
             }
-            var client = CreateAuthorizedClient();
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var airlineName = AirlineName;
+            var n = new CreateAirportRequest
+            {
+                Name = createAirportRequest.Name,
+                City = createAirportRequest.City,
+                Country = createAirportRequest.Country,
+            };
 
-            var response = await APIHelper.PostAsJson(client, "airline", airlineName);
+            var response = await APIHelper.PostAsJson(client, "Airport", n);
 
             if (response.IsSuccessStatusCode)
             {
@@ -49,23 +51,11 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
                 return Page();
             }
 
         }
 
-        private HttpClient CreateAuthorizedClient()
-        {
-            var client = _httpClientFactory.CreateClient("ApiClient");
-            var token = HttpContext.Session.GetString("JWToken");
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            return client;
-        }
     }
 }

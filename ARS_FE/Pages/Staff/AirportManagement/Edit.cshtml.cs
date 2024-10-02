@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using System.Net.Http.Headers;
+using BusinessObjects.RequestModels.Airport;
 
-namespace ARS_FE.Pages.Staff.AirlinesManagement
+namespace ARS_FE.Pages.Staff.AirportManagement
 {
     public class EditModel : PageModel
     {
@@ -22,7 +22,8 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         }
 
         [BindProperty]
-        public Airline Airline { get; set; } = default!;
+        public UpdateAirportRequest updateAirportRequest { get; set; } = default!;
+        public Airport airport { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -30,12 +31,12 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return NotFound();
             }
-            var client = CreateAuthorizedClient();
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var response = await APIHelper.GetAsJsonAsync<Airline>(client, $"airline/{id}");
+            var response = await APIHelper.GetAsJsonAsync<Airport>(client, $"Airport/{id}");
             if (response != null)
             {
-                Airline = response;
+                airport = response;
                 return Page();
             }
             else
@@ -44,18 +45,23 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             }
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(UpdateAirportRequest updateAirportRequest)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var client = CreateAuthorizedClient();
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var airlineName = Airline.Name;
+            var n = new UpdateAirportRequest
+            {
+                Name = updateAirportRequest.Name,
+                City = updateAirportRequest.City,
+                Country = updateAirportRequest.Country,
+            };
 
-            var response = await APIHelper.PutAsJson(client, $"airline/{Airline.Id}", airlineName);
+            var response = await APIHelper.PutAsJson(client, $"airport/{airport.Id}", n);
 
             if (response.IsSuccessStatusCode)
             {
@@ -66,19 +72,6 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
                 return Page();
             }
-        }
-
-        private HttpClient CreateAuthorizedClient()
-        {
-            var client = _httpClientFactory.CreateClient("ApiClient");
-            var token = HttpContext.Session.GetString("JWToken");
-
-            if (!string.IsNullOrEmpty(token))
-            {
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-
-            return client;
         }
     }
 }
