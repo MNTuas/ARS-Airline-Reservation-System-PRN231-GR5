@@ -9,6 +9,7 @@ using BusinessObjects.Models;
 using DAO;
 using Service;
 using BusinessObjects.ResponseModels;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
@@ -21,15 +22,15 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<Airport> Airport { get; set; } = default!;
+        public PaginatedList<AirportResponseModel> Airport { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
-            var response = await APIHelper.GetAsJsonAsync<List<Airport>>(client, "Airport");
+            var client = CreateAuthorizedClient();
+            var response = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport");
             if (response != null)
             {
-                Airport = PaginatedList<Airport>.Create(response, pageIndex ?? 1, 6);
+                Airport = PaginatedList<AirportResponseModel>.Create(response, pageIndex ?? 1, 6);
                 return Page();
             }
             else
@@ -40,7 +41,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
 
         public async Task<IActionResult> OnPostChangeStatus(string id, string currentStatus, int pageIndex)
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
             string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
 
@@ -53,6 +54,19 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             {
                 return BadRequest();
             }
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }
