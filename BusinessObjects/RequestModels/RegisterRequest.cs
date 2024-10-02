@@ -20,8 +20,6 @@ namespace BusinessObjects.RequestModels
         [Required]
         public string Avatar { get; set; }
         [Required]
-        public string RankId { get; set; }
-        [Required]
         [EmailAddress]
         public string Email { get; set; }
         [Required]

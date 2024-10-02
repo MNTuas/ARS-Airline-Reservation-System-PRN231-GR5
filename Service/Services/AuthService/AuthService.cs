@@ -13,6 +13,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace Service.Services.AuthService
 {
@@ -66,15 +67,6 @@ namespace Service.Services.AuthService
                         Message = "Avatar is already used!!!",
                     };
                 }
-                var existingRank = await _rankRepository.GetSingle(x => x.Id == request.RankId);
-                if (existingRank == null)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Rank is not found!!!",
-                    };
-                }
                 var user = new User()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -85,7 +77,7 @@ namespace Service.Services.AuthService
                     Avatar = request.Avatar,
                     Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Point = 0,
-                    RankId = request.RankId,
+                    RankId = "default-rank-id",
                     Role = UserRolesEnums.User.ToString(),
                     Status = UserStatusEnums.Active.ToString()
                 };
