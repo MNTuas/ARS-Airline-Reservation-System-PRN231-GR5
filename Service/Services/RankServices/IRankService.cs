@@ -12,7 +12,7 @@ namespace Service.Services.RankServices
     {
         Task<List<Rank>> GetAllRank();
         Task<bool> AddRank(AddRankRequest rank);
-        Task<bool> RemoveRank(int id);
-        Task<bool> UpdateRank(int id,UpdateRankRequest rank);
+        Task<bool> RemoveRank(Guid id);
+        Task<bool> UpdateRank(Guid id,UpdateRankRequest rank);
     }
 }

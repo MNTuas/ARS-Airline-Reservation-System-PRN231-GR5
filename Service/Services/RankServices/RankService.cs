@@ -34,22 +34,27 @@ namespace Service.Services.RankServices
             return result;
         }
 
-        public Task<bool> RemoveRank(int id)
+        public Task<bool> RemoveRank(string id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<bool> UpdateRank(int id,UpdateRankRequest rank)
+        public Task<bool> RemoveRank(Guid id)
         {
-            var rankExist = _rankRepository.GetByID(id).Result;
-            if (rankExist == null)
-            {
-                return false;
-            }
-            rankExist.Discount = rank.Discount;
-            rankExist.Description = rank.Description;
-            rankExist.Type = rank.Type;
-            await _rankRepository.Update(rankExist);
+            throw new NotImplementedException();
+        }
+
+        public async Task<bool> UpdateRank(Guid id,UpdateRankRequest rank)
+        {
+            //var rankExist = _rankRepository.GetByID(id).Result;
+            //if (rankExist == null)
+            //{
+            //    return false;
+            //}
+            //rankExist.Discount = rank.Discount;
+            //rankExist.Description = rank.Description;
+            //rankExist.Type = rank.Type;
+            //await _rankRepository.Update(rankExist);
             return true;
         }
     }

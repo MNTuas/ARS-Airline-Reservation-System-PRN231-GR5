@@ -12,6 +12,6 @@ namespace BusinessObjects.RequestModels.Rank
 
         public string? Description { get; set; }
 
-        public double? Discount { get; set; }
+        public decimal? Discount { get; set; }
     }
 }
