@@ -10,6 +10,7 @@ using DAO;
 using System.Text;
 using System.Text.Json;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -36,7 +37,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return Page();
             }
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
             var airlineName = AirlineName;
 
@@ -54,5 +55,17 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         }
 
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
     }
 }

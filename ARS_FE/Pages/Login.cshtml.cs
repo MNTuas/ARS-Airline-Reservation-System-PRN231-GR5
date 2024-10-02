@@ -4,6 +4,7 @@ using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using Service.Enums;
 using Service.Services.AuthService;
 using System.Net.Http;
 
@@ -31,7 +32,11 @@ namespace ARS_FE.Pages
             {
                 var result = await response.Content.ReadFromJsonAsync<Result<User>>();
                 HttpContext.Session.SetString("JWToken", result.Message);
-                return RedirectToPage("/TestingAfterLoginPage");
+                if (result.Data.Role.Equals(UserRolesEnums.Staff.ToString()))
+                {
+                    return RedirectToPage("/Staff/Index");
+                }
+                return RedirectToPage("/Index");
             }
             else
             {
