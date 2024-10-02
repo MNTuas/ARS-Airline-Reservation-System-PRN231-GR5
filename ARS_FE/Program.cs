@@ -4,10 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.RankRepositories;
+using Repository.Repositories.AirporRepositories;
 using Service.Services.AIrlineServices;
 using Service.Services.AuthService;
 using System.Net.Http.Headers;
 using System.Text;
+using Service.Services.AirportService;
 
 var builder = WebApplication.CreateBuilder(args);
 
