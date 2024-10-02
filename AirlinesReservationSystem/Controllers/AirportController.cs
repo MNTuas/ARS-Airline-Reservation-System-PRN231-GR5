@@ -19,6 +19,7 @@ namespace AirportReservationSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetAllAirport()
         {
             var response = await _airportService.GetAllAirport();

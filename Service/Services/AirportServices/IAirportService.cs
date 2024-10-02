@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using BusinessObjects.RequestModels;
+using BusinessObjects.ResponseModels;
 using FFilms.Application.Shared.Response;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Service.Services.AirportService
 {
     public interface IAirportService
     {
-        Task<List<Airport>> GetAllAirport();
+        Task<List<AirportResponseModel>> GetAllAirport();
         Task<Result<Airport>> AddAirport(CreateAirportRequest createAirportRequest);
     }
 }
