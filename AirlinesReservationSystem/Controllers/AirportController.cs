@@ -1,7 +1,5 @@
-﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿
+using BusinessObjects.RequestModels.Airport;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AirportService;
 
@@ -18,15 +16,14 @@ namespace AirportReservationSystem.Controllers
             _airportService = airportService;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Staff")]
+        [HttpGet("GetAll_Airport")]
         public async Task<IActionResult> GetAllAirport()
         {
             var response = await _airportService.GetAllAirport();
             return Ok(response);
         }
 
-        [HttpPost]
+        [HttpPost("AddNew_Airport")]
         public async Task<IActionResult> AddNewAirport(CreateAirportRequest createAirportRequest)
         {
             var results = await _airportService.AddAirport(createAirportRequest);
@@ -34,41 +31,41 @@ namespace AirportReservationSystem.Controllers
             {
                 return Ok(new
                 {
-                    Status = results.Success,
-                    Message = results.Message,
-                    Data = results.Data
+                    results.Success,
+                    results.Message,
+                    results.Data
                 });
             }
             return BadRequest(new
             {
-                Status = results.Success,
-                Message = results.Message
+                results.Success,
+                results.Message
             });
         }
 
-        //[HttpGet]
-        //[Route("{id}")]
-        //public async Task<IActionResult> GetAirportInfo(string id)
-        //{
-        //    var response = await _airportService.GetDetailsAirportInfo(id);
-        //    return Ok(response);
-        //}
+        [HttpGet]
+        [Route("GetAirportById/{id}")]
+        public async Task<IActionResult> GetAirportInfo(string id)
+        {
+            var response = await _airportService.GetDetailsAirportInfo(id);
+            return Ok(response);
+        }
 
 
-        //[HttpPut]
-        //[Route("{id}")]
-        //public async Task<IActionResult> UpdateAirport(string id, UpdateAirportRequest updateAirportRequest)
-        //{
-        //    await _airportService.UpdateAirports(id, updateAirportRequest);
-        //    return Ok("Update airport successfully");
-        //}
+        [HttpPut]
+        [Route("Update_Airport/{id}")]
+        public async Task<IActionResult> UpdateAirport(string id, UpdateAirportRequest updateAirportRequest)
+        {
+            await _airportService.UpdateAirports(id, updateAirportRequest);
+            return Ok("Update airport successfully");
+        }
 
-        //[HttpPut]
-        //[Route("{id}/status")]
-        //public async Task<IActionResult> ChangeAirportStatus(string id, [FromBody] string status)
-        //{
-        //    await _airportService.ChangeAirportsStatus(id, status);
-        //    return Ok("Update Airport's status successfully");
-        //}
+        [HttpPut]
+        [Route("ChangeStatusAirport/{id}")]
+        public async Task<IActionResult> ChangeAirportStatus(string id, [FromBody] string status)
+        {
+            await _airportService.ChangeAirportsStatus(id, status);
+            return Ok("Update Airport's status successfully");
+        }
     }
 }
