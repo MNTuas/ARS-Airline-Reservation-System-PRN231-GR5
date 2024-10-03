@@ -34,11 +34,16 @@ namespace ARS_FE.Pages
             if (response.IsSuccessStatusCode)
             {
                 var result = await response.Content.ReadFromJsonAsync<Result<string>>();
-                HttpContext.Session.SetString("JWToken", result.Data);
-                //if (result.Data.Role.Equals(UserRolesEnums.Staff.ToString()))
-                //{
-                //    return RedirectToPage("/Staff/Index");
-                //}
+                var token = result.Data;
+
+                var userId = DecodeToken.DecodeTokens(token, "UserId");
+                var role = DecodeToken.DecodeTokens(token, ClaimTypes.Role);
+                HttpContext.Session.SetString("JWToken", token);
+                HttpContext.Session.SetString("UserId", userId);
+                if (role.Equals(UserRolesEnums.Staff.ToString()))
+                {
+                    return RedirectToPage("/Staff/Index");
+                }
                 return RedirectToPage("/Index");
             }
             else
