@@ -133,6 +133,7 @@ namespace Service.Services.AuthService
                     {
                         new Claim(ClaimTypes.Role, user.Role),
                         new Claim("Email", user.Email),
+                        new Claim("UserId", user.Id),
                     };
                 var token = GenerateJwtToken(authClaims);
                 return new Result<string>
