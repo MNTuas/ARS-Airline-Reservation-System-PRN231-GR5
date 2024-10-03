@@ -4,10 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.RankRepositories;
+using Repository.Repositories.AirporRepositories;
 using Service.Services.AIrlineServices;
 using Service.Services.AuthService;
 using System.Net.Http.Headers;
 using System.Text;
+using Service.Services.AirportService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,12 +40,14 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7168/api/");
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
+
 builder.Services.AddScoped<IRankRepository, RankRepository>();
 
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();

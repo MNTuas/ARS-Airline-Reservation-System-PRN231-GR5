@@ -7,7 +7,7 @@ public partial class FlightClass
 {
     public string Id { get; set; } = null!;
 
-    public string FlightId { get; set; } = null!;
+    public string? FlightId { get; set; }
 
     public string Class { get; set; } = null!;
 
@@ -17,5 +17,5 @@ public partial class FlightClass
 
     public virtual ICollection<BookingInformation> BookingInformations { get; set; } = new List<BookingInformation>();
 
-    public virtual Flight Flight { get; set; } = null!;
+    public virtual Flight? Flight { get; set; }
 }
