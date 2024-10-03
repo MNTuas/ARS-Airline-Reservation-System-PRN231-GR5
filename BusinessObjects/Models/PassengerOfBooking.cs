@@ -7,11 +7,11 @@ public partial class PassengerOfBooking
 {
     public string Id { get; set; } = null!;
 
-    public string PassengerId { get; set; } = null!;
+    public string? PassengerId { get; set; }
 
-    public string BookingId { get; set; } = null!;
+    public string? BookingId { get; set; }
 
-    public virtual BookingInformation Booking { get; set; } = null!;
+    public virtual BookingInformation? Booking { get; set; }
 
-    public virtual Passenger Passenger { get; set; } = null!;
+    public virtual Passenger? Passenger { get; set; }
 }

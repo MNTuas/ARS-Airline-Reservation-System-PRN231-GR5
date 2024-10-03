@@ -13,9 +13,11 @@ public partial class Airplane
 
     public int AvailableSeat { get; set; }
 
-    public string AirlinesId { get; set; } = null!;
+    public string? AirlinesId { get; set; }
 
-    public virtual Airline Airlines { get; set; } = null!;
+    public string? Status { get; set; }
+
+    public virtual Airline? Airlines { get; set; }
 
     public virtual ICollection<Flight> Flights { get; set; } = new List<Flight>();
 }
