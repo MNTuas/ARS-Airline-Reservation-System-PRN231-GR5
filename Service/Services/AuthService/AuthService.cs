@@ -20,12 +20,10 @@ namespace Service.Services.AuthService
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
-        private readonly IRankRepository _rankRepository;
         private readonly IConfiguration _configuration;
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration, IRankRepository rankRepository)
+        public AuthService(IAuthRepository authRepository, IConfiguration configuration)
         {
             _authRepository = authRepository;
-            _rankRepository = rankRepository;
             _configuration = configuration;
         }
         public async Task<Result<User>> RegisterAsync(RegisterRequest request)
@@ -77,8 +75,8 @@ namespace Service.Services.AuthService
                     Avatar = request.Avatar,
                     Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Point = 0,
-                    RankId = "default-rank-id",
-                    Role = UserRolesEnums.User.ToString(),
+                    RankId = "7C52BA51-68CE-4B72-9950-09AA8FEE2E27",
+                    Role = UserRolesEnums.Staff.ToString(),
                     Status = UserStatusEnums.Active.ToString()
                 };
                 await _authRepository.Insert(user);
