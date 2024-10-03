@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Repositories.AirlineRepositories;
@@ -39,12 +40,14 @@ builder.Services.AddAuthentication(options =>
 });
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7168/api/");
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
+
 builder.Services.AddScoped<IRankRepository, RankRepository>();
 
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
@@ -52,6 +55,13 @@ builder.Services.AddScoped<IAirlineService, AirlineService>();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Login";
+    });
+
 
 var app = builder.Build();
 

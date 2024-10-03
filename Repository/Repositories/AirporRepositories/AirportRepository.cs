@@ -22,6 +22,6 @@ namespace Repository.Repositories.AirporRepositories
             return await GetSingle(a => a.Id.Equals(id));
         }
 
-       
+
     }
 }

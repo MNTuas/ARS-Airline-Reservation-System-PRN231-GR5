@@ -1,11 +1,12 @@
 ﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Auth;
 using FFilms.Application.Shared.Response;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.RankRepositories;
 using Service.Enums;
+using Service.Helper;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -40,82 +41,46 @@ namespace Service.Services.AuthService
                         Message = "Email is already used!!!",
                     };
                 }
-                if (request.Password != request.ConfirmPassword)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Confirm password does not match with password!!!",
-                    };
-                }
-                var existingUserPhoneNumber = await _authRepository.GetSingle(x => x.PhoneNumber == request.PhoneNumber);
-                if (existingUserPhoneNumber != null)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Phone number is already used!!!",
-                    };
-                }
-                var existingUserAvatar = await _authRepository.GetSingle(x => x.Avatar == request.Avatar);
-                if (existingUserAvatar != null)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Avatar is already used!!!",
-                    };
-                }
-                var existingRank = await _rankRepository.GetSingle(x => x.Id == request.RankId);
-                if (existingRank == null)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Rank is not found!!!",
-                    };
-                }
+
                 var user = new User()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = request.Name,
                     Email = request.Email,
-                    PhoneNumber = request.PhoneNumber,
-                    Address = request.Address,
-                    Avatar = request.Avatar,
                     Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Point = 0,
-                    RankId = request.RankId,
+                    RankId = "998D80AE-944B-4D8D-BBF7-AF625FEE33A1",
                     Role = UserRolesEnums.User.ToString(),
-                    Status = UserStatusEnums.Active.ToString()
+                    Status = UserStatusEnums.Active.ToString(),
                 };
+
                 await _authRepository.Insert(user);
 
                 return new Result<User>
                 {
                     Success = true,
-                    Message = "Create successful!",
+                    Message = "Register successful!",
                     Data = user
                 };
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return new Result<User>
                 {
                     Success = false,
-                    Message = "Something wrong!!!",
+                    Message = ex.Message,
                 };
             }
         }
 
-        public async Task<Result<User>> LoginAsync(LoginRequest request)
+        public async Task<Result<string>> LoginAsync(LoginRequest request)
         {
             try
             {
                 var user = await _authRepository.GetSingle(x => x.Email == request.Email);
                 if (user == null)
                 {
-                    return new Result<User>
+                    return new Result<string>
                     {
                         Success = false,
                         Message = "Wrong email!!!",
@@ -123,7 +88,7 @@ namespace Service.Services.AuthService
                 }
                 if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
                 {
-                    return new Result<User>
+                    return new Result<string>
                     {
                         Success = false,
                         Message = "Wrong password!!!",
@@ -131,20 +96,23 @@ namespace Service.Services.AuthService
                 }
                 var authClaims = new List<Claim>
                     {
-                        new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role),
-                        new Claim(ClaimTypes.Email, user.Email),
+                        new Claim(MySetting.CLAIM_USERID, user.Id),
+                        new Claim(ClaimTypes.Role, user.Role),
+                        new Claim("Email", user.Email),
+                        new Claim("UserId", user.Id),
                     };
                 var token = GenerateJwtToken(authClaims);
-                return new Result<User>
+
+                return new Result<string>
                 {
                     Success = true,
-                    Message = new JwtSecurityTokenHandler().WriteToken(token),
-                    Data = user
+                    Message = "Login successfully",
+                    Data = new JwtSecurityTokenHandler().WriteToken(token)
                 };
             }
             catch (Exception ex)
             {
-                return new Result<User>
+                return new Result<string>
                 {
                     Success = false,
                     Message = $"Something went wrong: {ex.Message}",
