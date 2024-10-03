@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using BusinessObjects.RequestModels;
+using BusinessObjects.ResponseModels;
 using FFilms.Application.Shared.Response;
 using Repository.Repositories.AirporRepositories;
 using System;
@@ -14,7 +15,7 @@ namespace Service.Services.AirportService
     {
         private readonly IAirportRepository _airportRepository;
 
-        public AirportService(IAirportRepository airportRepository) 
+        public AirportService(IAirportRepository airportRepository)
         {
             _airportRepository = airportRepository;
         }
@@ -37,7 +38,7 @@ namespace Service.Services.AirportService
                 {
                     Success = true,
                     Message = "Create successful!",
-                    Data = newAirport 
+                    Data = newAirport
                 };
 
             }
@@ -46,14 +47,22 @@ namespace Service.Services.AirportService
                 return new Result<Airport>
                 {
                     Success = false,
-                    Message = "Something wrong!!!",                  
+                    Message = "Something wrong!!!",
                 };
             }
         }
 
-        public async Task<List<Airport>> GetAllAirport()
+        public async Task<List<AirportResponseModel>> GetAllAirport()
         {
-            return await _airportRepository.GetAllAirport();
+            var result = await _airportRepository.GetAllAirport();
+            return result.Select(r => new AirportResponseModel
+            {
+                Id= r.Id,
+                Name = r.Name,
+                City = r.City,
+                Country = r.Country,
+                Status = r.Status,
+            }).ToList();
         }
     }
 }

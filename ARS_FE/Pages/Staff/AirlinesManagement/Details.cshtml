@@ -2,24 +2,87 @@
 @model ARS_FE.Pages.Staff.AirlinesManagement.DetailsModel
 
 @{
-    ViewData["Title"] = "Details";
+    Layout = "_LayoutManage";
+    ViewData["Title"] = "Airline Details";
 }
 
-<h1>Details</h1>
+<div class="container mt-4">
+    <h1 class="text-center">Airline Details</h1>
 
-<div>
-    <h4>Airline</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Airline.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Airline.Name)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Airline.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>@Html.DisplayFor(model => model.Airline.Name)</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Airline Name</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Airline.Name)</dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Airline.Status)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <h2>Airplanes</h2>
+    @if (Model.Airplanes.Count > 0)
+    {
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Code</th>
+                    <th>Type</th>
+                    <th>Available Seats</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var airplane in Model.Airplanes)
+                {
+                    <tr>
+                        <td>@airplane.Code</td>
+                        <td>@airplane.Type</td>
+                        <td>@airplane.AvailableSeat</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <nav aria-label="Airplane pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item @(Model.Airplanes.HasPreviousPage ? "" : "disabled")">
+                    <a class="page-link" asp-page="./Details"
+                       asp-route-id="@Model.Airline.Id"
+                       asp-route-pageIndex="@(Model.Airplanes.PageIndex - 1)">
+                        Previous
+                    </a>
+                </li>
+
+                @for (var i = 1; i <= Model.Airplanes.TotalPages; i++)
+                {
+                    <li class="page-item @(Model.Airplanes.PageIndex == i ? "active" : "")">
+                        <a class="page-link" asp-page="./Details"
+                           asp-route-id="@Model.Airline.Id"
+                           asp-route-pageIndex="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @(Model.Airplanes.HasNextPage ? "" : "disabled")">
+                    <a class="page-link" asp-page="./Details"
+                       asp-route-id="@Model.Airline.Id"
+                       asp-route-pageIndex="@(Model.Airplanes.PageIndex + 1)">
+                        Next
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+    else
+    {
+        <p>No airplanes available for this airline.</p>
+    }
+
+    <div>
+        <a asp-page="./Edit" asp-route-id="@Model.Airline.Id" class="btn btn-warning">Edit Airline</a>
+        <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </div>

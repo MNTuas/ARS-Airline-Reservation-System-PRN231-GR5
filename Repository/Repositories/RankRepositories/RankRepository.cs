@@ -19,5 +19,10 @@ namespace Repository.Repositories.RankRepositories
             return listRank.ToList();
         }
 
+        public async Task<Rank> GetRank(string id)
+        {
+            var rank = await GetSingle(r => r.Id.Equals(id));
+            return rank;
+        }
     }
 }

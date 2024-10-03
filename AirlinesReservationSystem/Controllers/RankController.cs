@@ -33,7 +33,7 @@ namespace AirlinesReservationSystem.Controllers
         }
         [HttpPut]
         [Route("update-rank/{id}")]
-        public async Task<IActionResult> UpdateRank([FromForm] Guid id,[FromBody] UpdateRankRequest updateRankRequest)
+        public async Task<IActionResult> UpdateRank(string id,[FromBody] UpdateRankRequest updateRankRequest)
         {
             var result = await _rankService.UpdateRank(id, updateRankRequest);
             if (result)

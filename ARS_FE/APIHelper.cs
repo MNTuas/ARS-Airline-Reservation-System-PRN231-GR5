@@ -6,8 +6,6 @@ namespace ARS_FE
 {
     public static class APIHelper
     {
-        public static string Url = "https://localhost:7168/api/";
-
         public static async Task<HttpResponseMessage> PostAsJson<T>(this HttpClient httpClient, string url, T data)
         {
             var dataAsString = System.Text.Json.JsonSerializer.Serialize(data);

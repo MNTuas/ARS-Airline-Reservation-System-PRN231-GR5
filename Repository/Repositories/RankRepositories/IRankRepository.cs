@@ -11,5 +11,7 @@ namespace Repository.Repositories.RankRepositories
     public interface IRankRepository : IGenericRepository<Rank>
     {
         Task<List<Rank>> GetAllRankAsync();
+        Task<Rank> GetRank(string id);
+
     }
 }
