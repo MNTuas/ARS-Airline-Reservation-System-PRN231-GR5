@@ -1,5 +1,6 @@
 ﻿
 using BusinessObjects.RequestModels.Airport;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AirportService;
 
@@ -17,6 +18,7 @@ namespace AirportReservationSystem.Controllers
         }
 
         [HttpGet("GetAll_Airport")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetAllAirport()
         {
             var response = await _airportService.GetAllAirport();
@@ -24,6 +26,7 @@ namespace AirportReservationSystem.Controllers
         }
 
         [HttpPost("AddNew_Airport")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> AddNewAirport(CreateAirportRequest createAirportRequest)
         {
             var results = await _airportService.AddAirport(createAirportRequest);
@@ -45,15 +48,16 @@ namespace AirportReservationSystem.Controllers
 
         [HttpGet]
         [Route("GetAirportById/{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetAirportInfo(string id)
         {
             var response = await _airportService.GetDetailsAirportInfo(id);
             return Ok(response);
         }
 
-
         [HttpPut]
         [Route("Update_Airport/{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> UpdateAirport(string id, UpdateAirportRequest updateAirportRequest)
         {
             await _airportService.UpdateAirports(id, updateAirportRequest);
@@ -62,6 +66,7 @@ namespace AirportReservationSystem.Controllers
 
         [HttpPut]
         [Route("ChangeStatusAirport/{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> ChangeAirportStatus(string id, [FromBody] string status)
         {
             await _airportService.ChangeAirportsStatus(id, status);
