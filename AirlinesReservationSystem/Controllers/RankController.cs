@@ -20,6 +20,16 @@ namespace AirlinesReservationSystem.Controllers
             var listRank = await _rankService.GetAllRank();
             return Ok(listRank.ToList());
         }
+        [HttpGet]
+        [Route("get-rank/{id}")]
+        public async Task<IActionResult> GetRank(string id)
+        {
+            var rank = await _rankService.GetRank(id);
+            if (rank == null) {
+                return BadRequest();
+            }
+            return Ok(rank);
+        }
         [HttpPost]
         [Route("add-rank")]
         public async Task<IActionResult> AddRank([FromBody]AddRankRequest addRankRequest)

@@ -2,6 +2,7 @@
 @model ARS_FE.Pages.UserPage.RankManagement.EditModel
 
 @{
+    Layout = "_LayoutManage";
     ViewData["Title"] = "Edit";
 }
 
@@ -13,21 +14,21 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Rank.Id" />
+            <input type="hidden" asp-for="updateRankRequest.Id" />
             <div class="form-group">
-                <label asp-for="Rank.Type" class="control-label"></label>
-                <input asp-for="Rank.Type" class="form-control" />
-                <span asp-validation-for="Rank.Type" class="text-danger"></span>
+                <label asp-for="updateRankRequest.Type" class="control-label"></label>
+                <input asp-for="updateRankRequest.Type" class="form-control" />
+                <span asp-validation-for="updateRankRequest.Type" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Rank.Description" class="control-label"></label>
-                <input asp-for="Rank.Description" class="form-control" />
-                <span asp-validation-for="Rank.Description" class="text-danger"></span>
+                <label asp-for="updateRankRequest.Description" class="control-label"></label>
+                <input asp-for="updateRankRequest.Description" class="form-control" />
+                <span asp-validation-for="updateRankRequest.Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Rank.Discount" class="control-label"></label>
-                <input asp-for="Rank.Discount" class="form-control" />
-                <span asp-validation-for="Rank.Discount" class="text-danger"></span>
+                <label asp-for="updateRankRequest.Discount" class="control-label"></label>
+                <input asp-for="updateRankRequest.Discount" class="form-control" />
+                <span asp-validation-for="updateRankRequest.Discount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

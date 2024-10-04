@@ -8,29 +8,27 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 using Service;
-using BusinessObjects.ResponseModels;
 using System.Net.Http.Headers;
 
-namespace ARS_FE.Pages.Staff.AirportManagement
+namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
-
         public IndexModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<AirportResponseModel> Airport { get; set; } = default!;
+        public PaginatedList<Airplane> Airplane { get;set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
+            var response = await APIHelper.GetAsJsonAsync<List<Airplane>>(client, "airplane/get-all-airplane");
             if (response != null)
             {
-                Airport = PaginatedList<AirportResponseModel>.Create(response, pageIndex ?? 1, 6);
+                Airplane = PaginatedList<Airplane>.Create(response, pageIndex ?? 1, 6);
                 return Page();
             }
             else
@@ -38,24 +36,6 @@ namespace ARS_FE.Pages.Staff.AirportManagement
                 return BadRequest();
             }
         }
-
-        public async Task<IActionResult> OnPostChangeStatus(string id, string currentStatus, int pageIndex)
-        {
-            var client = CreateAuthorizedClient();
-
-            string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
-
-            var response = await APIHelper.PutAsJson(client, $"Airport/{id}/status", newStatus);
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToPage(new { pageIndex });
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");
@@ -70,4 +50,3 @@ namespace ARS_FE.Pages.Staff.AirportManagement
         }
     }
 }
-

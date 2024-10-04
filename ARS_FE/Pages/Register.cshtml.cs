@@ -1,4 +1,5 @@
 using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.Services.AuthService;
@@ -15,7 +16,7 @@ namespace ARS_FE.Pages
             _authService = authService;
         }
         [BindProperty]
-        public RegisterRequest Input { get; set; }
+        public RegisterRequest request { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -23,10 +24,10 @@ namespace ARS_FE.Pages
             {
                 return Page();
             }
-            var result = await _authService.RegisterAsync(Input);
+            var result = await _authService.RegisterAsync(request);
             if (result.Success)
             {
-                return RedirectToPage("/Login");
+                return RedirectToPage("/Index");
             }
 
             ModelState.AddModelError(string.Empty, result.Message);

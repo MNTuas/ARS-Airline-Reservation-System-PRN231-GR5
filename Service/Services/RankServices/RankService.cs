@@ -34,7 +34,11 @@ namespace Service.Services.RankServices
             return result;
         }
 
-
+        public async Task<Rank> GetRank(string id)
+        {
+            var rankExist = await _rankRepository.GetRank(id);
+            return rankExist;
+        }
 
         public Task<bool> RemoveRank(Guid id)
         {
@@ -43,7 +47,7 @@ namespace Service.Services.RankServices
 
         public async Task<bool> UpdateRank(string id, UpdateRankRequest rank)
         {
-            var rankExist = _rankRepository.GetRank(id).Result;
+            var rankExist = await _rankRepository.GetRank(id);
             if (rankExist == null)
             {
                 return false;

@@ -27,7 +27,7 @@ namespace ARS_FE.Pages.UserPage.RankManagement
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<Rank>>(client, "rank");
+            var response = await APIHelper.GetAsJsonAsync<List<Rank>>(client, "rank/all-rank");
             if (response != null)
             {
                 Rank = PaginatedList<Rank>.Create(response, pageIndex ?? 1, 6);

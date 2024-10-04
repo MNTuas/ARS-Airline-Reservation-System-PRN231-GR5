@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.RequestModels.Rank;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.UserPage.RankManagement
 {
@@ -26,7 +29,7 @@ namespace ARS_FE.Pages.UserPage.RankManagement
         }
 
         [BindProperty]
-        public Rank Rank { get; set; } = default!;
+        public AddRankRequest Rank { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -35,9 +38,38 @@ namespace ARS_FE.Pages.UserPage.RankManagement
             {
                 return Page();
             }
+            var client = CreateAuthorizedClient();
 
+            var n = new AddRankRequest
+            {
+                Type = Rank.Type,
+                Description = Rank.Description,
+                Discount = Rank.Discount,
+            };
 
-            return RedirectToPage("./Index");
+            var response = await APIHelper.PostAsJson(client, "rank/add-rank", n);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
+                return Page();
+            }
+        }
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }

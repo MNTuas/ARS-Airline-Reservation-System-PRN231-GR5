@@ -15,5 +15,6 @@ namespace Service.Services.RankServices
         Task<bool> AddRank(AddRankRequest rank);
         Task<bool> RemoveRank(Guid id);
         Task<bool> UpdateRank(string id,UpdateRankRequest rank);
+        Task<Rank> GetRank(string id);
     }
 }

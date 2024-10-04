@@ -8,11 +8,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using System.Net.Http.Headers;
-using System.Net.Http;
+using BusinessObjects.RequestModels.Airplane;
 using BusinessObjects.RequestModels.Rank;
+using System.Net.Http.Headers;
 
-namespace ARS_FE.Pages.UserPage.RankManagement
+namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
     public class EditModel : PageModel
     {
@@ -24,9 +24,8 @@ namespace ARS_FE.Pages.UserPage.RankManagement
         }
         [BindProperty]
         public string Id { get; set; }
-
         [BindProperty]
-        public UpdateRankRequest updateRankRequest { get; set; } = default!;
+        public UpdateAirplaneRequest UpdateAirplane { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -35,15 +34,19 @@ namespace ARS_FE.Pages.UserPage.RankManagement
                 return NotFound();
             }
             var client = CreateAuthorizedClient();
-           
 
-            var response = await APIHelper.GetAsJsonAsync<Rank>(client, $"rank/get-rank/{id}");
+
+            var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
             if (response != null)
             {
-                updateRankRequest = new UpdateRankRequest {
+                UpdateAirplane = new UpdateAirplaneRequest
+                {
                     Type = response.Type,
-                    Discount = response.Discount,
-                    Description = response.Description,
+                    AirlinesId = response.AirlinesId,
+                    AvailableSeat = response.AvailableSeat,
+                    Code = response.Code,
+                    Status = response.Status,
+                    
                 };
                 return Page();
             }
@@ -64,8 +67,8 @@ namespace ARS_FE.Pages.UserPage.RankManagement
 
             var client = CreateAuthorizedClient();
 
-          
-            var response = await APIHelper.PutAsJson(client, $"rank/update-rank/{Id}", updateRankRequest);
+
+            var response = await APIHelper.PutAsJson(client, $"airplane/update-airplane/{Id}", UpdateAirplane);
 
             if (response.IsSuccessStatusCode)
             {
@@ -78,6 +81,7 @@ namespace ARS_FE.Pages.UserPage.RankManagement
             }
         }
 
+       
         private bool RankExists(string id)
         {
             return true;
