@@ -5,15 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessObjects.RequestModels
+namespace BusinessObjects.RequestModels.Auth
 {
     public class LoginRequest
     {
         [Required]
         [EmailAddress]
         public string Email { get; set; }
+        
         [Required]
-        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }

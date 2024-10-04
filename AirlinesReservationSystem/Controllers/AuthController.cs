@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AuthService;

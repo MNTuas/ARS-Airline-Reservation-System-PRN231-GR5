@@ -27,7 +27,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport");
+            var response = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
             if (response != null)
             {
                 Airport = PaginatedList<AirportResponseModel>.Create(response, pageIndex ?? 1, 6);
