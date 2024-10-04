@@ -14,7 +14,9 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="updateRankRequest.Id" />
+            <label asp-for="updateRankRequest.Id" class="control-label"></label>
+            <input asp-for="updateRankRequest.Id" class="form-control" />
+            <span asp-validation-for="updateRankRequest.Id" class="text-danger"></span>
             <div class="form-group">
                 <label asp-for="updateRankRequest.Type" class="control-label"></label>
                 <input asp-for="updateRankRequest.Type" class="form-control" />

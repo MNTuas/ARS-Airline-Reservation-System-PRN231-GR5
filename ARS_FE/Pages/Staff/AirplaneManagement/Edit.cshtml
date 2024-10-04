@@ -15,6 +15,8 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="UpdateAirplane.Id" />
+            <input asp-for="UpdateAirplane.Id" class="form-control" />
+            <span asp-validation-for="UpdateAirplane.Id" class="text-danger"></span>
             <div class="form-group">
                 <label asp-for="UpdateAirplane.Code" class="control-label"></label>
                 <input asp-for="UpdateAirplane.Code" class="form-control" />

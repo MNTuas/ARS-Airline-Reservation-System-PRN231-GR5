@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Repository.Repositories.RankRepositories;
+using Repository.Repositories.FlightClassRepositories;
+using Service.Services.FlightClassServices;
 using Service.Services.RankServices;
 using Repository.Repositories.AirplaneRepositories;
 using Service.Services.AirplaneServices;
@@ -76,6 +78,7 @@ builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IRankRepository, RankRepository>();
+builder.Services.AddScoped<IFlightClassRepository, FlightClassRepository>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 
 //=========================================== SERVICE =============================================
@@ -84,6 +87,7 @@ builder.Services.AddScoped<IAirlineService, AirlineService>();
 builder.Services.AddScoped<IAirportService, AirportService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IFlightClassService, FlightClassService>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
 

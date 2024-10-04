@@ -41,6 +41,7 @@ namespace ARS_FE.Pages.UserPage.RankManagement
             if (response != null)
             {
                 updateRankRequest = new UpdateRankRequest {
+                    Id = response.Id,
                     Type = response.Type,
                     Discount = response.Discount,
                     Description = response.Description,
