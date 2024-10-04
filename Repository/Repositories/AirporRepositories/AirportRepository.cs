@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using BusinessObjects.ResponseModels;
 using DAO;
 using System;
 using System.Collections.Generic;
@@ -15,5 +16,12 @@ namespace Repository.Repositories.AirporRepositories
             var list = await Get();
             return list.ToList();
         }
+
+        public async Task<Airport> GetById(string id)
+        {
+            return await GetSingle(a => a.Id.Equals(id));
+        }
+
+
     }
 }
