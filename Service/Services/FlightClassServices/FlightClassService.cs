@@ -93,7 +93,7 @@ namespace Service.Services.FlightClassServices
                     };
                 }
 
-                var existingFlight = await _flightRepository.GetById(id);
+                var existingFlight = await _flightRepository.GetSingle(x => x.Id == request.FlightId && x.Id != id);
                 if (existingFlight == null)
                 {
                     return new Result<FlightClass>

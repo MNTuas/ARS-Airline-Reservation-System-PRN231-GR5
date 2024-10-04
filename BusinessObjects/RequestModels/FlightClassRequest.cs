@@ -13,7 +13,7 @@ namespace BusinessObjects.RequestModels
         public string FlightId { get; set; }
         [Required(ErrorMessage = "Class is required.")]
         [RegularExpression("^[a-zA-Z ]+$", ErrorMessage = "Class can not contain numbers or special characters")]
-        public string Class { get; set; } = null!;
+        public string Class { get; set; } 
         [Required(ErrorMessage = "Quantity is required.")]
         [RegularExpression("^[1-9][0-9]*$", ErrorMessage = "Quantity is positive integers only")]
         public int Quantity { get; set; }

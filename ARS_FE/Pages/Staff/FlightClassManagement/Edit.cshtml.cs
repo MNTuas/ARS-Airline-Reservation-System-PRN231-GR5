@@ -12,6 +12,7 @@ using BusinessObjects.RequestModels;
 using System.Net.Http.Headers;
 using Service.Services.FlightClassServices;
 using Newtonsoft.Json;
+using FFilms.Application.Shared.Response;
 
 namespace ARS_FE.Pages.Staff.FlightClassManagement
 {
@@ -24,11 +25,9 @@ namespace ARS_FE.Pages.Staff.FlightClassManagement
         }
 
         [BindProperty]
-        public FlightClass FlightClass { get; set; } = default!;
-
+        public string Id { get; set; }
         [BindProperty]
-        public FlightClassRequest FlightClassRequest { get; set; } = new FlightClassRequest();
-
+        public FlightClassRequest FlightClassRequest { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
@@ -40,13 +39,12 @@ namespace ARS_FE.Pages.Staff.FlightClassManagement
             var response = await APIHelper.GetAsJsonAsync<FlightClass>(client, $"FlightClass/{id}");
             if (response != null)
             {
-                FlightClass = response;
                 FlightClassRequest = new FlightClassRequest
                 {
-                    FlightId = FlightClass.FlightId,
-                    Class = FlightClass.Class,
-                    Quantity = FlightClass.Quantity,
-                    Price = FlightClass.Price
+                    FlightId = response.FlightId,
+                    Class = response.Class,
+                    Quantity = response.Quantity,
+                    Price = response.Price
                 };
                 return Page();
             }
@@ -60,22 +58,12 @@ namespace ARS_FE.Pages.Staff.FlightClassManagement
         {
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                foreach (var error in errors)
-                {
-                    Console.WriteLine(error);
-                }
                 return Page();
             }
 
             var client = CreateAuthorizedClient();
 
-            FlightClass.FlightId = FlightClassRequest.FlightId;
-            FlightClass.Class = FlightClassRequest.Class;
-            FlightClass.Quantity = FlightClassRequest.Quantity;
-            FlightClass.Price = FlightClassRequest.Price;
-
-            var response = await APIHelper.PutAsJson(client, $"FlightClass/{FlightClass.Id}", FlightClass);
+            var response = await APIHelper.PutAsJson(client, $"FlightClass/{Id}", FlightClassRequest);
 
             if (response.IsSuccessStatusCode)
             {

@@ -7,37 +7,46 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using BusinessObjects.RequestModels;
 
 namespace ARS_FE.Pages.Staff.FlightClassManagement
 {
     public class DetailsModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public DetailsModel(DAO.AirlinesReservationSystemContext context)
+        public DetailsModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         public FlightClass FlightClass { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string id)
+        public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
         {
             if (id == null)
             {
                 return NotFound();
             }
+            var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var flightclass = await _context.FlightClasses.FirstOrDefaultAsync(m => m.Id == id);
-            if (flightclass == null)
+
+            var response = await APIHelper.GetAsJsonAsync<FlightClass>(client, $"FlightClass/{id}");
+
+            if (response != null)
             {
-                return NotFound();
+                FlightClass = response;
+
+
+                return Page();
             }
             else
             {
-                FlightClass = flightclass;
+                return BadRequest();
             }
-            return Page();
+
         }
     }
 }
