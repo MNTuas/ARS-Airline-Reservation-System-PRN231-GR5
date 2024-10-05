@@ -9,6 +9,7 @@ using BusinessObjects.Models;
 using DAO;
 using BusinessObjects.RequestModels;
 using System.Net.Http.Headers;
+using BusinessObjects.RequestModels.Airport;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
@@ -44,7 +45,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
                 Country = createAirportRequest.Country,
             };
 
-            var response = await APIHelper.PostAsJson(client, "Airport", n);
+            var response = await APIHelper.PostAsJson(client, "Airport/AddNew_Airport", n);
 
             if (response.IsSuccessStatusCode)
             {

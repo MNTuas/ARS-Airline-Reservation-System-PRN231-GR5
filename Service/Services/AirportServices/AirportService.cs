@@ -1,5 +1,5 @@
 ﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Airport;
 using BusinessObjects.ResponseModels;
 using FFilms.Application.Shared.Response;
 using Repository.Repositories.AirporRepositories;
@@ -29,7 +29,7 @@ namespace Service.Services.AirportService
                     Name = createAirportRequest.Name,
                     City = createAirportRequest.City,
                     Country = createAirportRequest.Country,
-                    Status = "ACTIVE"
+                    Status = "Active"
                 };
 
                 await _airportRepository.Insert(newAirport);
@@ -47,7 +47,7 @@ namespace Service.Services.AirportService
                 return new Result<Airport>
                 {
                     Success = false,
-                    Message = "Something wrong!!!",
+                    Message = ex.Message,
                 };
             }
         }
@@ -57,12 +57,37 @@ namespace Service.Services.AirportService
             var result = await _airportRepository.GetAllAirport();
             return result.Select(r => new AirportResponseModel
             {
-                Id= r.Id,
+                Id = r.Id,
                 Name = r.Name,
                 City = r.City,
                 Country = r.Country,
                 Status = r.Status,
             }).ToList();
         }
+
+        public async Task<Airport> GetDetailsAirportInfo(string id)
+        {
+            return await _airportRepository.GetById(id);
+        }
+
+        public async Task UpdateAirports(string id, UpdateAirportRequest updateAirportRequest)
+        {
+            var airport = await _airportRepository.GetById(id);
+            airport.Name = updateAirportRequest.Name;
+            airport.City = updateAirportRequest.City;
+            airport.Country = updateAirportRequest.Country;
+
+            await _airportRepository.Update(airport);
+        }
+
+        public async Task ChangeAirportsStatus(string id, string status)
+        {
+            var Airport = await _airportRepository.GetById(id);
+            Airport.Status = status;
+            await _airportRepository.Update(Airport);
+        }
+
+        
     }
 }
+
