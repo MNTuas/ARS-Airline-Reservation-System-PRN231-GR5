@@ -10,6 +10,7 @@ using DAO;
 using BusinessObjects.RequestModels.Airplane;
 using BusinessObjects.RequestModels.Rank;
 using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels;
 
 namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
@@ -23,12 +24,36 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        
+        public List<SelectListItem> AirlinesList { get; set; } = new List<SelectListItem>();
 
-        public IActionResult OnGet()
+
+        public async Task<IActionResult> OnGetAsync()
         {
+            var client = CreateAuthorizedClient();
+
+            // Gọi API để lấy danh sách Airlines
+            var response = await APIHelper.GetAsJsonAsync<List<Airline>>(client, "airline");
+
+            if (response != null)
+            {
+                //var airlines = await response.Content.ReadAsAsync<List<Airline>>();
+
+                // Chuyển đổi danh sách airlines thành SelectList
+                AirlinesList = response.Select(a => new SelectListItem
+                {
+                    Value = a.Id.ToString(),
+                    Text = a.Name
+                }).ToList();
+
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while fetching the airlines.");
+            }
+
             return Page();
         }
+
 
         [BindProperty]
         public AddAirplaneRequest Airplane { get; set; } = default!;

@@ -14,7 +14,7 @@
     <div class="col-md-4">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+
             <div class="form-group">
                 <label asp-for="Airplane.Code" class="control-label"></label>
                 <input asp-for="Airplane.Code" class="form-control" />
@@ -32,7 +32,10 @@
             </div>
             <div class="form-group">
                 <label asp-for="Airplane.AirlinesId" class="control-label"></label>
-                <select asp-for="Airplane.AirlinesId" class ="form-control" asp-items="ViewBag.AirlinesId"></select>
+                <select asp-for="Airplane.AirlinesId" class="form-control" asp-items="Model.AirlinesList">
+                    <option value="">-- Select Airline --</option>
+                </select>
+                <span asp-validation-for="Airplane.AirlinesId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Airplane.Status" class="control-label"></label>
@@ -51,5 +54,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

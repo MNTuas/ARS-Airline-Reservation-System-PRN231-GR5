@@ -3,7 +3,7 @@
 
 @{
     Layout = "_LayoutManage";
-    ViewData["Title"] = "Airlines";
+    ViewData["Title"] = "Rank Management";
 
     var prevDisabled = !Model.Rank.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.Rank.HasNextPage ? "disabled" : "";
@@ -18,13 +18,15 @@
     <h1 class="text-center mb-4">Rank Management</h1>
 
     <div class="text-right mb-3">
-        <a asp-page="Create" class="btn btn-primary">Create Airlines</a>
+        <a asp-page="Create" class="btn btn-primary">Create Rank</a>
     </div>
 
     <table class="table table-hover table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
                 <th>@Html.DisplayNameFor(model => model.Rank[0].Type)</th>
+                <th>@Html.DisplayNameFor(model => model.Rank[0].Description)</th>
+                <th>@Html.DisplayNameFor(model => model.Rank[0].Discount)</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Actions</th>
             </tr>
@@ -33,7 +35,7 @@
             @if (Model.Rank.Count == 0)
             {
                 <tr>
-                    <td colspan="3" class="text-center">No airlines found.</td>
+                    <td colspan="5" class="text-center">No ranks found.</td>
                 </tr>
             }
             else
@@ -42,6 +44,8 @@
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Discount)</td>
                         <td class="text-center">
                             <span class="badge @(item.Description == "Active" ? "badge-success" : "badge-danger")">
                                 @item.Description
