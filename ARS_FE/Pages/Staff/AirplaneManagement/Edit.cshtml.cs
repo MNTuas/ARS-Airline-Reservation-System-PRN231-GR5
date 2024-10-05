@@ -8,43 +8,46 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Airplane;
+using BusinessObjects.RequestModels.Rank;
 using System.Net.Http.Headers;
-using Service.Services.FlightClassServices;
-using Newtonsoft.Json;
-using FFilms.Application.Shared.Response;
 
-namespace ARS_FE.Pages.Staff.FlightClassManagement
+namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
     public class EditModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
+
         public EditModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
-
         [BindProperty]
         public string Id { get; set; }
         [BindProperty]
-        public FlightClassRequest FlightClassRequest { get; set; } = default!;
+        public UpdateAirplaneRequest UpdateAirplane { get; set; } = default!;
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-            var client = CreateAuthorizedClient(); 
+            var client = CreateAuthorizedClient();
 
-            var response = await APIHelper.GetAsJsonAsync<FlightClass>(client, $"FlightClass/{id}");
+
+            var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
             if (response != null)
             {
-                FlightClassRequest = new FlightClassRequest
+                UpdateAirplane = new UpdateAirplaneRequest
                 {
-                    FlightId = response.FlightId,
-                    Class = response.Class,
-                    Quantity = response.Quantity,
-                    Price = response.Price
+                    Id = response.Id,
+                    Type = response.Type,
+                    AirlinesId = response.AirlinesId,
+                    AvailableSeat = response.AvailableSeat,
+                    Code = response.Code,
+                    Status = response.Status,
+                    
                 };
                 return Page();
             }
@@ -54,6 +57,8 @@ namespace ARS_FE.Pages.Staff.FlightClassManagement
             }
         }
 
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -63,7 +68,8 @@ namespace ARS_FE.Pages.Staff.FlightClassManagement
 
             var client = CreateAuthorizedClient();
 
-            var response = await APIHelper.PutAsJson(client, $"FlightClass/{Id}", FlightClassRequest);
+
+            var response = await APIHelper.PutAsJson(client, $"airplane/update-airplane/{Id}", UpdateAirplane);
 
             if (response.IsSuccessStatusCode)
             {
@@ -71,11 +77,16 @@ namespace ARS_FE.Pages.Staff.FlightClassManagement
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Error occurred while update the flight class.");
+                ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
                 return Page();
             }
         }
 
+       
+        private bool RankExists(string id)
+        {
+            return true;
+        }
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");
