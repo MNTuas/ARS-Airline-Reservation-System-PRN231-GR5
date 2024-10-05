@@ -10,6 +10,7 @@ namespace Repository.Repositories.FlightRepositories
 {
     public interface IFlightRepository : IGenericRepository<Flight>
     {
+        Task<Flight> GetById(string id);    
         Task<List<Flight>> GetAllFlights();
     }
 }
