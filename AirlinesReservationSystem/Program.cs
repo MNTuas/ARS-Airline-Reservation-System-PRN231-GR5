@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Repository.Repositories.RankRepositories;
+using Service.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +67,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddHttpClient();
+
+builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 //========================================== REPOSITORY ===========================================
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();

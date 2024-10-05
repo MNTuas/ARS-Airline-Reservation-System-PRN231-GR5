@@ -1,0 +1,110 @@
+﻿@page
+@model ARS_FE.Pages.Staff.FlightManagement.CreateModel
+
+@{
+    ViewData["Title"] = "Create Flight";
+    Layout = "_LayoutManage";
+}
+
+<h1>Create Flight</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Flight.AirlinesId" class="control-label">Airlines</label>
+                <select asp-for="Flight.AirlinesId" class="form-control" asp-items="ViewBag.AirlinesId" id="airlineSelect"></select>
+                <span asp-validation-for="Flight.AirlinesId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Flight.AirplaneId" class="control-label">Airplane</label>
+                <select asp-for="Flight.AirplaneId" class="form-control" id="airplaneSelect"></select>
+                <span asp-validation-for="Flight.AirplaneId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Flight.DepartureTime" class="control-label">Departure Time</label>
+                <input asp-for="Flight.DepartureTime" class="form-control" />
+                <span asp-validation-for="Flight.DepartureTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Flight.ArrivalTime" class="control-label">Arrival Time</label>
+                <input asp-for="Flight.ArrivalTime" class="form-control" />
+                <span asp-validation-for="Flight.ArrivalTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Flight.From" class="control-label"></label>
+                <select asp-for="Flight.From" class="form-control" asp-items="ViewBag.From"></select>
+                <span asp-validation-for="Flight.From" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Flight.To" class="control-label"></label>
+                <select asp-for="Flight.To" class="form-control" asp-items="ViewBag.To"></select>
+                <span asp-validation-for="Flight.To" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const airlineSelect = document.getElementById('airlineSelect');
+            const airplaneSelect = document.getElementById('airplaneSelect');
+
+            function fetchAirplanes(airlineId) {
+                console.log("Selected Airline ID: " + airlineId);
+
+                if (airlineId) {
+                    fetch(`./Create?handler=Airplane&id=${airlineId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Network response was not ok: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            airplaneSelect.innerHTML = ''; 
+
+                            data.forEach(airplane => {
+                                const option = document.createElement('option');
+                                option.value = airplane.id;
+                                option.textContent = airplane.code;
+                                airplaneSelect.appendChild(option);
+                            });
+                        })
+                        .catch(error => console.error('Failed to retrieve airplane data: ', error));
+                } else {
+                    airplaneSelect.innerHTML = ''; 
+                }
+            }
+
+            airlineSelect.addEventListener('change', function () {
+                fetchAirplanes(this.value);
+            });
+
+            const selectedAirlineId = airlineSelect.value;
+            if (selectedAirlineId) {
+                fetchAirplanes(selectedAirlineId); 
+            }
+        });
+
+    </script>
+}

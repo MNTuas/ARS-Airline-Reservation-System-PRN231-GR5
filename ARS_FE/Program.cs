@@ -10,6 +10,9 @@ using Service.Services.AuthService;
 using System.Net.Http.Headers;
 using System.Text;
 using Service.Services.AirportService;
+using Service.Services.FlightServices;
+using Repository.Repositories.FlightRepositories;
+using Service.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,8 +56,16 @@ builder.Services.AddScoped<IRankRepository, RankRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
 
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddScoped<IAirportService, AirportService>();
+
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<IFlightRepository, FlightRepository>();
+
+builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
