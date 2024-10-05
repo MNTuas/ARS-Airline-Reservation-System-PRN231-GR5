@@ -45,7 +45,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
 
             string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
 
-            var response = await APIHelper.PutAsJson(client, $"Airport/{id}/status", newStatus);
+            var response = await APIHelper.PutAsJson(client, $"Airport/ChangeStatusAirport/{id}", newStatus);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage(new { pageIndex });

@@ -12,6 +12,11 @@ namespace Repository.Repositories.FlightRepositories
 {
     public class FlightRepository : GenericDAO<Flight>, IFlightRepository
     {
+        public async Task<Flight> GetById(string id)
+        {
+            return await GetSingle(a => a.Id.Equals(id));
+        }
+
         public async Task<List<Flight>> GetAllFlights()
         {
             var list = await Get();

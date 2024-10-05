@@ -5,6 +5,7 @@ using Service.Services.FlightServices;
 
 namespace AirlinesReservationSystem.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class FlightController : ControllerBase
@@ -35,7 +36,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             await _flightService.CreateFlight(request);
             return Ok();
-        }
+    }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFlight(UpdateFlightRequest request, string id)
@@ -45,3 +46,4 @@ namespace AirlinesReservationSystem.Controllers
         }
     }
 }
+

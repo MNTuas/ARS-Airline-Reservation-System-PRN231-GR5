@@ -40,7 +40,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             }
             var responseAirport = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
             if (responseAirport != null)
-            {
+        {
                 airportList = responseAirport;
             }
 
@@ -68,8 +68,8 @@ namespace ARS_FE.Pages.Staff.FlightManagement
 
             if (response.IsSuccessStatusCode)
             {
-                return RedirectToPage("./Index");
-            }
+            return RedirectToPage("./Index");
+        }
             else
             {
                 ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");

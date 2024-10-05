@@ -10,5 +10,7 @@ namespace Repository.Repositories.AirplaneRepositories
 {
     public interface IAirplaneRepository : IGenericRepository<Airplane>
     {
+        Task<List<Airplane>> GetAllAirplaneAsync();
+        Task<Airplane> GetAirplane(string id);
     }
 }
