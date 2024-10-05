@@ -33,14 +33,6 @@ namespace AirlinesReservationSystem.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> AddNewAirlines([FromBody] string name)
-        {
-            await _airlineService.AddAirlines(name);
-            return Ok("Add airline successfully");
-        }
-
         [HttpPut]
         [Route("{id}")]
         [Authorize(Roles = "Staff")]
@@ -57,6 +49,14 @@ namespace AirlinesReservationSystem.Controllers
         {
             await _airlineService.ChangeAirlinesStatus(id, status);
             return Ok("Update airlines's status successfully");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> AddNewAirlines([FromBody] string name)
+        {
+            await _airlineService.AddAirlines(name);
+            return Ok("Add airline successfully");
         }
     }
 }
