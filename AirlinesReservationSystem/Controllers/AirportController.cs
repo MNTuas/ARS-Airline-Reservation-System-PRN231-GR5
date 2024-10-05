@@ -25,27 +25,6 @@ namespace AirportReservationSystem.Controllers
             return Ok(response);
         }
 
-        [HttpPost("AddNew_Airport")]
-        [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> AddNewAirport(CreateAirportRequest createAirportRequest)
-        {
-            var results = await _airportService.AddAirport(createAirportRequest);
-            if (results.Success != false)
-            {
-                return Ok(new
-                {
-                    results.Success,
-                    results.Message,
-                    results.Data
-                });
-            }
-            return BadRequest(new
-            {
-                results.Success,
-                results.Message
-            });
-        }
-
         [HttpGet]
         [Route("GetAirportById/{id}")]
         [Authorize(Roles = "Staff")]
@@ -71,6 +50,27 @@ namespace AirportReservationSystem.Controllers
         {
             await _airportService.ChangeAirportsStatus(id, status);
             return Ok("Update Airport's status successfully");
+        }
+
+        [HttpPost("AddNew_Airport")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> AddNewAirport(CreateAirportRequest createAirportRequest)
+        {
+            var results = await _airportService.AddAirport(createAirportRequest);
+            if (results.Success != false)
+            {
+                return Ok(new
+                {
+                    results.Success,
+                    results.Message,
+                    results.Data
+                });
+            }
+            return BadRequest(new
+            {
+                results.Success,
+                results.Message
+            });
         }
     }
 }
