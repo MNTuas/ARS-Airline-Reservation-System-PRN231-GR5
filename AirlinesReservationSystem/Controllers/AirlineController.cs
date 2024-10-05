@@ -5,6 +5,7 @@ using Service.Services.AIrlineServices;
 
 namespace AirlinesReservationSystem.Controllers
 {
+
     [Route("api/airline")]
     [ApiController]
     public class AirlineController : ControllerBase
