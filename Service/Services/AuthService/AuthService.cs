@@ -49,7 +49,7 @@ namespace Service.Services.AuthService
                     Email = request.Email,
                     Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Point = 0,
-                    RankId = "998D80AE-944B-4D8D-BBF7-AF625FEE33A1",
+                    RankId = "BE14B0C5-C301-4DB9-8D4B-75E38D71E699",
                     Role = UserRolesEnums.User.ToString(),
                     Status = UserStatusEnums.Active.ToString(),
                 };

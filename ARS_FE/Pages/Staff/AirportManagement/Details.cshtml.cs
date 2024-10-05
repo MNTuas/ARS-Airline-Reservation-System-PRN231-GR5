@@ -9,6 +9,7 @@ using BusinessObjects.Models;
 using DAO;
 using BusinessObjects.ResponseModels;
 using Service;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
@@ -29,16 +30,16 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             {
                 return NotFound();
             }
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
 
-            var response = await APIHelper.GetAsJsonAsync<Airport>(client, $"airport/{id}");
+            var response = await APIHelper.GetAsJsonAsync<Airport>(client, $"Airport/GetAirportById/{id}");
+
+
 
             if (response != null)
             {
                 Airport = response;
-
-
                 return Page();
             }
             else
@@ -46,6 +47,19 @@ namespace ARS_FE.Pages.Staff.AirportManagement
                 return BadRequest();
             }
 
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 
