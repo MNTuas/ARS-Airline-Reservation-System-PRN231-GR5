@@ -16,5 +16,6 @@ namespace Service.Services.FlightClassServices
         Task<List<FlightClassResponseModel>> GetAllFlightClassse();
         Task<Result<FlightClass>> AddFlightClass(FlightClassRequest request);
         Task<Result<FlightClass>> UpdateFlightClass(FlightClassRequest request, string id);
+        Task<Result<FlightClass>> DeleteFlightClass(string id);
     }
 }

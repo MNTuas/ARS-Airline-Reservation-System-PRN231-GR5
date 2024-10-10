@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.RequestModels.Airport;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
@@ -21,7 +23,8 @@ namespace ARS_FE.Pages.Staff.AirportManagement
         }
 
         [BindProperty]
-        //public UpdateAirportRequest updateAirportRequest { get; set; } = default!;
+        public UpdateAirportRequest updateAirportRequest { get; set; } = default!;
+        [BindProperty]
         public Airport airport { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -30,9 +33,9 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             {
                 return NotFound();
             }
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
-            var response = await APIHelper.GetAsJsonAsync<Airport>(client, $"Airport/{id}");
+            var response = await APIHelper.GetAsJsonAsync<Airport>(client, $"Airport/GetAirportById/{id}");
             if (response != null)
             {
                 airport = response;
@@ -44,33 +47,46 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             }
         }
 
-        //public async Task<IActionResult> OnPostAsync(UpdateAirportRequest updateAirportRequest)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Page();
-        //    }
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
-        //    var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = CreateAuthorizedClient();
 
-        //    var n = new UpdateAirportRequest
-        //    {
-        //        Name = updateAirportRequest.Name,
-        //        City = updateAirportRequest.City,
-        //        Country = updateAirportRequest.Country,
-        //    };
+            var n = new UpdateAirportRequest
+            {
+                Name = airport.Name,
+                City = airport.City,
+                Country = airport.Country,
+            };
 
-        //    var response = await APIHelper.PutAsJson(client, $"airport/{airport.Id}", n);
+            var response = await APIHelper.PutAsJson(client, $"Airport/Update_Airport/{airport.Id}", n);
+           
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
+                return Page();
+            }
+        }
 
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        return RedirectToPage("./Index");
-        //    }
-        //    else
-        //    {
-        //        ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
-        //        return Page();
-        //    }
-        //}
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
     }
 }

@@ -25,6 +25,7 @@ namespace Service.Services.FlightClassServices
         {
             return await _flightClassRepository.GetById(id);
         }
+
         public async Task<List<FlightClassResponseModel>> GetAllFlightClassse()
         {
             var result = await _flightClassRepository.GetAllFlightClasses();
@@ -69,12 +70,12 @@ namespace Service.Services.FlightClassServices
                     Data = newFlightClass
                 };
             }
-            catch
+            catch (Exception ex) 
             {
                 return new Result<FlightClass>
                 {
                     Success = false,
-                    Message = "Something wrong!!!",
+                    Message = ex.Message,
                 };
             }
         }
@@ -127,14 +128,46 @@ namespace Service.Services.FlightClassServices
                     Data = existingFlightlass
                 };
             }
-            catch
+            catch (Exception ex) 
             {
                 return new Result<FlightClass>
                 {
                     Success = false,
-                    Message = "Something wrong!!!",
+                    Message = ex.Message,
                 };
             }
         }
+
+        public async Task<Result<FlightClass>> DeleteFlightClass(string id)
+        {
+            try
+            {
+                var existingClass = await _flightClassRepository.GetById(id);
+                if (existingClass != null)
+                {
+                    await _flightClassRepository.Delete(existingClass);
+                    return new Result<FlightClass>
+                    {
+                        Success = true,
+                        Message = "Delete successfull!!"
+                    };
+                }
+                return new Result<FlightClass>
+                {
+                    Success = false,
+                    Message = "Not found!!!"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new Result<FlightClass>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
+
+        }
+
     }
 }

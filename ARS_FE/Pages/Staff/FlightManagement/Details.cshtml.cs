@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using System.Net.Http.Headers;
 using BusinessObjects.ResponseModels;
 using Service;
-using System.Net.Http.Headers;
 
-namespace ARS_FE.Pages.Staff.AirportManagement
+namespace ARS_FE.Pages.Staff.FlightManagement
 {
     public class DetailsModel : PageModel
     {
@@ -22,9 +22,9 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        public Airport Airport { get; set; } = default!;
+        public FlightResponseModel Flight { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
@@ -32,21 +32,17 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             }
             var client = CreateAuthorizedClient();
 
-
-            var response = await APIHelper.GetAsJsonAsync<Airport>(client, $"Airport/GetAirportById/{id}");
-
-
+            var response = await APIHelper.GetAsJsonAsync<FlightResponseModel>(client, $"Flight/{id}");
 
             if (response != null)
             {
-                Airport = response;
+                Flight = response;
                 return Page();
             }
             else
             {
                 return BadRequest();
             }
-
         }
 
         private HttpClient CreateAuthorizedClient()
@@ -62,6 +58,4 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             return client;
         }
     }
-
 }
-

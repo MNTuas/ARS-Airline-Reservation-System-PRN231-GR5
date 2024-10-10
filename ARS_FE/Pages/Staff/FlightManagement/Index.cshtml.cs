@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using Service;
+using Service.Services.FlightServices;
 using BusinessObjects.ResponseModels;
+using Service;
 using System.Net.Http.Headers;
 
-namespace ARS_FE.Pages.Staff.AirportManagement
+namespace ARS_FE.Pages.Staff.FlightManagement
 {
     public class IndexModel : PageModel
     {
@@ -22,33 +23,18 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<AirportResponseModel> Airport { get; set; } = default!;
+        public PaginatedList<FlightResponseModel> Flight { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
+
+            var response = await APIHelper.GetAsJsonAsync<List<FlightResponseModel>>(client, "Flight");
             if (response != null)
             {
-                Airport = PaginatedList<AirportResponseModel>.Create(response, pageIndex ?? 1, 6);
+
+                Flight = PaginatedList<FlightResponseModel>.Create(response, pageIndex ?? 1, 2);
                 return Page();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
-
-        public async Task<IActionResult> OnPostChangeStatus(string id, string currentStatus, int pageIndex)
-        {
-            var client = CreateAuthorizedClient();
-
-            string newStatus = currentStatus == "Active" ? "Inactive" : "Active";
-
-            var response = await APIHelper.PutAsJson(client, $"Airport/ChangeStatusAirport/{id}", newStatus);
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToPage(new { pageIndex });
             }
             else
             {
@@ -70,4 +56,3 @@ namespace ARS_FE.Pages.Staff.AirportManagement
         }
     }
 }
-
