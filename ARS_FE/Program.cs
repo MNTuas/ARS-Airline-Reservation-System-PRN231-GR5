@@ -11,6 +11,10 @@ using Repository.Repositories.FlightClassRepositories;
 using Service.Services.FlightClassServices;
 using Repository.Repositories.FlightRepositories;
 using Service.Services.FlightServices;
+using Repository.Repositories.RankRepositories;
+using Service.Services.RankServices;
+using Repository.Repositories.AirplaneRepositories;
+using Service.Services.AirplaneServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +65,11 @@ builder.Services.AddScoped<IAirlineService, AirlineService>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 
+builder.Services.AddScoped<IRankRepository, RankRepository>();
+builder.Services.AddScoped<IRankService, RankService>();
+
+builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
+builder.Services.AddScoped<IAirplaneService, AirplaneService>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

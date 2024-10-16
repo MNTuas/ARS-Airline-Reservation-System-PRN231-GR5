@@ -6,6 +6,7 @@ using Service.Services.AuthService;
 
 namespace AirlinesReservationSystem.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase

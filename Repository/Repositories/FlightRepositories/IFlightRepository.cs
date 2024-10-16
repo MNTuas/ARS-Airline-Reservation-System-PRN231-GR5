@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using BusinessObjects.ResponseModels;
 using Repository.Repositories.GenericRepositories;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace Repository.Repositories.FlightRepositories
     {
         Task<Flight> GetById(string id);    
         Task<List<Flight>> GetAllFlights();
+        Task<List<FlightResponseModel>> GetAllFlightsDetails();
+        Task<Flight> GetFlightById(string id);
     }
 }

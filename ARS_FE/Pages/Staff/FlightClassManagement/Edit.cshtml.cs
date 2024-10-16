@@ -34,7 +34,7 @@ namespace ARS_FE.Pages.Staff.FlightClassManagement
             {
                 return NotFound();
             }
-            var client = CreateAuthorizedClient();
+            var client = CreateAuthorizedClient(); 
 
             var response = await APIHelper.GetAsJsonAsync<FlightClass>(client, $"FlightClass/{id}");
             if (response != null)
