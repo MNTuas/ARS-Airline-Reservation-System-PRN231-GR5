@@ -17,12 +17,7 @@ namespace AirlinesReservationSystem.Controllers
             _flightService = flightService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllFlightsDetails()
-        {
-            var result = await _flightService.GetAllFlights();
-            return Ok(result);
-        }
+        
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFlightById(string id)

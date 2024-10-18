@@ -18,13 +18,23 @@ using Service.Services.AirplaneServices;
 using Service.Mapper;
 using Service.Services.SeatClassServices;
 using Repository.Repositories.SeatClassRepositories;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
+using BusinessObjects.ResponseModels.Flight;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+var modelBuilder = new ODataConventionModelBuilder();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+modelBuilder.EntitySet<FlightResponseModel>("flights");
+modelBuilder.EntityType<FlightResponseModel>().HasKey(n => n.Id);
+
+builder.Services.AddControllers().AddOData(option => option.Select().Filter()
+                .Count().OrderBy().Expand().SetMaxTop(100)
+                .AddRouteComponents("odata", modelBuilder.GetEdmModel()));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -120,7 +130,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseODataBatching();
+app.UseRouting();
 app.UseAuthentication();
 
 app.UseCors("AllowAll");
