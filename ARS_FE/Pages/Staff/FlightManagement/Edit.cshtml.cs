@@ -10,7 +10,9 @@ using BusinessObjects.Models;
 using DAO;
 using BusinessObjects.RequestModels.Flight;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airport;
+using BusinessObjects.ResponseModels.Flight;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {
@@ -59,8 +61,8 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 ViewData["AirlinesId"] = new SelectList(airlineList, "Id", "Name", response.AirlinesId);
                 ViewData["From"] = new SelectList(airportList, "Id", "City", response.FromId);
                 ViewData["To"] = new SelectList(airportList, "Id", "City", response.ToId);
-            return Page();
-        }
+                return Page();
+            }
             else
             {
                 return BadRequest();
@@ -94,13 +96,13 @@ namespace ARS_FE.Pages.Staff.FlightManagement
         }
 
         public async Task<JsonResult> OnGetAirplane(string id)
-                {
+        {
             var client = CreateAuthorizedClient();
             var airline = new AirlinesResponseModel();
             var response = await APIHelper.GetAsJsonAsync<AirlinesResponseModel>(client, $"airline/{id}");
 
             if (response != null)
-                {
+            {
                 airline = response;
             }
             var airplaneList = airline.Airplanes;
@@ -114,7 +116,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             var token = HttpContext.Session.GetString("JWToken");
 
             if (!string.IsNullOrEmpty(token))
-        {
+            {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 

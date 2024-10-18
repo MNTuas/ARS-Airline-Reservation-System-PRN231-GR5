@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using BusinessObjects.RequestModels.Airlines;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service.Services.AIrlineServices;
+using Service.Services.AirlineServices;
 
 namespace AirlinesReservationSystem.Controllers
 {
@@ -37,26 +38,26 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPut]
         [Route("{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> UpdateAirlines(string id, [FromBody] string name)
+        public async Task<IActionResult> UpdateAirlines(string id, AirlinesUpdateModel model)
         {
-            await _airlineService.UpdateAirlines(id, name);
+            await _airlineService.UpdateAirlines(id, model);
             return Ok("Update airline successfully");
         }
 
         [HttpPut]
         [Route("{id}/status")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> ChangeAirlinesStatus(string id, [FromBody] string status)
+        public async Task<IActionResult> ChangeAirlinesStatus(string id)
         {
-            await _airlineService.ChangeAirlinesStatus(id, status);
+            await _airlineService.ChangeAirlinesStatus(id);
             return Ok("Update airlines's status successfully");
         }
 
         [HttpPost]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> AddNewAirlines([FromBody] string name)
+        public async Task<IActionResult> AddNewAirlines(AirlinesCreateModel model)
         {
-            await _airlineService.AddAirlines(name);
+            await _airlineService.AddAirlines(model);
             return Ok("Add airline successfully");
         }
     }

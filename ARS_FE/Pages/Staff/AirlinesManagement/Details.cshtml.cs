@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using BusinessObjects.ResponseModels;
 using Service;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airplane;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {

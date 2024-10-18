@@ -47,9 +47,9 @@ namespace AirportReservationSystem.Controllers
         [HttpPut]
         [Route("ChangeStatusAirport/{id}")]
         [Authorize(Roles = "Staff")]
-        public async Task<IActionResult> ChangeAirportStatus(string id, [FromBody] string status)
+        public async Task<IActionResult> ChangeAirportStatus(string id)
         {
-            await _airportService.ChangeAirportsStatus(id, status);
+            await _airportService.ChangeAirportsStatus(id);
             return Ok("Update Airport's status successfully");
         }
 

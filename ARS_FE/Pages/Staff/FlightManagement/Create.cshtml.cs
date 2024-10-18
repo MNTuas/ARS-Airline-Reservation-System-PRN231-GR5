@@ -7,14 +7,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Models;
 using DAO;
-using Service.Services.AIrlineServices;
 using BusinessObjects.RequestModels.Flight;
 using Repository.Repositories.AirporRepositories;
 using Service.Services.AirportService;
 using Service.Services.FlightServices;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels;
 using Service;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airport;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {
@@ -40,7 +40,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             }
             var responseAirport = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
             if (responseAirport != null)
-        {
+            {
                 airportList = responseAirport;
             }
 
@@ -68,8 +68,8 @@ namespace ARS_FE.Pages.Staff.FlightManagement
 
             if (response.IsSuccessStatusCode)
             {
-            return RedirectToPage("./Index");
-        }
+                return RedirectToPage("./Index");
+            }
             else
             {
                 ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");

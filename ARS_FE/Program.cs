@@ -3,12 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
-using Service.Services.AIrlineServices;
 using Service.Services.AuthService;
 using System.Net.Http.Headers;
 using System.Text;
-using Repository.Repositories.FlightClassRepositories;
-using Service.Services.FlightClassServices;
 using Repository.Repositories.FlightRepositories;
 using Service.Services.FlightServices;
 using Repository.Repositories.RankRepositories;
@@ -17,6 +14,8 @@ using Repository.Repositories.AirplaneRepositories;
 using Service.Services.AirplaneServices;
 using Service.Services.AirportService;
 using Service.Mapper;
+using Repository.Repositories.AirporRepositories;
+using Service.Services.AirlineServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,9 +53,6 @@ builder.Services.AddHttpClient("ApiClient", client =>
     client.BaseAddress = new Uri("https://localhost:7168/api/");
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
-
-builder.Services.AddScoped<IFlightClassRepository, FlightClassRepository>();
-builder.Services.AddScoped<IFlightClassService, FlightClassService>();
 
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightService, FlightService>();

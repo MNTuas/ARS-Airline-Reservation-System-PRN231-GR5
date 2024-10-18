@@ -1,7 +1,15 @@
 ﻿
 using AutoMapper;
 using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Airlines;
+using BusinessObjects.RequestModels.Airplane;
+using BusinessObjects.RequestModels.Airport;
 using BusinessObjects.RequestModels.Flight;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airplane;
+using BusinessObjects.ResponseModels.Airport;
+using BusinessObjects.ResponseModels.Flight;
+using Service.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +22,54 @@ namespace Service.Mapper
     {
         public MapperProfile()
         {
-            CreateMap<CreateFlightRequest, Flight>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()));
+            //Flight
+            CreateMap<CreateFlightRequest, Flight>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => FlightStatusEnums.Schedule.ToString()))
+                .ForMember(dest => dest.TicketClasses, opt => opt.MapFrom(src => src.TicketClassPrices));
             CreateMap<UpdateFlightRequest, Flight>();
+            CreateMap<Flight, FlightResponseModel>()
+                .ForMember(dest => dest.AirlinesId, opt => opt.MapFrom(src => src.Airplane.AirlinesId))
+                .ForMember(dest => dest.Airlines, opt => opt.MapFrom(src => src.Airplane.Airlines.Name))
+                .ForMember(dest => dest.AirplaneCode, opt => opt.MapFrom(src => src.Airplane.CodeNumber))
+                .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromNavigation.Name))
+                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToNavigation.Name))
+                .ForMember(dest => dest.TicketClassPrices, opt => opt.MapFrom(src => src.TicketClasses));
+
+            //TicketClass
+            CreateMap<TicketClassPrice, TicketClass>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => TicketClassStatusEnums.Available.ToString()));
+            CreateMap<TicketClass, TicketClassPriceResponse>()
+                .ForMember(dest => dest.SeatClassName, opt => opt.MapFrom(src => src.SeatClass.Name));
+
+            //Airlines
+            CreateMap<AirlinesCreateModel, Airline>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
+            CreateMap<Airline, AllAirlinesResponseModel>();
+            CreateMap<Airline, AirlinesResponseModel>();
+
+            //Airplane
+            CreateMap<AddAirplaneRequest, Airplane>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
+            CreateMap<UpdateAirplaneRequest, Airplane>();
+            CreateMap<Airplane, AirplaneResponseModel>()
+                .ForMember(dest => dest.AirplaneSeats, opt => opt.MapFrom(src => src.AirplaneSeats));
+
+            //AirplaneSeat
+            CreateMap<AirplaneSeatRequest, AirplaneSeat>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()));
+            CreateMap<AirplaneSeatUpdateRequest, AirplaneSeat>();
+            CreateMap<AirplaneSeat, AirplaneSeatResponse>()
+                .ForMember(dest => dest.SeatClassName, opt => opt.MapFrom(src => src.SeatClass.Name));
+
+            //Airport
+            CreateMap<CreateAirportRequest, Airport>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
+            CreateMap<Airport, AirportResponseModel>();
         }
     }
 }

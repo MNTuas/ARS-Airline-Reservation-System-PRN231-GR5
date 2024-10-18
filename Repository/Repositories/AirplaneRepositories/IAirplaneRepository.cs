@@ -11,6 +11,7 @@ namespace Repository.Repositories.AirplaneRepositories
     public interface IAirplaneRepository : IGenericRepository<Airplane>
     {
         Task<List<Airplane>> GetAllAirplaneAsync();
+        Task<List<Airplane>> GetAllActiveAirplanes();
         Task<Airplane> GetAirplane(string id);
     }
 }

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Flight;
-using BusinessObjects.ResponseModels;
+using BusinessObjects.ResponseModels.Flight;
 using Repository.Repositories.FlightRepositories;
+using Service.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,18 +26,13 @@ namespace Service.Services.FlightServices
         public async Task CreateFlight(CreateFlightRequest request)
         {
             Flight newFlight = _mapper.Map<Flight>(request);
-            newFlight.Status = "Active";
             await _flightRepository.Insert(newFlight);
         }
 
-        public async Task<List<Flight>> GetAllFlight()
+        public async Task<List<FlightResponseModel>> GetAllFlights()
         {
-            return await _flightRepository.GetAllFlights();
-        }
-
-        public async Task<List<FlightResponseModel>> GetAllFlightsDetails()
-        {
-            return await _flightRepository.GetAllFlightsDetails();
+            var list = await _flightRepository.GetAllFlights();
+            return _mapper.Map<List<FlightResponseModel>>(list);
         }
 
         public async Task UpdateFlight(UpdateFlightRequest request, string id)
@@ -49,22 +45,11 @@ namespace Service.Services.FlightServices
         public async Task<FlightResponseModel> GetFlightById(string id)
         {
             var flight = await _flightRepository.GetFlightById(id);
-            return new FlightResponseModel
-            {
-                Id = flight.Id,
-                Airlines = flight.Airplane.Airlines.Name,
-                AirlinesId = flight.Airplane.AirlinesId,
-                AirplaneCode = flight.Airplane.Code,
-                AirplaneId = flight.AirplaneId,
-                DepartureTime = flight.DepartureTime,
-                ArrivalTime = flight.ArrivalTime,
-                From = flight.FromNavigation.City,
-                FromId = flight.FromNavigation.Id,
-                To = flight.ToNavigation.City,
-                ToId = flight.ToNavigation.Id,
-                Status = flight.Status
-            };
+            flight.TicketClasses = flight.TicketClasses.OrderBy(t => t.Price).ToList();
+            return _mapper.Map<FlightResponseModel>(flight);
         }
+
+
     }
 }
 

@@ -20,7 +20,7 @@ namespace AirlinesReservationSystem.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllFlightsDetails()
         {
-            var result = await _flightService.GetAllFlightsDetails();
+            var result = await _flightService.GetAllFlights();
             return Ok(result);
         }
 

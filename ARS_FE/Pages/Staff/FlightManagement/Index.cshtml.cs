@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 using Service.Services.FlightServices;
-using BusinessObjects.ResponseModels;
 using Service;
 using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels.Flight;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {

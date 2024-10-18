@@ -10,8 +10,8 @@ namespace BusinessObjects.RequestModels.Flight
     public class CreateFlightRequest
     {
         [Required(ErrorMessage = "Please choose airlines")]
-        public string AirlinesId { get; set; } = null!;
-        
+        public string FlightNumber { get; set; } = null!;
+
         [Required(ErrorMessage = "Please choose airplane")]
         public string AirplaneId { get; set; } = null!;
 
@@ -26,5 +26,15 @@ namespace BusinessObjects.RequestModels.Flight
 
         [Required(ErrorMessage = "Please choose destination")]
         public string To { get; set; } = null!;
+
+        public List<TicketClassPrice> TicketClassPrices { get; set; } = new List<TicketClassPrice>();
+    }
+
+    public class TicketClassPrice
+    {
+        public string SeatClassId { get; set; } = null!;
+
+        [Required(ErrorMessage = "Please enter ticket class price")]
+        public decimal Price { get; set; }
     }
 }

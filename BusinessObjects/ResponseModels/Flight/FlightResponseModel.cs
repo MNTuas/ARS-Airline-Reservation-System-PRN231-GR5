@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessObjects.ResponseModels
+namespace BusinessObjects.ResponseModels.Flight
 {
     public class FlightResponseModel
     {
@@ -31,5 +32,18 @@ namespace BusinessObjects.ResponseModels
         public string? ToId { get; set; }
 
         public string? To { get; set; }
+
+        public List<TicketClassPriceResponse> TicketClassPrices { get; set; } = new List<TicketClassPriceResponse>();
+    }
+
+    public class TicketClassPriceResponse
+    {
+        public string Id { get; set; } = null!;
+
+        public string SeatClassName { get; set; } = null!;
+
+        public string SeatClassId { get; set; } = null!;
+
+        public decimal Price { get; set; }
     }
 }
