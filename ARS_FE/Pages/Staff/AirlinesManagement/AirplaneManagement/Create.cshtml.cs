@@ -59,36 +59,36 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         public AddAirplaneRequest Airplane { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-            var client = CreateAuthorizedClient();
+        //public async Task<IActionResult> OnPostAsync()
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return Page();
+        //    }
+        //    var client = CreateAuthorizedClient();
 
-            var n = new AddAirplaneRequest
-            {
-                Code = Airplane.Code,
-                AirlinesId = Airplane.AirlinesId,
-                AvailableSeat = Airplane.AvailableSeat,
-                Status = Airplane.Status,
-                Type = Airplane.Type
+        //    var n = new AddAirplaneRequest
+        //    {
+        //        Code = Airplane.Code,
+        //        AirlinesId = Airplane.AirlinesId,
+        //        AvailableSeat = Airplane.AvailableSeat,
+        //        Status = Airplane.Status,
+        //        Type = Airplane.Type
 
-            };
+        //    };
 
-            var response = await APIHelper.PostAsJson(client, "airplane/add-airplane", n);
+        //    var response = await APIHelper.PostAsJson(client, "airplane/add-airplane", n);
 
-            if (response.IsSuccessStatusCode)
-            {
-                return RedirectToPage("./Index");
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
-                return Page();
-            }
-        }
+        //    if (response.IsSuccessStatusCode)
+        //    {
+        //        return RedirectToPage("./Index");
+        //    }
+        //    else
+        //    {
+        //        ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
+        //        return Page();
+        //    }
+        //}
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");

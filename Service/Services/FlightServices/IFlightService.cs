@@ -9,6 +9,6 @@ namespace Service.Services.FlightServices
         Task<List<FlightResponseModel>> GetAllFlights();
         Task<FlightResponseModel> GetFlightById(string id);
         Task CreateFlight(CreateFlightRequest request);
-        Task UpdateFlight(UpdateFlightRequest request, string id);
+        Task UpdateFlight(string flightId, UpdateFlightRequest request);
     }
 }

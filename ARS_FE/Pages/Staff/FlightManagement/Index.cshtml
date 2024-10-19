@@ -21,15 +21,25 @@
         <a asp-page="Create" class="btn btn-primary">Create Flight</a>
     </div>
 
+    <form method="get" class="form-inline mb-4">
+        <div class="form-group mr-2">
+            <label for="fromDate" class="mr-2">From Date</label>
+            <input type="date" id="fromDate" name="fromDate" class="form-control" value="@(Model.FromDate?.ToString("yyyy-MM-dd"))" />
+        </div>
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </form>
+
     <table class="table table-hover table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th>Departure Time</th>
-                <th>Arrival Time</th>
+                <th>Flight Number</th>
+                <th>Scheduled Departure Time</th>
+                <th>Scheduled Arrival Time</th>
+                <th>Duration</th>
                 <th>@Html.DisplayNameFor(model => model.Flight[0].Airlines)</th>
                 <th>Airplane</th>
-                <th>@Html.DisplayNameFor(model => model.Flight[0].From)</th>
-                <th>@Html.DisplayNameFor(model => model.Flight[0].To)</th>
+                <th>From</th>
+                <th>To</th>
                 <th>@Html.DisplayNameFor(model => model.Flight[0].Status)</th>
                 <th class="text-center">Actions</th>
             </tr>
@@ -46,12 +56,14 @@
                 @foreach (var item in Model.Flight)
                 {
                     <tr>
+                        <td>@Html.DisplayFor(modelItem => item.FlightNumber)</td>
                         <td>@Html.DisplayFor(modelItem => item.DepartureTime)</td>
                         <td>@Html.DisplayFor(modelItem => item.ArrivalTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Duration)</td>
                         <td>@Html.DisplayFor(modelItem => item.Airlines)</td>
                         <td>@Html.DisplayFor(modelItem => item.AirplaneCode)</td>
-                        <td>@Html.DisplayFor(modelItem => item.From)</td>
-                        <td>@Html.DisplayFor(modelItem => item.To)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FromName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ToName)</td>
                         <td>@Html.DisplayFor(modelItem => item.Status)</td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
@@ -65,7 +77,6 @@
         </tbody>
     </table>
 
-    <!-- Pagination section -->
     <div class="row">
         <div class="col">
             <nav aria-label="Page navigation">

@@ -37,14 +37,8 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             var client = CreateAuthorizedClient();
 
             var response = await APIHelper.GetAsJsonAsync<FlightResponseModel>(client, $"Flight/{id}");
-            var airlineList = new List<AllAirlinesResponseModel>();
             var airportList = new List<AirportResponseModel>();
 
-            var responseAirline = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline");
-            if (responseAirline != null)
-            {
-                airlineList = responseAirline;
-            }
             var responseAirport = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
             if (responseAirport != null)
             {
@@ -55,12 +49,19 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 Flight = new UpdateFlightRequest
                 {
                     FlightId = response.Id,
-                    ArrivalTime = response.ArrivalTime,
+                    Duration = response.Duration,
                     DepartureTime = response.DepartureTime,
+                    From = response.From,
+                    To = response.To,
+                    TicketClassPrices = response.TicketClassPrices.Select(t => new TicketClassPriceUpdate
+                    {
+                        Id = t.Id,
+                        SeatClassName = t.SeatClassName,
+                        Price = t.Price,
+                    }).ToList()
                 };
-                ViewData["AirlinesId"] = new SelectList(airlineList, "Id", "Name", response.AirlinesId);
-                ViewData["From"] = new SelectList(airportList, "Id", "City", response.FromId);
-                ViewData["To"] = new SelectList(airportList, "Id", "City", response.ToId);
+                ViewData["From"] = new SelectList(airportList, "Id", "City", response.From);
+                ViewData["To"] = new SelectList(airportList, "Id", "City", response.To);
                 return Page();
             }
             else
@@ -93,21 +94,6 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
                 return Page();
             }
-        }
-
-        public async Task<JsonResult> OnGetAirplane(string id)
-        {
-            var client = CreateAuthorizedClient();
-            var airline = new AirlinesResponseModel();
-            var response = await APIHelper.GetAsJsonAsync<AirlinesResponseModel>(client, $"airline/{id}");
-
-            if (response != null)
-            {
-                airline = response;
-            }
-            var airplaneList = airline.Airplanes;
-
-            return new JsonResult(airplaneList);
         }
 
         private HttpClient CreateAuthorizedClient()

@@ -11,6 +11,8 @@ namespace BusinessObjects.ResponseModels.Flight
     {
         public string Id { get; set; } = null!;
 
+        public string FlightNumber { get; set; } = null!;
+
         public string AirlinesId { get; set; } = null!;
 
         public string Airlines { get; set; } = null!;
@@ -23,15 +25,17 @@ namespace BusinessObjects.ResponseModels.Flight
 
         public DateTime ArrivalTime { get; set; }
 
-        public string Status { get; set; } = null!;
+        public int Duration { get; set; }
 
-        public string? FromId { get; set; }
+        public string Status { get; set; } = null!;
 
         public string? From { get; set; }
 
-        public string? ToId { get; set; }
+        public string? FromName { get; set; }
 
         public string? To { get; set; }
+
+        public string? ToName { get; set; }
 
         public List<TicketClassPriceResponse> TicketClassPrices { get; set; } = new List<TicketClassPriceResponse>();
     }

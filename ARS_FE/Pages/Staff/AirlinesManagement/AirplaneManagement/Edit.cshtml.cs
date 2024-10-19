@@ -27,35 +27,35 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         [BindProperty]
         public UpdateAirplaneRequest UpdateAirplane { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var client = CreateAuthorizedClient();
+        //public async Task<IActionResult> OnGetAsync(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    var client = CreateAuthorizedClient();
 
 
-            var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
-            if (response != null)
-            {
-                UpdateAirplane = new UpdateAirplaneRequest
-                {
-                    Id = response.Id,
-                    Type = response.Type,
-                    AirlinesId = response.AirlinesId,
-                    AvailableSeat = response.AvailableSeat,
-                    Code = response.Code,
-                    Status = response.Status,
+        //    var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
+        //    if (response != null)
+        //    {
+        //        UpdateAirplane = new UpdateAirplaneRequest
+        //        {
+        //            Id = response.Id,
+        //            Type = response.Type,
+        //            AirlinesId = response.AirlinesId,
+        //            AvailableSeat = response.AvailableSeat,
+        //            Code = response.Code,
+        //            Status = response.Status,
                     
-                };
-                return Page();
-            }
-            else
-            {
-                return BadRequest();
-            }
-        }
+        //        };
+        //        return Page();
+        //    }
+        //    else
+        //    {
+        //        return BadRequest();
+        //    }
+        //}
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more information, see https://aka.ms/RazorPagesCRUD.

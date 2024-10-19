@@ -26,20 +26,25 @@ namespace Service.Mapper
             CreateMap<CreateFlightRequest, Flight>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => FlightStatusEnums.Schedule.ToString()))
+                .ForMember(dest => dest.ArrivalTime, opt => opt.MapFrom(src => src.DepartureTime.AddMinutes(src.Duration)))
                 .ForMember(dest => dest.TicketClasses, opt => opt.MapFrom(src => src.TicketClassPrices));
-            CreateMap<UpdateFlightRequest, Flight>();
+            CreateMap<UpdateFlightRequest, Flight>()
+                .ForMember(dest => dest.ArrivalTime, opt => opt.MapFrom(src => src.DepartureTime.AddMinutes(src.Duration)))
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<Flight, FlightResponseModel>()
                 .ForMember(dest => dest.AirlinesId, opt => opt.MapFrom(src => src.Airplane.AirlinesId))
                 .ForMember(dest => dest.Airlines, opt => opt.MapFrom(src => src.Airplane.Airlines.Name))
                 .ForMember(dest => dest.AirplaneCode, opt => opt.MapFrom(src => src.Airplane.CodeNumber))
-                .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.FromNavigation.Name))
-                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.ToNavigation.Name))
+                .ForMember(dest => dest.FromName, opt => opt.MapFrom(src => src.FromNavigation.Name))
+                .ForMember(dest => dest.ToName, opt => opt.MapFrom(src => src.ToNavigation.Name))
                 .ForMember(dest => dest.TicketClassPrices, opt => opt.MapFrom(src => src.TicketClasses));
 
             //TicketClass
             CreateMap<TicketClassPrice, TicketClass>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => TicketClassStatusEnums.Available.ToString()));
+            CreateMap<TicketClassPriceUpdate, TicketClass>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<TicketClass, TicketClassPriceResponse>()
                 .ForMember(dest => dest.SeatClassName, opt => opt.MapFrom(src => src.SeatClass.Name));
 

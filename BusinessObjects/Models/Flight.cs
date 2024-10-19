@@ -15,6 +15,8 @@ public partial class Flight
 
     public DateTime ArrivalTime { get; set; }
 
+    public int Duration { get; set; }
+
     public string Status { get; set; } = null!;
 
     public string From { get; set; } = null!;

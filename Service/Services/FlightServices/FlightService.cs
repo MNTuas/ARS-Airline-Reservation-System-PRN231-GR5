@@ -35,12 +35,31 @@ namespace Service.Services.FlightServices
             return _mapper.Map<List<FlightResponseModel>>(list);
         }
 
-        public async Task UpdateFlight(UpdateFlightRequest request, string id)
+        public async Task UpdateFlight(string flightId, UpdateFlightRequest request)
         {
-            var flight = await _flightRepository.GetFlightById(id);
-            _mapper.Map(request, flight);
-            await _flightRepository.Update(flight);
+            var existingFlight = await _flightRepository.GetFlightById(flightId);
+            if (existingFlight == null)
+            {
+                throw new Exception($"Flight with ID {flightId} not found.");
+            }
+
+            _mapper.Map(request, existingFlight);
+
+            existingFlight.ArrivalTime = existingFlight.DepartureTime.AddMinutes(request.Duration);
+            foreach (var price in request.TicketClassPrices)
+            {
+                foreach (var item in existingFlight.TicketClasses)
+                {
+                    if (price.Id.Equals(item.Id))
+                    {
+                        _mapper.Map(price, item);
+                    }
+                }
+            }
+
+            await _flightRepository.Update(existingFlight);
         }
+
 
         public async Task<FlightResponseModel> GetFlightById(string id)
         {

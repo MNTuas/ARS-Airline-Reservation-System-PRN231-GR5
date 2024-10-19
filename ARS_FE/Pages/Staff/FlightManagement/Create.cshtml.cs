@@ -15,6 +15,7 @@ using System.Net.Http.Headers;
 using Service;
 using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airport;
+using BusinessObjects.ResponseModels.Airplane;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {
@@ -27,7 +28,16 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             _httpClientFactory = httpClientFactory;
         }
 
+        [BindProperty]
+        public CreateFlightRequest Flight { get; set; } = default!;
+
         public async Task<IActionResult> OnGet()
+        {
+            await LoadData();
+            return Page();
+        }
+
+        private async Task LoadData()
         {
             var client = CreateAuthorizedClient();
             var airlineList = new List<AllAirlinesResponseModel>();
@@ -47,24 +57,18 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             ViewData["AirlinesId"] = new SelectList(airlineList, "Id", "Name");
             ViewData["From"] = new SelectList(airportList, "Id", "City");
             ViewData["To"] = new SelectList(airportList, "Id", "City");
-            return Page();
         }
 
-        [BindProperty]
-        public CreateFlightRequest Flight { get; set; } = default!;
-
-        // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
+                await LoadData();
                 return Page();
             }
+
             var client = CreateAuthorizedClient();
-
-            var request = Flight;
-
-            var response = await APIHelper.PostAsJson(client, "Flight", request);
+            var response = await APIHelper.PostAsJson(client, "Flight", Flight);
 
             if (response.IsSuccessStatusCode)
             {
@@ -72,10 +76,9 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the flight.");
                 return Page();
             }
-
         }
 
         public async Task<JsonResult> OnGetAirplane(string id)
@@ -93,6 +96,31 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             return new JsonResult(airplaneList);
         }
 
+        public async Task<JsonResult> OnGetTicketClassPrices(string airplaneId)
+        {
+            var client = CreateAuthorizedClient();
+            var responseSeatClass = await APIHelper.GetAsJsonAsync<AirplaneResponseModel>(client, $"airplane/get-airplane/{airplaneId}");
+
+            var ticketClassPrices = new List<TicketClassPrice>();
+            if (responseSeatClass != null)
+            {
+                foreach (var seatClass in responseSeatClass.AirplaneSeats)
+                {
+                    if (seatClass.SeatCount > 0)
+                    {
+                        ticketClassPrices.Add(new TicketClassPrice
+                        {
+                            SeatClassId = seatClass.SeatClassId,
+                            SeatClassName = seatClass.SeatClassName
+                        });
+                    }
+                }
+            }
+
+            return new JsonResult(ticketClassPrices);
+        }
+
+
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");
@@ -106,4 +134,5 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             return client;
         }
     }
+
 }

@@ -16,9 +16,14 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="Flight.AirlinesId" class="control-label">Airlines</label>
-                <select asp-for="Flight.AirlinesId" class="form-control" asp-items="ViewBag.AirlinesId" id="airlineSelect"></select>
-                <span asp-validation-for="Flight.AirlinesId" class="text-danger"></span>
+                <label asp-for="Flight.FlightNumber" class="control-label">Flight Number</label>
+                <input asp-for="Flight.FlightNumber" class="form-control" />
+                <span asp-validation-for="Flight.FlightNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Airlines</label>
+                <select class="form-control" asp-items="ViewBag.AirlinesId" id="airlineSelect"></select>
             </div>
 
             <div class="form-group">
@@ -28,27 +33,33 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Flight.DepartureTime" class="control-label">Departure Time</label>
-                <input asp-for="Flight.DepartureTime" class="form-control" />
+                <label asp-for="Flight.DepartureTime" class="control-label">Scheduled Departure Time</label>
+                <input asp-for="Flight.DepartureTime" class="form-control" id="departureTimeInput" type="datetime-local"
+                       value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
                 <span asp-validation-for="Flight.DepartureTime" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Flight.ArrivalTime" class="control-label">Arrival Time</label>
-                <input asp-for="Flight.ArrivalTime" class="form-control" />
-                <span asp-validation-for="Flight.ArrivalTime" class="text-danger"></span>
+                <label asp-for="Flight.Duration" class="control-label">Duration</label>
+                <input asp-for="Flight.Duration" class="form-control" />
+                <span asp-validation-for="Flight.Duration" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Flight.From" class="control-label"></label>
-                <select asp-for="Flight.From" class="form-control" asp-items="ViewBag.From"></select>
+                <select asp-for="Flight.From" class="form-control" asp-items="ViewBag.From" id="fromSelect"></select>
                 <span asp-validation-for="Flight.From" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Flight.To" class="control-label"></label>
-                <select asp-for="Flight.To" class="form-control" asp-items="ViewBag.To"></select>
+                <select asp-for="Flight.To" class="form-control" asp-items="ViewBag.To" id="toSelect"></select>
                 <span asp-validation-for="Flight.To" class="text-danger"></span>
+            </div>
+
+            <div id="ticketClassPricesSection">
+                <h4>Ticket Class Prices</h4>
+                <div id="ticketClassPrices"></div>
             </div>
 
             <div class="form-group">
@@ -67,45 +78,153 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Define constants for selectors
             const airlineSelect = document.getElementById('airlineSelect');
             const airplaneSelect = document.getElementById('airplaneSelect');
+            const ticketClassPricesDiv = document.getElementById('ticketClassPrices');
 
+            // Constant API endpoints
+            const AIRPLANE_API_URL = './Create?handler=Airplane&id=';
+            const TICKET_CLASS_API_URL = './Create?handler=TicketClassPrices&airplaneId=';
+
+            // Function to fetch airplanes based on selected airline
             function fetchAirplanes(airlineId) {
-                console.log("Selected Airline ID: " + airlineId);
-
                 if (airlineId) {
-                    fetch(`./Create?handler=Airplane&id=${airlineId}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error(`Network response was not ok: ${response.statusText}`);
-                            }
-                            return response.json();
-                        })
+                    fetch(`${AIRPLANE_API_URL}${airlineId}`)
+                        .then(response => response.json())
                         .then(data => {
-                            airplaneSelect.innerHTML = ''; 
+                            airplaneSelect.innerHTML = ''; // Clear previous options
 
-                            data.forEach(airplane => {
-                                const option = document.createElement('option');
-                                option.value = airplane.id;
-                                option.textContent = airplane.code;
-                                airplaneSelect.appendChild(option);
-                            });
+                            if (data.length > 0) {
+                                data.forEach(airplane => {
+                                    const option = document.createElement('option');
+                                    option.value = airplane.id;
+                                    option.textContent = airplane.codeNumber || 'Unknown Code'; // Handle missing code
+                                    airplaneSelect.appendChild(option);
+                                });
+                            } else {
+                                const noOption = document.createElement('option');
+                                noOption.textContent = 'No airplanes available';
+                                airplaneSelect.appendChild(noOption);
+                            }
                         })
-                        .catch(error => console.error('Failed to retrieve airplane data: ', error));
+                        .catch(error => {
+                            console.error('Failed to retrieve airplane data: ', error);
+                            airplaneSelect.innerHTML = '<option>Error loading airplanes</option>'; // Handle errors
+                        });
                 } else {
-                    airplaneSelect.innerHTML = ''; 
+                    airplaneSelect.innerHTML = '<option>Select an airline first</option>';
                 }
             }
 
+            // Function to fetch ticket class prices based on selected airplane
+            function fetchTicketClassPrices(airplaneId) {
+                if (airplaneId) {
+                    fetch(`${TICKET_CLASS_API_URL}${airplaneId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            ticketClassPricesDiv.innerHTML = ''; // Clear previous inputs
+
+                            if (data.length === 0) {
+                                ticketClassPricesDiv.innerHTML = '<p>No seat classes available for this airplane.</p>';
+                            }
+
+                            data.forEach((ticketClass, index) => {
+                                const div = document.createElement('div');
+                                div.classList.add('form-group', 'row');
+
+                                // Create label for seat class name
+                                const labelDiv = document.createElement('div');
+                                labelDiv.classList.add('col-md-6');
+                                const label = document.createElement('label');
+                                label.textContent = ticketClass.seatClassName || 'Unknown Seat Class';
+                                labelDiv.appendChild(label);
+
+                                // Create input for price
+                                const inputDiv = document.createElement('div');
+                                inputDiv.classList.add('col-md-6');
+                                const input = document.createElement('input');
+                                input.type = 'number';
+                                input.classList.add('form-control');
+                                input.name = `Flight.TicketClassPrices[${index}].Price`; // Correctly bind using index
+                                input.placeholder = 'Enter price';
+                                input.required = true;
+
+                                // Hidden input for SeatClassId
+                                const seatClassIdInput = document.createElement('input');
+                                seatClassIdInput.type = 'hidden';
+                                seatClassIdInput.name = `Flight.TicketClassPrices[${index}].SeatClassId`; // Correctly bind SeatClassId
+                                seatClassIdInput.value = ticketClass.seatClassId; // Assuming ticketClass has SeatClassId
+
+                                const seatClassNameInput = document.createElement('input');
+                                seatClassNameInput.type = 'hidden';
+                                seatClassNameInput.name = `Flight.TicketClassPrices[${index}].SeatClassName`; // Bind SeatClassName
+                                seatClassNameInput.value = ticketClass.seatClassName
+
+                                // Append elements to the div
+                                inputDiv.appendChild(input);
+                                div.appendChild(labelDiv);
+                                div.appendChild(inputDiv);
+                                div.appendChild(seatClassIdInput); // Add hidden input for SeatClassId
+                                div.appendChild(seatClassNameInput);
+
+                                // Add the div to the ticket class prices container
+                                ticketClassPricesDiv.appendChild(div);
+                            });
+
+                        })
+                        .catch(error => console.error('Failed to retrieve ticket class prices: ', error));
+                }
+            }
+
+            // Event listeners for select elements
             airlineSelect.addEventListener('change', function () {
-                fetchAirplanes(this.value);
+                const selectedAirlineId = this.value;
+                fetchAirplanes(selectedAirlineId);
             });
 
+            airplaneSelect.addEventListener('change', function () {
+                const selectedAirplaneId = this.value;
+                fetchTicketClassPrices(selectedAirplaneId);
+            });
+
+            // Fetch airplanes and ticket class prices when airline and airplane are pre-selected
             const selectedAirlineId = airlineSelect.value;
             if (selectedAirlineId) {
-                fetchAirplanes(selectedAirlineId); 
+                fetchAirplanes(selectedAirlineId);
             }
-        });
 
+            const selectedAirplaneId = airplaneSelect.value;
+            if (selectedAirplaneId) {
+                fetchTicketClassPrices(selectedAirplaneId);
+            }
+
+            const flightForm = document.querySelector('form');
+
+            flightForm.addEventListener('submit', function (event) {
+                const fromSelect = document.getElementById('fromSelect');
+                const toSelect = document.getElementById('toSelect');
+
+                // Check if "From" and "To" fields are the same
+                if (fromSelect.value === toSelect.value) {
+                    event.preventDefault(); // Prevent form submission
+                    alert("The departure location and destination must be different."); // Show alert
+                }
+            });
+
+            const departureTimeInput = document.getElementById('departureTimeInput');
+            const now = new Date();
+            const minDateTime = now.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+
+            departureTimeInput.setAttribute('min', minDateTime);
+            departureTimeInput.addEventListener('change', function () {
+                const selectedDateTime = new Date(departureTimeInput.value);
+                if (selectedDateTime < now) {
+                    // Reset the input if the selected date is in the past
+                    departureTimeInput.value = minDateTime;
+                    alert("Departure time cannot be in the past. Please select a future date and time.");
+                }
+            });
+        });
     </script>
 }

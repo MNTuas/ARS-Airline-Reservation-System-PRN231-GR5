@@ -17,8 +17,6 @@ namespace AirlinesReservationSystem.Controllers
             _flightService = flightService;
         }
 
-        
-
         [HttpGet("{id}")]
         public async Task<IActionResult> GetFlightById(string id)
         {
@@ -31,12 +29,12 @@ namespace AirlinesReservationSystem.Controllers
         {
             await _flightService.CreateFlight(request);
             return Ok();
-    }
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateFlight(UpdateFlightRequest request, string id)
         {
-            await _flightService.UpdateFlight(request, id);
+            await _flightService.UpdateFlight(id, request);
             return Ok();
         }
     }
