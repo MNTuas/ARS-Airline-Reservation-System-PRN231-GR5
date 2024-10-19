@@ -9,8 +9,10 @@ using BusinessObjects.Models;
 using DAO;
 using Service;
 using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels.Airplane;
+using BusinessObjects.ResponseModels.Airport;
 
-namespace ARS_FE.Pages.Staff.AirplaneManagement
+namespace ARS_FE.Pages.Staff.AirlinesManagement.AirplaneManagement
 {
     public class IndexModel : PageModel
     {
@@ -20,15 +22,16 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<Airplane> Airplane { get;set; } = default!;
+        public PaginatedList<AirplaneResponseModel> Airplane { get;set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<Airplane>>(client, "airplane/get-all-airplane");
+           
+            var response = await APIHelper.GetAsJsonAsync<List<AirplaneResponseModel>>(client, "airplane/get-all-airplane");
             if (response != null)
             {
-                Airplane = PaginatedList<Airplane>.Create(response, pageIndex ?? 1, 6);
+                Airplane = PaginatedList<AirplaneResponseModel>.Create(response, pageIndex ?? 1, 6);
                 return Page();
             }
             else

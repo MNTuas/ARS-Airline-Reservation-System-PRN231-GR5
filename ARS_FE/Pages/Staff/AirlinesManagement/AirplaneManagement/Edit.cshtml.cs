@@ -41,12 +41,12 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
             {
                 UpdateAirplane = new UpdateAirplaneRequest
                 {
-                    Id = response.Id,
-                    Type = response.Type,
-                    AirlinesId = response.AirlinesId,
-                    AvailableSeat = response.AvailableSeat,
-                    Code = response.Code,
-                    Status = response.Status,
+                    //Id = response.Id,
+                    //Type = response.Type,
+                    //AirlinesId = response.AirlinesId,
+                    //AvailableSeat = response.AvailableSeat,
+                    //Code = response.Code,
+                    //Status = response.Status,
                     
                 };
                 return Page();

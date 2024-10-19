@@ -1,5 +1,5 @@
 ﻿@page
-@model ARS_FE.Pages.Staff.AirplaneManagement.IndexModel
+@model ARS_FE.Pages.Staff.AirlinesManagement.AirplaneManagement.IndexModel
 
 @{
     Layout = "_LayoutManage";
@@ -24,11 +24,9 @@
     <table class="table table-hover table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Airplane[0].Code)</th>
-                <th>@Html.DisplayNameFor(model => model.Airplane[0].Type)</th>
-                <th>@Html.DisplayNameFor(model => model.Airplane[0].AvailableSeat)</th>
-                <th>@Html.DisplayNameFor(model => model.Airplane[0].Airlines.Name)</th>
+                <th>@Html.DisplayNameFor(model => model.Airplane[0].CodeNumber)</th>
                 <th class="text-center">Status</th>
+                <th>@Html.DisplayNameFor(model => model.Airplane[0].AirplaneSeats)</th>
                 <th class="text-center">Actions</th>
             </tr>
         </thead>
@@ -44,33 +42,24 @@
                 @foreach (var item in Model.Airplane)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Code)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Type)</td>
-                        <td>@Html.DisplayFor(modelItem => item.AvailableSeat)</td>
-                        <td>
-                            @if (item.Airlines != null)
-                            {
-                                @Html.DisplayFor(modelItem => item.Airlines.Name)
-                            }
-                            else
-                            {
-                                <span>N/A</span>
-                            }
-                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.CodeNumber)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+
                         <td class="text-center">
-                            <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
+                            @item.Status
+                            @* <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
                                 @item.Status
-                            </span>
+                            </span> *@
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm mr-2">Edit</a>
                                 <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm mr-2">Details</a>
-                                <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
+                         @*        <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
                                     <button type="submit" class="btn btn-sm @(item.Status == "Active" ? "btn-danger" : "btn-success")">
                                         @(item.Status == "Active" ? "Deactivate" : "Activate")
                                     </button>
-                                </form>
+                                </form> *@
                             </div>
                         </td>
                     </tr>

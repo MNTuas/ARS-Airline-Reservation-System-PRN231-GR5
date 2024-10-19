@@ -13,7 +13,7 @@ namespace Repository.Repositories.AirplaneRepositories
     {
         public async Task<List<Airplane>> GetAllAirplaneAsync()
         {
-            var listAirplane = await Get(includeProperties: "AirplaneSeats");
+            var listAirplane = await Get(includeProperties: "AirplaneSeats.SeatClass");
             return listAirplane.ToList();
         }
 
@@ -25,7 +25,8 @@ namespace Repository.Repositories.AirplaneRepositories
 
         public async Task<Airplane> GetAirplane(string id)
         {
-            var airplane = await GetSingle(r => r.Id.Equals(id), includeProperties: "AirplaneSeats");
+            var airplane = await GetSingle(r => r.Id.Equals(id), includeProperties: "AirplaneSeats.SeatClass");
+
             return airplane;
         }
     }

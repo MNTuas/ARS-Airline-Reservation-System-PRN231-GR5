@@ -21,6 +21,8 @@ using Repository.Repositories.SeatClassRepositories;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.ModelBuilder;
 using BusinessObjects.ResponseModels.Flight;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airplane;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,12 +30,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 var modelBuilder = new ODataConventionModelBuilder();
 
+// Configure EntitySets for OData
 modelBuilder.EntitySet<FlightResponseModel>("flights");
 modelBuilder.EntityType<FlightResponseModel>().HasKey(n => n.Id);
 
+modelBuilder.EntitySet<AllAirlinesResponseModel>("airlines");
+
+modelBuilder.EntitySet<AirplaneResponseModel>("airplanes");
+modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats");
+
+// Add OData configuration with Select, Filter, OrderBy, Expand, etc.
 builder.Services.AddControllers().AddOData(option => option.Select().Filter()
                 .Count().OrderBy().Expand().SetMaxTop(100)
                 .AddRouteComponents("odata", modelBuilder.GetEdmModel()));
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

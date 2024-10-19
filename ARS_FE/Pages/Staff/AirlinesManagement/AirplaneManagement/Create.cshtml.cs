@@ -69,11 +69,11 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
 
             var n = new AddAirplaneRequest
             {
-                Code = Airplane.Code,
-                AirlinesId = Airplane.AirlinesId,
-                AvailableSeat = Airplane.AvailableSeat,
-                Status = Airplane.Status,
-                Type = Airplane.Type
+                //Code = Airplane.Code,
+                //AirlinesId = Airplane.AirlinesId,
+                //AvailableSeat = Airplane.AvailableSeat,
+                //Status = Airplane.Status,
+                //Type = Airplane.Type
 
             };
 
