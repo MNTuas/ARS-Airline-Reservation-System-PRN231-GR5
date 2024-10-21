@@ -67,8 +67,8 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         //    }
         //    var client = CreateAuthorizedClient();
 
-            var n = new AddAirplaneRequest
-            {
+            //var n = new AddAirplaneRequest
+            //{
                 //Code = Airplane.Code,
                 //AirlinesId = Airplane.AirlinesId,
                 //AvailableSeat = Airplane.AvailableSeat,

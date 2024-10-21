@@ -36,11 +36,11 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         //    var client = CreateAuthorizedClient();
 
 
-            var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
-            if (response != null)
-            {
-                UpdateAirplane = new UpdateAirplaneRequest
-                {
+            //var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
+            //if (response != null)
+            //{
+            //    UpdateAirplane = new UpdateAirplaneRequest
+            //    {
                     //Id = response.Id,
                     //Type = response.Type,
                     //AirlinesId = response.AirlinesId,
