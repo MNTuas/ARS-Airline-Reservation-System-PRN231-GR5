@@ -1,4 +1,4 @@
-﻿@* @page
+﻿@page
 @model ARS_FE.Pages.Staff.AirlinesManagement.IndexModel
 
 @{
@@ -50,18 +50,18 @@
                         <td style="color:red">@Html.DisplayFor(modelItem => item.Code)</td>
                         <td class="text-center">
                             @item.Status
-                            <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
+                            @* <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
                                 @item.Status
-                            </span> 
+                            </span> *@
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm mr-2">Edit</a>
-                                 <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
+                                @* <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
                                     <button type="submit" class="btn btn-sm @(item.Status == "Active" ? "btn-danger" : "btn-success")">
                                         @(item.Status == "Active" ? "Deactivate" : "Activate")
                                     </button>
-                                </form>
+                                </form> *@
                             </div>
                         </td>
                     </tr>
@@ -104,4 +104,3 @@
         </div>
     </div>
 </div>
-  *@

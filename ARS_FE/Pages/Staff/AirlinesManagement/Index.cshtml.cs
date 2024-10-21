@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using Newtonsoft.Json;
 using Service;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authorization;
 using BusinessObjects.ResponseModels.Airlines;
-using BusinessObjects.ResponseModels.Flight;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -36,7 +25,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<AllAirlinesResponseModel>>>(client, url);
             if (response != null)
             {
-                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response.Value, pageIndex ?? 1, 2);
+                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response.Value, pageIndex ?? 1, 5);
                 return Page();
             }
             else

@@ -42,7 +42,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<FlightResponseModel>>>(client, query);
             if (response != null)
             {
-                Flight = PaginatedList<FlightResponseModel>.Create(response.Value, pageIndex ?? 1, 2);
+                Flight = PaginatedList<FlightResponseModel>.Create(response.Value, pageIndex ?? 1, 10);
                 return Page();
             }
             else
