@@ -12,6 +12,8 @@ using Service;
 using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Authorization;
 using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Flight;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -29,11 +31,12 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
+            var url = "airlines";
 
-            var response = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline");
+            var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<AllAirlinesResponseModel>>>(client, url);
             if (response != null)
             {
-                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response, pageIndex ?? 1, 6);
+                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response.Value, pageIndex ?? 1, 2);
                 return Page();
             }
             else
@@ -60,7 +63,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         private HttpClient CreateAuthorizedClient()
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = _httpClientFactory.CreateClient("OdataClient");
             var token = HttpContext.Session.GetString("JWToken");
 
             if (!string.IsNullOrEmpty(token))

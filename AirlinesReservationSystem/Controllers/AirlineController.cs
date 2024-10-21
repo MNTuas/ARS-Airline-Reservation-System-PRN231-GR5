@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
 using Service.Services.AirlineServices;
 
 namespace AirlinesReservationSystem.Controllers
@@ -18,8 +19,7 @@ namespace AirlinesReservationSystem.Controllers
             _airlineService = airlineService;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Staff")]
+        [HttpGet("Get_AllAirline")]
         public async Task<IActionResult> GetAllAirlines()
         {
             var response = await _airlineService.GetAllAirlines();

@@ -18,13 +18,14 @@
     <h1 class="text-center mb-4">Airlines Management</h1>
 
     <div class="text-right mb-3">
-        <a asp-page="Create" class="btn btn-primary">Create Airlines</a>
+        <a asp-page="Create" class="btn btn-primary">Add new Airlines</a>
     </div>
 
     <table class="table table-hover table-striped table-bordered">
         <thead class="thead-dark">
             <tr>
                 <th>@Html.DisplayNameFor(model => model.Airline[0].Name)</th>
+                <th>Code</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">Actions</th>
             </tr>
@@ -33,7 +34,7 @@
             @if (Model.Airline.Count == 0)
             {
                 <tr>
-                    <td colspan="3" class="text-center">No airlines found.</td>
+                    <td colspan="4" class="text-center">No airlines found.</td>
                 </tr>
             }
             else
@@ -41,21 +42,26 @@
                 @foreach (var item in Model.Airline)
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>
+                            <a asp-page="./Details" asp-route-id="@item.Id" class="font-weight-bold text-dark">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </a>
+                        </td>
+                        <td style="color:red">@Html.DisplayFor(modelItem => item.Code)</td>
                         <td class="text-center">
-                            <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
+                            @item.Status
+                            @* <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
                                 @item.Status
-                            </span>
+                            </span> *@
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm mr-2">Edit</a>
-                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm mr-2">Details</a>
-                                <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
+                                @* <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
                                     <button type="submit" class="btn btn-sm @(item.Status == "Active" ? "btn-danger" : "btn-success")">
                                         @(item.Status == "Active" ? "Deactivate" : "Activate")
                                     </button>
-                                </form>
+                                </form> *@
                             </div>
                         </td>
                     </tr>
@@ -63,6 +69,7 @@
             }
         </tbody>
     </table>
+
 
     <!-- Pagination section -->
     <div class="row">

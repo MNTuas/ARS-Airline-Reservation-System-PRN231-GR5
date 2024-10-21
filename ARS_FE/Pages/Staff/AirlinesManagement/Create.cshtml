@@ -15,9 +15,14 @@
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="AirlineName" class="control-label"></label>
-                <input asp-for="AirlineName" class="form-control" />
-                <span asp-validation-for="AirlineName" class="text-danger"></span>
+                <label asp-for="airlinesCreateModel.Name" class="control-label"></label>
+                <input asp-for="airlinesCreateModel.Name" class="form-control" />
+                <span asp-validation-for="airlinesCreateModel.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="airlinesCreateModel.Code" class="control-label"></label>
+                <input asp-for="airlinesCreateModel.Code" class="form-control" />
+                <span asp-validation-for="airlinesCreateModel.Code" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

@@ -16,6 +16,8 @@ namespace BusinessObjects.ResponseModels.Airplane
 
         public bool Status { get; set; }
 
+        //public virtual ICollection<AirplaneSeat> AirplaneSeats { get; set; } = new List<AirplaneSeat>();
+
         public virtual List<AirplaneSeatResponse> AirplaneSeats { get; set; } = new List<AirplaneSeatResponse>();
 
     }
