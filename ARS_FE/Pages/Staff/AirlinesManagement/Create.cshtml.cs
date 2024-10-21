@@ -11,6 +11,8 @@ using System.Text;
 using System.Text.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.RequestModels.Airlines;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -29,7 +31,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         }
 
         [BindProperty]
-        public string AirlineName { get; set; } = default!;
+        public AirlinesCreateModel airlinesCreateModel { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -39,9 +41,13 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             }
             var client = CreateAuthorizedClient();
 
-            var airlineName = AirlineName;
+            var n = new AirlinesCreateModel
+            {
+                Name = airlinesCreateModel.Name,
+                Code = airlinesCreateModel.Code,
+            };
 
-            var response = await APIHelper.PostAsJson(client, "airline", airlineName);
+            var response = await APIHelper.PostAsJson(client, "airline", n);
 
             if (response.IsSuccessStatusCode)
             {

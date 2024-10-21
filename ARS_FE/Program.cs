@@ -3,18 +3,19 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
-using Service.Services.AIrlineServices;
 using Service.Services.AuthService;
 using System.Net.Http.Headers;
 using System.Text;
-using Repository.Repositories.FlightClassRepositories;
-using Service.Services.FlightClassServices;
 using Repository.Repositories.FlightRepositories;
 using Service.Services.FlightServices;
 using Repository.Repositories.RankRepositories;
 using Service.Services.RankServices;
 using Repository.Repositories.AirplaneRepositories;
 using Service.Services.AirplaneServices;
+using Service.Services.AirportService;
+using Service.Mapper;
+using Repository.Repositories.AirporRepositories;
+using Service.Services.AirlineServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,15 +53,26 @@ builder.Services.AddHttpClient("ApiClient", client =>
     client.BaseAddress = new Uri("https://localhost:7168/api/");
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
+builder.Services.AddHttpClient("OdataClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7168/odata/");
+    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+});
 
-builder.Services.AddScoped<IFlightClassRepository, FlightClassRepository>();
-builder.Services.AddScoped<IFlightClassService, FlightClassService>();
+builder.Services.AddHttpClient("OdataClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7168/odata/");
+    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+});
 
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
+
+builder.Services.AddScoped<IAirportRepository, AirportRepository>();
+builder.Services.AddScoped<IAirportService, AirportService>();
 
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -70,6 +82,9 @@ builder.Services.AddScoped<IRankService, RankService>();
 
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
+
+builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,11 +9,14 @@ namespace BusinessObjects.RequestModels.Airport
 {
     public class UpdateAirportRequest
     {
-        public string? Name { get; set; }
+        [Required(ErrorMessage = "Please enter airport name")]
+        public string Name { get; set; } = null!;
 
-        public string? City { get; set; }
+        [Required(ErrorMessage = "Please enter airport city")]
+        public string City { get; set; } = null!;
 
-        public string? Country { get; set; }
+        [Required(ErrorMessage = "Please enter airport country")]
+        public string Country { get; set; } = null!;
 
     }
 }

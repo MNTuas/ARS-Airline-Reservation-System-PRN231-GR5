@@ -1,6 +1,6 @@
 ﻿using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Airport;
-using BusinessObjects.ResponseModels;
+using BusinessObjects.ResponseModels.Airport;
 using FFilms.Application.Shared.Response;
 using System;
 using System.Collections.Generic;
@@ -16,6 +16,6 @@ namespace Service.Services.AirportService
         Task<Result<Airport>> AddAirport(CreateAirportRequest createAirportRequest);
         Task<Airport> GetDetailsAirportInfo(string id);
         Task UpdateAirports(string id, UpdateAirportRequest updateAirportRequest);
-        Task ChangeAirportsStatus(string id, string status);
+        Task ChangeAirportsStatus(string id);
     }
 }
