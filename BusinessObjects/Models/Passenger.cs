@@ -21,7 +21,7 @@ public partial class Passenger
 
     public string? UserId { get; set; }
 
-    public virtual ICollection<PassengerOfBooking> PassengerOfBookings { get; set; } = new List<PassengerOfBooking>();
+    public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 
     public virtual User? User { get; set; }
 }

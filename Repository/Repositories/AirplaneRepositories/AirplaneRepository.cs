@@ -13,13 +13,19 @@ namespace Repository.Repositories.AirplaneRepositories
     {
         public async Task<List<Airplane>> GetAllAirplaneAsync()
         {
-            var listAirplane = await Get();
+            var listAirplane = await Get(includeProperties: "AirplaneSeats.SeatClass");
+            return listAirplane.ToList();
+        }
+
+        public async Task<List<Airplane>> GetAllActiveAirplanes()
+        {
+            var listAirplane = await Get(a => a.Status == true, includeProperties: "AirplaneSeats.SeatClass");
             return listAirplane.ToList();
         }
 
         public async Task<Airplane> GetAirplane(string id)
         {
-            var airplane = await GetSingle(r => r.Id.Equals(id));
+            var airplane = await GetSingle(r => r.Id.Equals(id), includeProperties: "AirplaneSeats.SeatClass");
             return airplane;
         }
     }

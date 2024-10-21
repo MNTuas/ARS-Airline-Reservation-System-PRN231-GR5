@@ -12,6 +12,7 @@ namespace Repository.Repositories.RankRepositories
     {
         Task<List<Rank>> GetAllRankAsync();
         Task<Rank> GetRank(string id);
+        Task<string> GetRankIdByName(string name);
 
     }
 }

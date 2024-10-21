@@ -40,6 +40,8 @@ namespace Service.Services.AuthService
                     };
                 }
 
+                var rankId = await _rankRepository.GetRankIdByName(RankEnums.Bronze.ToString());
+
                 var user = new User()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -47,7 +49,7 @@ namespace Service.Services.AuthService
                     Email = request.Email,
                     Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Point = 0,
-                    RankId = "BE14B0C5-C301-4DB9-8D4B-75E38D71E699",
+                    RankId = rankId,
                     Role = UserRolesEnums.User.ToString(),
                     Status = UserStatusEnums.Active.ToString(),
                 };

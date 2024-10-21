@@ -90,6 +90,36 @@ namespace DAO
             return await query.FirstOrDefaultAsync();
         }
 
+        public async Task<TEntity> GetSingleAirplane(
+    Expression<Func<TEntity, bool>> filter = null,
+    Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
+    string includeProperties = "")
+        {
+            IQueryable<TEntity> query = context.Set<TEntity>();
+
+            // Nạp các thuộc tính liên quan từ includeProperties
+            if (!string.IsNullOrWhiteSpace(includeProperties))
+            {
+                foreach (var includeProperty in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProperty.Trim());
+                }
+            }
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (orderBy != null)
+            {
+                query = orderBy(query);
+            }
+
+            return await query.FirstOrDefaultAsync();
+        }
+
+
         public async Task<TEntity> GetByID(int id)
         {
             return await dbSet.FindAsync(id);

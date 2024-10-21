@@ -1,6 +1,9 @@
-﻿using BusinessObjects.Models;
-using BusinessObjects.ResponseModels;
+﻿using AutoMapper;
+using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Flight;
+using BusinessObjects.ResponseModels.Flight;
 using Repository.Repositories.FlightRepositories;
+using Service.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,41 +15,59 @@ namespace Service.Services.FlightServices
     public class FlightService : IFlightService
     {
         private readonly IFlightRepository _flightRepository;
+        private readonly IMapper _mapper;
 
-        public FlightService(IFlightRepository flightRepository)
+        public FlightService(IFlightRepository flightRepository, IMapper mapper)
         {
             _flightRepository = flightRepository;
+            _mapper = mapper;
         }
 
-        public async Task<List<Flight>> GetAllFlight()
+        public async Task CreateFlight(CreateFlightRequest request)
         {
-            return await _flightRepository.GetAllFlights();
+            Flight newFlight = _mapper.Map<Flight>(request);
+            await _flightRepository.Insert(newFlight);
         }
 
-        public async Task<List<FlightResponseModel>> GetAllFlightsDetails()
+        public async Task<List<FlightResponseModel>> GetAllFlights()
         {
-            return await _flightRepository.GetAllFlightsDetails();
+            var list = await _flightRepository.GetAllFlights();
+            return _mapper.Map<List<FlightResponseModel>>(list);
         }
+
+        public async Task UpdateFlight(string flightId, UpdateFlightRequest request)
+        {
+            var existingFlight = await _flightRepository.GetFlightById(flightId);
+            if (existingFlight == null)
+            {
+                throw new Exception($"Flight with ID {flightId} not found.");
+            }
+
+            _mapper.Map(request, existingFlight);
+
+            existingFlight.ArrivalTime = existingFlight.DepartureTime.AddMinutes(request.Duration);
+            foreach (var price in request.TicketClassPrices)
+            {
+                foreach (var item in existingFlight.TicketClasses)
+                {
+                    if (price.Id.Equals(item.Id))
+                    {
+                        _mapper.Map(price, item);
+                    }
+                }
+            }
+
+            await _flightRepository.Update(existingFlight);
+        }
+
 
         public async Task<FlightResponseModel> GetFlightById(string id)
         {
             var flight = await _flightRepository.GetFlightById(id);
-            return new FlightResponseModel
-            {
-                Id = flight.Id,
-                Airlines = flight.Airplane.Airlines.Name,
-                AirlinesId = flight.Airplane.AirlinesId,
-                AirplaneCode = flight.Airplane.Code,
-                AirplaneId = flight.AirplaneId,
-                DepartureTime = flight.DepartureTime,
-                ArrivalTime = flight.ArrivalTime,
-                From = flight.FromNavigation.City,
-                FromId = flight.FromNavigation.Id,
-                To = flight.ToNavigation.City,
-                ToId = flight.ToNavigation.Id,
-                Status = flight.Status
-            };
+            flight.TicketClasses = flight.TicketClasses.OrderBy(t => t.Price).ToList();
+            return _mapper.Map<FlightResponseModel>(flight);
         }
+
 
     }
 }
