@@ -5,7 +5,7 @@ using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using Service.Enums;
+using Repository.Enums;
 using Service.Services.AuthService;
 using System.Net.Http;
 using System.Security.Claims;
