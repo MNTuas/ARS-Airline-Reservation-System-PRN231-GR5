@@ -23,6 +23,7 @@ using Microsoft.OData.ModelBuilder;
 using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
+using BusinessObjects.ResponseModels.Airport;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +38,9 @@ modelBuilder.EntityType<FlightResponseModel>().HasKey(n => n.Id);
 modelBuilder.EntitySet<AllAirlinesResponseModel>("airlines");
 
 modelBuilder.EntitySet<AirplaneResponseModel>("airplanes");
-modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats");
+modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats"); 
+
+modelBuilder.EntitySet<AirportResponseModel>("airports");
 
 // Add OData configuration with Select, Filter, OrderBy, Expand, etc.
 builder.Services.AddControllers().AddOData(option => option.Select().Filter()
