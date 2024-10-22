@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 using System.Net.Http.Headers;
+using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.RequestModels.Airlines;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -23,6 +25,9 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         [BindProperty]
         public Airline Airline { get; set; } = default!;
+
+        [BindProperty]
+        public AirlinesUpdateModel airlinesUpdateModel { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -46,16 +51,20 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return Page();
+            //}
 
             var client = CreateAuthorizedClient();
 
-            var airlineName = Airline.Name;
+            var n = new AirlinesUpdateModel
+            {
+                Code = Airline.Code,
+                Name = Airline.Name,
+            };
 
-            var response = await APIHelper.PutAsJson(client, $"airline/{Airline.Id}", airlineName);
+            var response = await APIHelper.PutAsJson(client, $"airline/{Airline.Id}", n);
 
             if (response.IsSuccessStatusCode)
             {

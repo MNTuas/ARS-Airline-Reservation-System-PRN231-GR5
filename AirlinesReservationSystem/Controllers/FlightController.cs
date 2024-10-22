@@ -24,6 +24,19 @@ namespace AirlinesReservationSystem.Controllers
             return Ok(result);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> GetFlightByFilter(string from, string to, DateTime checkin, DateTime? checkout)
+        {
+            var flights = await _flightService.GetFlightByFilter(from, to, checkin, checkout);
+
+            if (flights == null )
+            {
+                return NotFound("No flights found matching the criteria.");
+            }
+
+            return Ok(flights);
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateFlight(CreateFlightRequest request)
         {

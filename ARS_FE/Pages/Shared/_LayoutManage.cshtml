@@ -63,19 +63,28 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark" id="ftco-navbar">
             <div class="container">
-                <a class="navbar-brand" href="Index">Vacation<span>Travel Agency</span></a>
+                <a asp-page="/Staff/Index" class="navbar-brand">
+                    Vacation<span>Travel Agency</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="oi oi-menu"></span> Menu
                 </button>
 
                 <div class="collapse navbar-collapse" id="ftco-nav">
                     <ul class="navbar-nav ml-auto">
+                        @if (Context.Session.GetString("Username") != null)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-danger">Wellcome @Context.Session.GetString("Username")</span>
+                            </li>
+                        }
+
                         @{
                             var token = Context.Session.GetString("JWToken");
                             if (token != null)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-page="/SignOut">Sign Out</a>
+                                    <a class="nav-link text-danger" asp-area="" asp-page="/SignOut">Sign Out</a>
                                 </li>
                             }
                         }
@@ -84,6 +93,7 @@
             </div>
         </nav>
     </header>
+
 
     <div class="container">
         <main role="main" class="pb-3">

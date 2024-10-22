@@ -36,7 +36,7 @@
 
   <ItemGroup>
     <Folder Include="Pages\Admin\UserManagement\" />
-    <Folder Include="Pages\User\Booking\" />
+    <Folder Include="Pages\User\" />
   </ItemGroup>
 
 </Project>

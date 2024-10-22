@@ -68,6 +68,17 @@ namespace Service.Services.FlightServices
             return _mapper.Map<FlightResponseModel>(flight);
         }
 
+        public async Task<List<FlightResponseModel>> GetFlightByFilter(string from, string to, DateTime checkin, DateTime? checkout)
+        {
+            // Lấy danh sách chuyến bay theo bộ lọc
+            var flights = await _flightRepository.GetFlightsByFilter(from, to, checkin, checkout);
+
+            // Sử dụng AutoMapper để chuyển đổi từ danh sách Flight sang FlightResponseModel
+            var flightResponseModels = _mapper.Map<List<FlightResponseModel>>(flights);
+
+            return flightResponseModels;
+        }
+
 
     }
 }
