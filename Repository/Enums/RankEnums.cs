@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Enums
+namespace Repository.Enums
 {
-    public enum FlightStatusEnums
+    public enum RankEnums
     {
-        Schedule
+        Bronze,
+        Silver,
+        Gold
     }
 }

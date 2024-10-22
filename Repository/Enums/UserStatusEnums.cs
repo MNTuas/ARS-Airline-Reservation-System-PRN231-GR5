@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Enums
+namespace Repository.Enums
 {
     public enum UserStatusEnums
     {
-        Active, 
+        Active,
         Inactive
     }
 }

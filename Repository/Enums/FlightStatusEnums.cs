@@ -4,11 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Enums
+namespace Repository.Enums
 {
-    public enum TicketClassStatusEnums
+    public enum FlightStatusEnums
     {
-        Available,
-        Unavailable
+        Schedule
     }
 }

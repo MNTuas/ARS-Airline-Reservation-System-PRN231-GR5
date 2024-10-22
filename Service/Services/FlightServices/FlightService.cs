@@ -3,7 +3,6 @@ using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Flight;
 using BusinessObjects.ResponseModels.Flight;
 using Repository.Repositories.FlightRepositories;
-using Service.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
