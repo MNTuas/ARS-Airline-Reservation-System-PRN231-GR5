@@ -7,10 +7,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
-using BusinessObjects.ResponseModels;
 using Service;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airplane;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -24,8 +25,9 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         }
 
         public AirlinesResponseModel Airline { get; set; } = default!;
+        public AirplaneResponseModel Airplane{ get; set; } = default!;
         public PaginatedList<AirplaneResponseModel> Airplanes { get; set; } = default!;
-
+        public PaginatedList<AirplaneSeatResponse> seats { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
         {
             if (id == null)
@@ -40,8 +42,8 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 Airline = response;
 
-                Airplanes = PaginatedList<AirplaneResponseModel>.Create(Airline.Airplanes, pageIndex ?? 1, 5);
-
+                Airplanes = PaginatedList<AirplaneResponseModel>.Create(Airline.Airplanes, pageIndex ?? 1, 5);                
+                
                 return Page();
             }
             else

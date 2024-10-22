@@ -42,6 +42,8 @@ namespace Service.Services.AuthService
                     };
                 }
 
+                var rankId = await _rankRepository.GetRankIdByName(RankEnums.Bronze.ToString());
+
                 var user = new User()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -49,7 +51,7 @@ namespace Service.Services.AuthService
                     Email = request.Email,
                     Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Point = 0,
-                    RankId = "BE14B0C5-C301-4DB9-8D4B-75E38D71E699",
+                    RankId = rankId,
                     Role = UserRolesEnums.User.ToString(),
                     Status = UserStatusEnums.Active.ToString(),
                 };
@@ -130,6 +132,35 @@ namespace Service.Services.AuthService
                 expires: DateTime.Now.AddMonths(1),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature));
+        }
+
+        public async Task<Result<string>> ChangePassword(string userId, ChangePasswordRequest passwordRequest)
+        {
+            var user = await _authRepository.GetSingle(i => i.Id == userId);
+            if (user == null) {
+                return new Result<string>
+                {
+                    Success = false,
+                    Message = "User not found",
+                };
+            }
+            bool isValid = BCrypt.Net.BCrypt.Verify(passwordRequest.oldPassword, user.Password);
+            if (isValid)
+            {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(passwordRequest.newPassword);
+                await _authRepository.Update(user);
+                return new Result<string>
+                {
+                    Success = true,
+                    Message = "Change password successfully"
+                };
+            }
+            return new Result<string>
+            {
+                Success = false,
+                Message = "Old password wrong"
+                
+            };
         }
     }
 }

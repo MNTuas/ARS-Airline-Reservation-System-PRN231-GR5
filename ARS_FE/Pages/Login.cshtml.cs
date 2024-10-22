@@ -45,6 +45,10 @@ namespace ARS_FE.Pages
                 {
                     return RedirectToPage("/Staff/Index");
                 }
+                else if (role.Equals(UserRolesEnums.Admin.ToString()))
+                {
+                    return RedirectToPage("/Admin/Index");
+                }
                 return RedirectToPage("/Index");
             }
             else

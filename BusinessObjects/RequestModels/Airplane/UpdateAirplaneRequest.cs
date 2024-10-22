@@ -9,21 +9,20 @@ namespace BusinessObjects.RequestModels.Airplane
 {
     public class UpdateAirplaneRequest
     {
-        public string Id { get; set; } = null!;
+        [Required(ErrorMessage = "Please enter airplane code number.")]
+        [RegularExpression(@"^[1-9]\d*$", ErrorMessage = "Code number must start with a non-zero digit and contain only numeric characters.")]
+        public string CodeNumber { get; set; } = null!;
 
-        [Required(ErrorMessage = "Code is required.")]
-        [StringLength(10, ErrorMessage = "Code cannot be longer than 10 characters.")]
-        public string Code { get; set; } = null!;
+        [Required(ErrorMessage = "Please enter amount of seat for each class.")]
+        public virtual List<AirplaneSeatUpdateRequest> AirplaneSeatRequest { get; set; } = new List<AirplaneSeatUpdateRequest>();
+    }
 
-        [Required(ErrorMessage = "Type is required.")]
-        public string Type { get; set; } = null!;
+    public class AirplaneSeatUpdateRequest
+    {
+        [Required(ErrorMessage = "Please choose seat class.")]
+        public string SeatClassId { get; set; } = null!;
 
-        [Range(1, int.MaxValue, ErrorMessage = "AvailableSeat must be greater than 0.")]
-        public int AvailableSeat { get; set; }
-
-        public string? AirlinesId { get; set; }
-
-        [RegularExpression("^(Active|Inactive)$", ErrorMessage = "Status must be either 'Active' or 'Inactive'.")]
-        public string? Status { get; set; }
+        [Required(ErrorMessage = "Please enter seat count.")]
+        public int SeatCount { get; set; }
     }
 }

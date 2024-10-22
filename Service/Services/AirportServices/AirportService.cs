@@ -1,6 +1,7 @@
-﻿using BusinessObjects.Models;
+﻿using AutoMapper;
+using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Airport;
-using BusinessObjects.ResponseModels;
+using BusinessObjects.ResponseModels.Airport;
 using FFilms.Application.Shared.Response;
 using Repository.Repositories.AirporRepositories;
 using System;
@@ -14,23 +15,18 @@ namespace Service.Services.AirportService
     public class AirportService : IAirportService
     {
         private readonly IAirportRepository _airportRepository;
+        private readonly IMapper _mapper;
 
-        public AirportService(IAirportRepository airportRepository)
+        public AirportService(IAirportRepository airportRepository, IMapper mapper)
         {
             _airportRepository = airportRepository;
+            _mapper = mapper;
         }
         public async Task<Result<Airport>> AddAirport(CreateAirportRequest createAirportRequest)
         {
             try
             {
-                var newAirport = new Airport
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = createAirportRequest.Name,
-                    City = createAirportRequest.City,
-                    Country = createAirportRequest.Country,
-                    Status = "Active"
-                };
+                var newAirport = _mapper.Map<Airport>(createAirportRequest);
 
                 await _airportRepository.Insert(newAirport);
 
@@ -55,14 +51,7 @@ namespace Service.Services.AirportService
         public async Task<List<AirportResponseModel>> GetAllAirport()
         {
             var result = await _airportRepository.GetAllAirport();
-            return result.Select(r => new AirportResponseModel
-            {
-                Id = r.Id,
-                Name = r.Name,
-                City = r.City,
-                Country = r.Country,
-                Status = r.Status,
-            }).ToList();
+            return _mapper.Map<List<AirportResponseModel>>(result);
         }
 
         public async Task<Airport> GetDetailsAirportInfo(string id)
@@ -73,21 +62,19 @@ namespace Service.Services.AirportService
         public async Task UpdateAirports(string id, UpdateAirportRequest updateAirportRequest)
         {
             var airport = await _airportRepository.GetById(id);
-            airport.Name = updateAirportRequest.Name;
-            airport.City = updateAirportRequest.City;
-            airport.Country = updateAirportRequest.Country;
-
+            _mapper.Map(updateAirportRequest, airport);
             await _airportRepository.Update(airport);
         }
 
-        public async Task ChangeAirportsStatus(string id, string status)
+        public async Task ChangeAirportsStatus(string id)
         {
-            var Airport = await _airportRepository.GetById(id);
-            Airport.Status = status;
-            await _airportRepository.Update(Airport);
+            var airport = await _airportRepository.GetById(id);
+            var currentStatus = airport.Status;
+            airport.Status = !currentStatus;
+            await _airportRepository.Update(airport);
         }
 
-        
+
     }
 }
 

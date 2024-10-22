@@ -13,7 +13,7 @@ public partial class Airport
 
     public string Country { get; set; } = null!;
 
-    public string Status { get; set; } = null!;
+    public bool Status { get; set; }
 
     public virtual ICollection<Flight> FlightFromNavigations { get; set; } = new List<Flight>();
 

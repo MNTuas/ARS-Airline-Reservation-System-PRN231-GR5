@@ -2,7 +2,7 @@ using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.AirporRepositories;
-using Service.Services.AIrlineServices;
+using Service.Services.AirlineServices;
 using Service.Services.AuthService;
 using Service.Services.AirportService;
 using Service.Services.EmailServices;
@@ -12,18 +12,39 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Repository.Repositories.RankRepositories;
-using Repository.Repositories.FlightClassRepositories;
-using Service.Services.FlightClassServices;
 using Service.Services.RankServices;
 using Repository.Repositories.AirplaneRepositories;
 using Service.Services.AirplaneServices;
+using Service.Mapper;
+using Service.Services.SeatClassServices;
+using Repository.Repositories.SeatClassRepositories;
+using Microsoft.AspNetCore.OData;
+using Microsoft.OData.ModelBuilder;
+using BusinessObjects.ResponseModels.Flight;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airplane;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+var modelBuilder = new ODataConventionModelBuilder();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Configure EntitySets for OData
+modelBuilder.EntitySet<FlightResponseModel>("flights");
+modelBuilder.EntityType<FlightResponseModel>().HasKey(n => n.Id);
+
+modelBuilder.EntitySet<AllAirlinesResponseModel>("airlines");
+
+modelBuilder.EntitySet<AirplaneResponseModel>("airplanes");
+modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats");
+
+// Add OData configuration with Select, Filter, OrderBy, Expand, etc.
+builder.Services.AddControllers().AddOData(option => option.Select().Filter()
+                .Count().OrderBy().Expand().SetMaxTop(100)
+                .AddRouteComponents("odata", modelBuilder.GetEdmModel()));
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -72,14 +93,16 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddHttpClient();
 
+builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
+
 //========================================== REPOSITORY ===========================================
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IRankRepository, RankRepository>();
-builder.Services.AddScoped<IFlightClassRepository, FlightClassRepository>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
+builder.Services.AddScoped<ISeatClassRepository, SeatClassRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();
@@ -87,9 +110,9 @@ builder.Services.AddScoped<IAirlineService, AirlineService>();
 builder.Services.AddScoped<IAirportService, AirportService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-builder.Services.AddScoped<IFlightClassService, FlightClassService>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
+builder.Services.AddScoped<ISeatClassService, SeatClassService>();
 
 
 //=========================================== CORS ================================================
@@ -117,7 +140,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseODataBatching();
+app.UseRouting();
 app.UseAuthentication();
 
 app.UseCors("AllowAll");

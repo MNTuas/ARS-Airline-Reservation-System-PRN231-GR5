@@ -8,20 +8,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.RequestModels.Flight;
+using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airport;
+using BusinessObjects.ResponseModels.Flight;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {
     public class EditModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public EditModel(DAO.AirlinesReservationSystemContext context)
+        public EditModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         [BindProperty]
-        public Flight Flight { get; set; } = default!;
+        public UpdateFlightRequest Flight { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -29,17 +34,40 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             {
                 return NotFound();
             }
+            var client = CreateAuthorizedClient();
 
-            var flight =  await _context.Flights.FirstOrDefaultAsync(m => m.Id == id);
-            if (flight == null)
+            var response = await APIHelper.GetAsJsonAsync<FlightResponseModel>(client, $"Flight/{id}");
+            var airportList = new List<AirportResponseModel>();
+
+            var responseAirport = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
+            if (responseAirport != null)
             {
-                return NotFound();
+                airportList = responseAirport;
             }
-            Flight = flight;
-           ViewData["AirplaneId"] = new SelectList(_context.Airplanes, "Id", "Id");
-           ViewData["From"] = new SelectList(_context.Airports, "Id", "Id");
-           ViewData["To"] = new SelectList(_context.Airports, "Id", "Id");
-            return Page();
+            if (response != null)
+            {
+                Flight = new UpdateFlightRequest
+                {
+                    FlightId = response.Id,
+                    Duration = response.Duration,
+                    DepartureTime = response.DepartureTime,
+                    From = response.From,
+                    To = response.To,
+                    TicketClassPrices = response.TicketClassPrices.Select(t => new TicketClassPriceUpdate
+                    {
+                        Id = t.Id,
+                        SeatClassName = t.SeatClassName,
+                        Price = t.Price,
+                    }).ToList()
+                };
+                ViewData["From"] = new SelectList(airportList, "Id", "City", response.From);
+                ViewData["To"] = new SelectList(airportList, "Id", "City", response.To);
+                return Page();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -51,30 +79,34 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 return Page();
             }
 
-            _context.Attach(Flight).State = EntityState.Modified;
+            var client = CreateAuthorizedClient();
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!FlightExists(Flight.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            var updateModel = Flight;
 
-            return RedirectToPage("./Index");
+            var response = await APIHelper.PutAsJson(client, $"Flight/{Flight.FlightId}", updateModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while update the airline.");
+                return Page();
+            }
         }
 
-        private bool FlightExists(string id)
+        private HttpClient CreateAuthorizedClient()
         {
-            return _context.Flights.Any(e => e.Id == id);
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }

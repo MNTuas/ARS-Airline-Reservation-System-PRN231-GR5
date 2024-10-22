@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels;
 using Service;
+using BusinessObjects.ResponseModels.Flight;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {

@@ -5,64 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ARS_FE</title>
 
-
     <link rel="stylesheet" href="~/css/open-iconic-bootstrap.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/animate.css" asp-append-version="true">
-
     <link rel="stylesheet" href="~/css/owl.carousel.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/owl.theme.default.min.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/magnific-popup.css" asp-append-version="true">
-
     <link rel="stylesheet" href="~/css/aos.css" asp-append-version="true">
-
     <link rel="stylesheet" href="~/css/ionicons.min.css" asp-append-version="true">
-
     <link rel="stylesheet" href="~/css/bootstrap-datepicker.css" asp-append-version="true">
     <link rel="stylesheet" href="~/css/jquery.timepicker.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/flaticon.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/icomoon.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
 
+    <style>
+        html, body {
+            height: 100%; /* Chiều cao đầy đủ */
+            margin: 0; /* Loại bỏ margin */
+            display: flex; /* Sử dụng flexbox */
+            flex-direction: column; /* Hướng dọc */
+        }
 
-    <link rel="stylesheet" href="~/css/flaticon.css">
-    <link rel="stylesheet" href="~/css/icomoon.css">
-    <link rel="stylesheet" href="~/css/style.css">
+        #ftco-navbar {
+            background-color: #343a40; /* Nền tối */
+            opacity: 0.9; /* Độ trong suốt */
+        }
 
+        .navbar-brand {
+            font-weight: bold;
+            color: #ffffff !important;
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+        }
+
+            .nav-link:hover {
+                color: #ffc107 !important; /* Màu khi hover */
+            }
+
+        /* Main container styles */
+        .container {
+            flex: 1; /* Cho phép container mở rộng để chiếm không gian còn lại */
+            margin-top: 20px; /* Khoảng cách trên */
+        }
+
+        /* Footer styles */
+        footer {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <head>
-        <style>
-            /* Ensures header has a solid black background */
-            #ftco-navbar {
-                background-color: bisque !important; /* Black color */
-                opacity: 1 !important; /* Remove any transparency */
-            }
-        </style>
-    </head>
-    <body>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-                <div class="container">
-                    <a class="navbar-brand" href="index.html">Vacation<span>Travel Agency</span></a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="oi oi-menu"></span> Menu
-                    </button>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark" id="ftco-navbar">
+            <div class="container">
+                <a class="navbar-brand" href="Index">Vacation<span>Travel Agency</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="oi oi-menu"></span> Menu
+                </button>
 
-                    <div class="collapse navbar-collapse" id="ftco-nav">
-                        <ul class="navbar-nav ml-auto">
-                            <li class="nav-item"><a class="nav-link" asp-page="/Staff/AirlinesManagement/Index">Airline</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-page="/Staff/AirportManagement/Index">Airport</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-page="/Staff/FlightClassManagement/Index">FlightClass</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-page="/Staff/AirplaneManagement/Index">Airplane</a></li>
-                            <li class="nav-item"><a class="nav-link" asp-page="/UserPage/RankManagement/Index">Rank</a></li>
-                        </ul>
-                    </div>
+                <div class="collapse navbar-collapse" id="ftco-nav">
+                    <ul class="navbar-nav ml-auto">
+                        @{
+                            var token = Context.Session.GetString("JWToken");
+                            if (token != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-page="/SignOut">Sign Out</a>
+                                </li>
+                            }
+                        }
+                    </ul>
                 </div>
-            </nav>
-        </header>
-    </body>
-
-        <!-- END nav -->
+            </div>
+        </nav>
     </header>
-
- 
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -70,27 +91,11 @@
         </main>
     </div>
 
-
-  
-   
-
-
-    <script src="js/jquery.min.js"></script>
-    <script src="js/jquery-migrate-3.0.1.min.js"></script>
-    <script src="js/popper.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
-    <script src="js/jquery.easing.1.3.js"></script>
-    <script src="js/jquery.waypoints.min.js"></script>
-    <script src="js/jquery.stellar.min.js"></script>
-    <script src="js/owl.carousel.min.js"></script>
-    <script src="js/jquery.magnific-popup.min.js"></script>
-    <script src="js/aos.js"></script>
-    <script src="js/jquery.animateNumber.min.js"></script>
-    <script src="js/bootstrap-datepicker.js"></script>
-    <script src="js/scrollax.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
-    <script src="js/google-map.js"></script>
-    <script src="js/main.js"></script>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Vacation Travel Agency. All Rights Reserved.</p>
+        </div>
+    </footer>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
