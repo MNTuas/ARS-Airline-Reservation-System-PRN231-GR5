@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DAO;
+using Microsoft.EntityFrameworkCore;
 using Repository.Repositories.RankRepositories;
 using System;
 using System.Collections.Generic;
@@ -19,13 +20,17 @@ namespace Repository.Repositories.AirplaneRepositories
 
         public async Task<List<Airplane>> GetAllActiveAirplanes()
         {
-            var listAirplane = await Get(a => a.Status == true, includeProperties: "AirplaneSeats.SeatClass");
+            var listAirplane = await Get(a => a.Status == true, includeProperties: "AirplaneSeats.SeatClass,Flights");
             return listAirplane.ToList();
         }
 
         public async Task<Airplane> GetAirplane(string id)
         {
-            var airplane = await GetSingle(r => r.Id.Equals(id), includeProperties: "AirplaneSeats.SeatClass");
+            var airplane = await GetSingle(
+           r => r.Id.Equals(id),
+           includeProperties: "AirplaneSeats.SeatClass,Flights"
+       );
+
             return airplane;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using BusinessObjects.Models;
+using BusinessObjects.ResponseModels.Flight;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,6 +16,7 @@ namespace BusinessObjects.ResponseModels.Airplane
         public string CodeNumber { get; set; } = null!;
 
         public bool Status { get; set; }
+        public List<FlightResponseModel> Flights { get; set; }
 
         //public virtual ICollection<AirplaneSeat> AirplaneSeats { get; set; } = new List<AirplaneSeat>();
 

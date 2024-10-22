@@ -61,7 +61,8 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<UpdateAirplaneRequest, Airplane>();
             CreateMap<Airplane, AirplaneResponseModel>()
-                .ForMember(dest => dest.AirplaneSeats, opt => opt.MapFrom(src => src.AirplaneSeats));
+                .ForMember(dest => dest.AirplaneSeats, opt => opt.MapFrom(src => src.AirplaneSeats))
+                .ForMember(dest => dest.Flights, opt => opt.MapFrom(src => src.Flights));
 
             //AirplaneSeat
             CreateMap<AirplaneSeatRequest, AirplaneSeat>()
