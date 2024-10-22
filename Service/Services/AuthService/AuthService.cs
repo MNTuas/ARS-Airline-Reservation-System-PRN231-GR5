@@ -134,5 +134,34 @@ namespace Service.Services.AuthService
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature));
         }
+
+        public async Task<Result<string>> ChangePassword(string userId, ChangePasswordRequest passwordRequest)
+        {
+            var user = await _authRepository.GetSingle(i => i.Id == userId);
+            if (user == null) {
+                return new Result<string>
+                {
+                    Success = false,
+                    Message = "User not found",
+                };
+            }
+            bool isValid = BCrypt.Net.BCrypt.Verify(passwordRequest.oldPassword, user.Password);
+            if (isValid)
+            {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(passwordRequest.newPassword);
+                await _authRepository.Update(user);
+                return new Result<string>
+                {
+                    Success = true,
+                    Message = "Change password successfully"
+                };
+            }
+            return new Result<string>
+            {
+                Success = false,
+                Message = "Old password wrong"
+                
+            };
+        }
     }
 }
