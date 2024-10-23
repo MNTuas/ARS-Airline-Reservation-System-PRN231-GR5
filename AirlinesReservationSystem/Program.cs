@@ -27,6 +27,7 @@ using Repository.Repositories.UserRepositories;
 using Service.Services.UserServices;
 using Service.Services.AirlineServices;
 using BusinessObjects.ResponseModels.User;
+using Service.Services.VNPayServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -124,6 +125,7 @@ builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
 builder.Services.AddScoped<ISeatClassService, SeatClassService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //=========================================== CORS ================================================
 builder.Services.AddCors(options =>
