@@ -13,7 +13,8 @@ namespace Service.Services.TicketServices
 {
     public interface ITicketService
     {
-        Task<Result<List<Ticket>>> AddTicket(CreateBookingRequest createBookingRequest,
-    List<CreatePassengerRequest> createPassengerRequests, CreateTicketRequest createTicketRequest);
+        //    Task<Result<List<Ticket>>> AddTicket(CreateBookingRequest createBookingRequest,
+        //List<CreatePassengerRequest> createPassengerRequests, CreateTicketRequest createTicketRequest);
+        Task<Result<Ticket>> addTicket(CreateTicketRequest createTicketRequest);
     }
 }

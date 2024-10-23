@@ -14,7 +14,7 @@ namespace BusinessObjects.RequestModels.Passenger
 
         public string Gender { get; set; } = null!;
 
-        public DateOnly Dob { get; set; }
+        //public DateOnly Dob { get; set; }
 
         public string Country { get; set; } = null!;
 

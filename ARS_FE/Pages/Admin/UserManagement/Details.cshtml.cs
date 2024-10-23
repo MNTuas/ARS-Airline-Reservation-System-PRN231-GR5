@@ -8,17 +8,18 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 
-namespace ARS_FE.Pages.UserPage.RankManagement
+namespace ARS_FE.Pages.Admin.UserManagement
 {
-    public class DeleteModel : PageModel
+    public class DetailsModel : PageModel
     {
+        private readonly DAO.AirlinesReservationSystemContext _context;
 
-        public DeleteModel()
+        public DetailsModel(DAO.AirlinesReservationSystemContext context)
         {
+            _context = context;
         }
 
-        [BindProperty]
-        public Rank Rank { get; set; } = default!;
+        public User User { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -27,21 +28,16 @@ namespace ARS_FE.Pages.UserPage.RankManagement
                 return NotFound();
             }
 
-
-            
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync(string id)
-        {
-            if (id == null)
+            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
+            if (user == null)
             {
                 return NotFound();
             }
-
-          
-
-            return RedirectToPage("./Index");
+            else
+            {
+                User = user;
+            }
+            return Page();
         }
     }
 }

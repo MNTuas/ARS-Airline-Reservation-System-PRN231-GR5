@@ -12,6 +12,8 @@ using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Flight;
+using BusinessObjects.ResponseModels.User;
+using Repository.Enums;
 using Service.Enums;
 using System;
 using System.Collections.Generic;
@@ -41,8 +43,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.FromName, opt => opt.MapFrom(src => src.FromNavigation.Name))
                 .ForMember(dest => dest.ToName, opt => opt.MapFrom(src => src.ToNavigation.Name))
                 .ForMember(dest => dest.TicketClassPrices, opt => opt.MapFrom(src => src.TicketClasses));
-            
-            
+
             //TicketClass
             CreateMap<TicketClassPrice, TicketClass>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
@@ -58,11 +59,6 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<Airline, AllAirlinesResponseModel>();
             CreateMap<Airline, AirlinesResponseModel>();
-            CreateMap<AirlinesUpdateModel, Airline>()
-    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-    .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.Code));
-
-
 
             //Airplane
             CreateMap<AddAirplaneRequest, Airplane>()
@@ -70,7 +66,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<UpdateAirplaneRequest, Airplane>();
             CreateMap<Airplane, AirplaneResponseModel>()
-                .ForMember(dest => dest.AirplaneSeats, opt => opt.MapFrom(src => src.AirplaneSeats));          
+                .ForMember(dest => dest.AirplaneSeats, opt => opt.MapFrom(src => src.AirplaneSeats));
 
             //AirplaneSeat
             CreateMap<AirplaneSeatRequest, AirplaneSeat>()
@@ -98,6 +94,10 @@ namespace Service.Mapper
             CreateMap<CreateTicketRequest, Ticket>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => TicketStatusEnums.Pending.ToString()));
+
+            //User
+            CreateMap<User, UserInfoResponseModel>()
+                .ForMember(dest => dest.RankName, otp => otp.MapFrom(src => src.Rank.Type));
         }
     }
 }

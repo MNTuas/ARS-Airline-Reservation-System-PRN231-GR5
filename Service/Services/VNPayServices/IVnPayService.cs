@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Enums
+namespace Service.Services.VNPayServices
 {
-    public enum FlightStatusEnums
+    public interface IVnPayService
     {
-        Schedule
     }
 }

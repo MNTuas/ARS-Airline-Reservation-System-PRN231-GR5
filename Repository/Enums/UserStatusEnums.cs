@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Service.Enums
+namespace Repository.Enums
 {
-    public enum RankEnums
+    public enum UserStatusEnums
     {
-        Bronze, 
-        Silver,
-        Gold
+        Active,
+        Inactive
     }
 }

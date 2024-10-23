@@ -9,10 +9,19 @@ namespace BusinessObjects.RequestModels.Ticket
 {
     public class CreateTicketRequest
     {
-        //[JsonIgnore]
-        //public List<string> PassengerIds { get; set; } = new List<string>(); // Danh sách ID của hành khách
-
         public string TicketClassId { get; set; } = null!;
+
+        public string BookingId { get; set; } = null!;
+
+        public string FirstName { get; set; } = null!;
+
+        public string LastName { get; set; } = null!;
+
+        public string Gender { get; set; } = null!;
+
+        //public DateOnly Dob { get; set; }
+
+        public string Country { get; set; } = null!;
     }
 
 }

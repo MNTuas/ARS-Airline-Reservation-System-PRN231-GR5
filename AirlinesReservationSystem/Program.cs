@@ -2,7 +2,6 @@ using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.AirporRepositories;
-using Service.Services.AirlineServices;
 using Service.Services.AuthService;
 using Service.Services.AirportService;
 using Service.Services.EmailServices;
@@ -30,6 +29,11 @@ using Repository.Repositories.TicketRepositories;
 using Service.Services.BookingServices;
 using Service.Services.TicketServices;
 using Service.Services.PassengerServices;
+using Repository.Repositories.UserRepositories;
+using Service.Services.UserServices;
+using Service.Services.AirlineServices;
+using BusinessObjects.ResponseModels.User;
+using Service.Services.VNPayServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +51,9 @@ modelBuilder.EntitySet<AirplaneResponseModel>("airplanes");
 modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats"); 
 
 modelBuilder.EntitySet<AirportResponseModel>("airports");
+
+modelBuilder.EntitySet<UserInfoResponseModel>("users");
+modelBuilder.EntityType<UserInfoResponseModel>().HasKey(n => n.Id);
 
 // Add OData configuration with Select, Filter, OrderBy, Expand, etc.
 builder.Services.AddControllers().AddOData(option => option.Select().Filter()
@@ -115,6 +122,7 @@ builder.Services.AddScoped<ISeatClassRepository, SeatClassRepository>();
 builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();
@@ -129,6 +137,8 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IPassengerService, PassengerService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //=========================================== CORS ================================================
 builder.Services.AddCors(options =>
