@@ -9,7 +9,8 @@ using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Flight;
-using Service.Enums;
+using BusinessObjects.ResponseModels.User;
+using Repository.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,10 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<Airport, AirportResponseModel>();
+
+            //User
+            CreateMap<User, UserInfoResponseModel>()
+                .ForMember(dest => dest.RankName, otp => otp.MapFrom(src => src.Rank.Type));
         }
     }
 }

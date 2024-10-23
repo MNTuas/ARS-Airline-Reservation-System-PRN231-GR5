@@ -59,11 +59,6 @@ builder.Services.AddHttpClient("OdataClient", client =>
     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 });
 
-builder.Services.AddHttpClient("OdataClient", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7168/odata/");
-    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-});
 
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightService, FlightService>();

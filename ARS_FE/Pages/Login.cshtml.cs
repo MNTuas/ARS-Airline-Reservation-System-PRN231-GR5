@@ -5,7 +5,7 @@ using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using Service.Enums;
+using Repository.Enums;
 using Service.Services.AuthService;
 using System.Net.Http;
 using System.Security.Claims;
@@ -39,8 +39,10 @@ namespace ARS_FE.Pages
 
                 var userId = DecodeToken.DecodeTokens(token, "UserId");
                 var role = DecodeToken.DecodeTokens(token, ClaimTypes.Role);
+                var name = DecodeToken.DecodeTokens(token, "Username");
                 HttpContext.Session.SetString("JWToken", token);
                 HttpContext.Session.SetString("UserId", userId);
+                HttpContext.Session.SetString("Username", name);
                 if (role.Equals(UserRolesEnums.Staff.ToString()))
                 {
                     return RedirectToPage("/Staff/Index");

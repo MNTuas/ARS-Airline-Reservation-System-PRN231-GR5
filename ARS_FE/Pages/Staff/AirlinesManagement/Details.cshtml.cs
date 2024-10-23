@@ -27,7 +27,6 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         public AirlinesResponseModel Airline { get; set; } = default!;
         public AirplaneResponseModel Airplane{ get; set; } = default!;
         public PaginatedList<AirplaneResponseModel> Airplanes { get; set; } = default!;
-        public PaginatedList<AirplaneSeatResponse> seats { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
         {
             if (id == null)
@@ -43,7 +42,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
                 Airline = response;
 
                 Airplanes = PaginatedList<AirplaneResponseModel>.Create(Airline.Airplanes, pageIndex ?? 1, 5);                
-                
+                               
                 return Page();
             }
             else

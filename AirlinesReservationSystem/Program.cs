@@ -2,7 +2,6 @@ using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.AirporRepositories;
-using Service.Services.AirlineServices;
 using Service.Services.AuthService;
 using Service.Services.AirportService;
 using Service.Services.EmailServices;
@@ -23,6 +22,12 @@ using Microsoft.OData.ModelBuilder;
 using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
+using BusinessObjects.ResponseModels.Airport;
+using Repository.Repositories.UserRepositories;
+using Service.Services.UserServices;
+using Service.Services.AirlineServices;
+using BusinessObjects.ResponseModels.User;
+using Service.Services.VNPayServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,7 +42,12 @@ modelBuilder.EntityType<FlightResponseModel>().HasKey(n => n.Id);
 modelBuilder.EntitySet<AllAirlinesResponseModel>("airlines");
 
 modelBuilder.EntitySet<AirplaneResponseModel>("airplanes");
-modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats");
+modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats"); 
+
+modelBuilder.EntitySet<AirportResponseModel>("airports");
+
+modelBuilder.EntitySet<UserInfoResponseModel>("users");
+modelBuilder.EntityType<UserInfoResponseModel>().HasKey(n => n.Id);
 
 // Add OData configuration with Select, Filter, OrderBy, Expand, etc.
 builder.Services.AddControllers().AddOData(option => option.Select().Filter()
@@ -103,6 +113,7 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IRankRepository, RankRepository>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 builder.Services.AddScoped<ISeatClassRepository, SeatClassRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();
@@ -113,7 +124,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
 builder.Services.AddScoped<ISeatClassService, SeatClassService>();
-
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //=========================================== CORS ================================================
 builder.Services.AddCors(options =>

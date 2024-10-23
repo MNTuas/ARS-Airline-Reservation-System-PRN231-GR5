@@ -243,6 +243,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Passengers)
                 .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Passenger_User");
         });
 
@@ -283,8 +284,6 @@ public partial class AirlinesReservationSystemContext : DbContext
 
             entity.HasIndex(e => e.BookingId, "IDX_FK_Ticket_BookingInformation");
 
-            entity.HasIndex(e => e.PassengerId, "IDX_FK_Ticket_Passenger");
-
             entity.HasIndex(e => e.TicketClassId, "IDX_FK_Ticket_TicketClass");
 
             entity.Property(e => e.Id)
@@ -295,10 +294,13 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
-            entity.Property(e => e.PassengerId)
-                .HasMaxLength(36)
-                .IsUnicode(false)
-                .IsFixedLength();
+            entity.Property(e => e.Country).HasMaxLength(100);
+            entity.Property(e => e.FirstName).HasMaxLength(100);
+            entity.Property(e => e.Gender).HasMaxLength(10);
+            entity.Property(e => e.LastName).HasMaxLength(100);
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.TicketClassId)
                 .HasMaxLength(36)
                 .IsUnicode(false)
@@ -308,11 +310,6 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasForeignKey(d => d.BookingId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Ticket_BookingInformation");
-
-            entity.HasOne(d => d.Passenger).WithMany(p => p.Tickets)
-                .HasForeignKey(d => d.PassengerId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Ticket_Passenger");
 
             entity.HasOne(d => d.TicketClass).WithMany(p => p.Tickets)
                 .HasForeignKey(d => d.TicketClassId)
