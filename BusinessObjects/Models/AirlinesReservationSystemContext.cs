@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace DAO;
+namespace BusinessObjects.Models;
 
 public partial class AirlinesReservationSystemContext : DbContext
 {
