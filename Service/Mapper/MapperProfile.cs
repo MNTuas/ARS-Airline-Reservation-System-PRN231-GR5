@@ -4,7 +4,10 @@ using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Airlines;
 using BusinessObjects.RequestModels.Airplane;
 using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.RequestModels.Booking;
 using BusinessObjects.RequestModels.Flight;
+using BusinessObjects.RequestModels.Passenger;
+using BusinessObjects.RequestModels.Ticket;
 using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Airport;
@@ -81,6 +84,20 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<Airport, AirportResponseModel>();
+
+            //Booking
+            CreateMap<CreateBookingRequest, BookingInformation>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => BookingStatusEnums.Pending.ToString()));
+
+            //Passenger
+            CreateMap<CreatePassengerRequest, Passenger>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()));
+
+            //Ticket
+            CreateMap<CreateTicketRequest, Ticket>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => TicketStatusEnums.Pending.ToString()));
         }
     }
 }
