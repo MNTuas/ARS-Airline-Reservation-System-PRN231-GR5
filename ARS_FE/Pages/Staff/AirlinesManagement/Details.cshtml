@@ -31,7 +31,6 @@
             <thead class="thead-dark">
                 <tr>
                     <th>Code</th>
-                    <th>Type</th>
                     <th>Available Seats</th>
                 </tr>
             </thead>
@@ -39,9 +38,16 @@
                 @foreach (var airplane in Model.Airplanes)
                 {
                     <tr>
-                        <td>@airplane.Code</td>
-                        <td>@airplane.Type</td>
-                        <td>@airplane.AvailableSeat</td>
+                        <td>@airplane.CodeNumber</td>
+                        <td>
+                            @foreach (var seat in airplane.AirplaneSeats)
+                            {
+                                <p>
+                                    <strong>@seat.SeatClassName</strong> @seat.SeatCount seats
+                                </p>
+                            }
+                        </td>
+
                     </tr>
                 }
             </tbody>
@@ -80,6 +86,7 @@
     {
         <p>No airplanes available for this airline.</p>
     }
+</div>
 
     <div>
         <a asp-page="./Edit" asp-route-id="@Model.Airline.Id" class="btn btn-warning">Edit Airline</a>

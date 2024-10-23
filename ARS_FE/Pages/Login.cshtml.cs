@@ -1,37 +1,64 @@
+using BusinessObjects.Models;
 using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Auth;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
+using Repository.Enums;
 using Service.Services.AuthService;
+using System.Net.Http;
+using System.Security.Claims;
 
 namespace ARS_FE.Pages
 {
     public class LoginModel : PageModel
     {
-        public LoginModel()
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public LoginModel(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
         {
+            _httpClientFactory = httpClientFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
+
         [BindProperty]
         public LoginRequest request { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            using (var httpClient = new HttpClient())
+            var client = _httpClientFactory.CreateClient("ApiClient");
+
+            var response = await APIHelper.PostAsJson(client, "Auth/login", request);
+
+            if (response.IsSuccessStatusCode)
             {
-                var response = await APIHelper.PostAsJson(httpClient, APIHelper.Url + "Auth/login", request);
+                var result = await response.Content.ReadFromJsonAsync<Result<string>>();
+                var token = result.Data;
 
-                if (response.IsSuccessStatusCode)
+                var userId = DecodeToken.DecodeTokens(token, "UserId");
+                var role = DecodeToken.DecodeTokens(token, ClaimTypes.Role);
+                var name = DecodeToken.DecodeTokens(token, "Username");
+                HttpContext.Session.SetString("JWToken", token);
+                HttpContext.Session.SetString("UserId", userId);
+                HttpContext.Session.SetString("Username", name);
+                if (role.Equals(UserRolesEnums.Staff.ToString()))
                 {
-
-                    return RedirectToPage("/TestingAfterLoginPage");
+                    return RedirectToPage("/Staff/Index");
                 }
-                else
+                else if (role.Equals(UserRolesEnums.Admin.ToString()))
                 {
-                    ModelState.AddModelError(string.Empty, "Error occurred while logging in");
-                    return Page();
+                    return RedirectToPage("/Admin/Index");
                 }
+                return RedirectToPage("/Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while logging in");
+                return Page();
             }
         }
     }
 }
+

@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BusinessObjects.RequestModels.Airlines;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service.Services.AIrlineServices;
+using Microsoft.AspNetCore.OData.Query;
+using Service.Services.AirlineServices;
 
 namespace AirlinesReservationSystem.Controllers
 {
+
     [Route("api/airline")]
     [ApiController]
     public class AirlineController : ControllerBase
@@ -15,7 +19,7 @@ namespace AirlinesReservationSystem.Controllers
             _airlineService = airlineService;
         }
 
-        [HttpGet]
+        [HttpGet("Get_AllAirline")]
         public async Task<IActionResult> GetAllAirlines()
         {
             var response = await _airlineService.GetAllAirlines();
@@ -24,33 +28,37 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpGet]
         [Route("{id}")]
+        [Authorize(Roles = "Staff")]
         public async Task<IActionResult> GetAirlinesInfo(string id)
         {
             var response = await _airlineService.GetDetailsAirlineInfo(id);
             return Ok(response);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddNewAirlines([FromBody] string name)
-        {
-            await _airlineService.AddAirlines(name);
-            return Ok("Add airline successfully");
-        }
-
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> UpdateAirlines(string id, [FromBody] string name)
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> UpdateAirlines(string id, AirlinesUpdateModel model)
         {
-            await _airlineService.UpdateAirlines(id, name);
+            await _airlineService.UpdateAirlines(id, model);
             return Ok("Update airline successfully");
         }
 
         [HttpPut]
         [Route("{id}/status")]
-        public async Task<IActionResult> ChangeAirlinesStatus(string id, [FromBody] string status)
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> ChangeAirlinesStatus(string id)
         {
-            await _airlineService.ChangeAirlinesStatus(id, status);
+            await _airlineService.ChangeAirlinesStatus(id);
             return Ok("Update airlines's status successfully");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> AddNewAirlines(AirlinesCreateModel model)
+        {
+            await _airlineService.AddAirlines(model);
+            return Ok("Add airline successfully");
         }
     }
 }

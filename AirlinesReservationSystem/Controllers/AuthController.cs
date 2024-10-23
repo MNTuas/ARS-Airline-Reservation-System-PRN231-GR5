@@ -1,10 +1,15 @@
 ﻿using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AuthService;
+using System.Security.Claims;
 
 namespace AirlinesReservationSystem.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -56,5 +61,20 @@ namespace AirlinesReservationSystem.Controllers
                 Message = results.Message
             });
         }
+        [HttpPut]
+        [Route("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordRequest request)
+        {
+            string currentUserId = HttpContext.User.FindFirstValue("UserId");
+            var result = await _authService.ChangePassword(currentUserId, request);
+            if (result.Success != false) {
+                return Ok(new
+                {
+                    Status = result.Success,
+                    Message = result.Message,
+                }); }
+            return BadRequest();
+        } 
     }
 }

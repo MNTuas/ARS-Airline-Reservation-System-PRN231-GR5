@@ -17,9 +17,9 @@ public partial class Passenger
 
     public string Country { get; set; } = null!;
 
-    public string Type { get; set; } = null!;
+    public string? Type { get; set; }
 
-    public virtual ICollection<PassengerOfBooking> PassengerOfBookings { get; set; } = new List<PassengerOfBooking>();
+    public string UserId { get; set; } = null!;
 
-    public virtual ICollection<Relative> Relatives { get; set; } = new List<Relative>();
+    public virtual User User { get; set; } = null!;
 }

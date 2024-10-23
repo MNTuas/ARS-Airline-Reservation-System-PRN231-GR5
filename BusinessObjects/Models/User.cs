@@ -11,13 +11,13 @@ public partial class User
 
     public string Name { get; set; } = null!;
 
-    public string PhoneNumber { get; set; } = null!;
+    public string? PhoneNumber { get; set; }
 
     public string Email { get; set; } = null!;
 
     public string Password { get; set; } = null!;
 
-    public string Address { get; set; } = null!;
+    public string? Address { get; set; }
 
     public int Point { get; set; }
 
@@ -29,9 +29,9 @@ public partial class User
 
     public virtual ICollection<BookingInformation> BookingInformations { get; set; } = new List<BookingInformation>();
 
-    public virtual ICollection<PaymentRecord> PaymentRecords { get; set; } = new List<PaymentRecord>();
+    public virtual ICollection<Passenger> Passengers { get; set; } = new List<Passenger>();
 
     public virtual Rank Rank { get; set; } = null!;
 
-    public virtual ICollection<Relative> Relatives { get; set; } = new List<Relative>();
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }

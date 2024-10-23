@@ -1,11 +1,12 @@
 ﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
+using BusinessObjects.RequestModels.Auth;
 using FFilms.Application.Shared.Response;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Repository.Enums;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.RankRepositories;
-using Service.Enums;
+using Service.Helper;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,8 +22,8 @@ namespace Service.Services.AuthService
         private readonly IAuthRepository _authRepository;
         private readonly IRankRepository _rankRepository;
         private readonly IConfiguration _configuration;
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration, IRankRepository rankRepository) 
-        { 
+        public AuthService(IAuthRepository authRepository, IConfiguration configuration, IRankRepository rankRepository)
+        {
             _authRepository = authRepository;
             _rankRepository = rankRepository;
             _configuration = configuration;
@@ -40,82 +41,48 @@ namespace Service.Services.AuthService
                         Message = "Email is already used!!!",
                     };
                 }
-                if(request.Password != request.ConfirmPassword)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Confirm password does not match with password!!!",
-                    };
-                }
-                var existingUserPhoneNumber = await _authRepository.GetSingle(x => x.PhoneNumber == request.PhoneNumber);
-                if (existingUserPhoneNumber != null)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Phone number is already used!!!",
-                    };
-                }
-                var existingUserAvatar = await _authRepository.GetSingle(x => x.Avatar == request.Avatar);
-                if (existingUserAvatar != null)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Avatar is already used!!!",
-                    };
-                }
-                var existingRank = await _rankRepository.GetSingle(x => x.Id == request.RankId);
-                if (existingRank == null)
-                {
-                    return new Result<User>
-                    {
-                        Success = false,
-                        Message = "Rank is not found!!!",
-                    };
-                }
+
+                var rankId = await _rankRepository.GetRankIdByName(RankEnums.Bronze.ToString());
+
                 var user = new User()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Name = request.Name,
                     Email = request.Email,
-                    PhoneNumber = request.PhoneNumber,
-                    Address = request.Address,
-                    Avatar = request.Avatar,
                     Password = BCrypt.Net.BCrypt.HashPassword(request.Password),
                     Point = 0,
-                    RankId = request.RankId,
+                    RankId = rankId,
                     Role = UserRolesEnums.User.ToString(),
-                    Status = UserStatusEnums.Active.ToString()
+                    Status = UserStatusEnums.Active.ToString(),
                 };
+
                 await _authRepository.Insert(user);
 
                 return new Result<User>
                 {
                     Success = true,
-                    Message = "Create successful!",
+                    Message = "Register successful!",
                     Data = user
                 };
             }
-            catch(Exception)  
+            catch (Exception ex)
             {
                 return new Result<User>
                 {
                     Success = false,
-                    Message = "Something wrong!!!",
+                    Message = ex.Message,
                 };
             }
         }
 
-        public async Task<Result<User>> LoginAsync(LoginRequest request)
+        public async Task<Result<string>> LoginAsync(LoginRequest request)
         {
             try
             {
                 var user = await _authRepository.GetSingle(x => x.Email == request.Email);
                 if (user == null)
                 {
-                    return new Result<User>
+                    return new Result<string>
                     {
                         Success = false,
                         Message = "Wrong email!!!",
@@ -123,28 +90,32 @@ namespace Service.Services.AuthService
                 }
                 if (!BCrypt.Net.BCrypt.Verify(request.Password, user.Password))
                 {
-                    return new Result<User>
+                    return new Result<string>
                     {
                         Success = false,
                         Message = "Wrong password!!!",
                     };
                 }
                 var authClaims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Email, request.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
+                    {
+                        new Claim(MySetting.CLAIM_USERID, user.Id),
+                        new Claim(ClaimTypes.Role, user.Role),
+                        new Claim("Email", user.Email),
+                        new Claim("UserId", user.Id),
+                        new Claim("Username", user.Name),
+                    };
                 var token = GenerateJwtToken(authClaims);
-                return new Result<User>
+
+                return new Result<string>
                 {
                     Success = true,
-                    Message = new JwtSecurityTokenHandler().WriteToken(token),
-                    Data = user
+                    Message = "Login successfully",
+                    Data = new JwtSecurityTokenHandler().WriteToken(token)
                 };
             }
             catch (Exception ex)
             {
-                return new Result<User>
+                return new Result<string>
                 {
                     Success = false,
                     Message = $"Something went wrong: {ex.Message}",
@@ -159,9 +130,38 @@ namespace Service.Services.AuthService
             return new JwtSecurityToken(
                 issuer: _configuration["Jwt:ValidIssuer"],
                 audience: _configuration["Jwt:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(20),
+                expires: DateTime.Now.AddMonths(1),
                 claims: authClaims,
                 signingCredentials: new SigningCredentials(authenKey, SecurityAlgorithms.HmacSha512Signature));
+        }
+
+        public async Task<Result<string>> ChangePassword(string userId, ChangePasswordRequest passwordRequest)
+        {
+            var user = await _authRepository.GetSingle(i => i.Id == userId);
+            if (user == null) {
+                return new Result<string>
+                {
+                    Success = false,
+                    Message = "User not found",
+                };
+            }
+            bool isValid = BCrypt.Net.BCrypt.Verify(passwordRequest.oldPassword, user.Password);
+            if (isValid)
+            {
+                user.Password = BCrypt.Net.BCrypt.HashPassword(passwordRequest.newPassword);
+                await _authRepository.Update(user);
+                return new Result<string>
+                {
+                    Success = true,
+                    Message = "Change password successfully"
+                };
+            }
+            return new Result<string>
+            {
+                Success = false,
+                Message = "Old password wrong"
+                
+            };
         }
     }
 }

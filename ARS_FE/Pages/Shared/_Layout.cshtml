@@ -42,16 +42,27 @@
                         <li class="nav-item"><a asp-page="/Destination" class="nav-link">Destination</a></li>
                         <li class="nav-item"><a asp-page="/Blog" class="nav-link">Blog</a></li>
                         <li class="nav-item"><a asp-page="/Contact" class="nav-link">Contact</a></li>
-                        <li class="nav-item cta"><a asp-page="/" class="nav-link">Book Now</a></li>
-                        <li class="nav-item"><a asp-page="/Login" class="nav-link">Login</a></li>
-                        <li class="nav-item"><a asp-page="/Register" class="nav-link">Sign Up</a></li>
+
+                        @if (Context.Session.GetString("Username") != null)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link ">@Context.Session.GetString("Username")</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " asp-area="" asp-page="/SignOut">Sign Out</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item cta"><a asp-page="/Login" class="nav-link">Book Now</a></li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
         <!-- END nav -->
-
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

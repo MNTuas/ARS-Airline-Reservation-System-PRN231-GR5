@@ -1,5 +1,7 @@
-﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
+﻿using AutoMapper;
+using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.ResponseModels.Airport;
 using FFilms.Application.Shared.Response;
 using Repository.Repositories.AirporRepositories;
 using System;
@@ -13,23 +15,18 @@ namespace Service.Services.AirportService
     public class AirportService : IAirportService
     {
         private readonly IAirportRepository _airportRepository;
+        private readonly IMapper _mapper;
 
-        public AirportService(IAirportRepository airportRepository) 
+        public AirportService(IAirportRepository airportRepository, IMapper mapper)
         {
             _airportRepository = airportRepository;
+            _mapper = mapper;
         }
         public async Task<Result<Airport>> AddAirport(CreateAirportRequest createAirportRequest)
         {
             try
             {
-                var newAirport = new Airport
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = createAirportRequest.Name,
-                    City = createAirportRequest.City,
-                    Country = createAirportRequest.Country,
-                    Status = "ACTIVE"
-                };
+                var newAirport = _mapper.Map<Airport>(createAirportRequest);
 
                 await _airportRepository.Insert(newAirport);
 
@@ -37,7 +34,7 @@ namespace Service.Services.AirportService
                 {
                     Success = true,
                     Message = "Create successful!",
-                    Data = newAirport 
+                    Data = newAirport
                 };
 
             }
@@ -46,14 +43,38 @@ namespace Service.Services.AirportService
                 return new Result<Airport>
                 {
                     Success = false,
-                    Message = "Something wrong!!!",                  
+                    Message = ex.Message,
                 };
             }
         }
 
-        public async Task<List<Airport>> GetAllAirport()
+        public async Task<List<AirportResponseModel>> GetAllAirport()
         {
-            return await _airportRepository.GetAllAirport();
+            var result = await _airportRepository.GetAllAirport();
+            return _mapper.Map<List<AirportResponseModel>>(result);
         }
+
+        public async Task<Airport> GetDetailsAirportInfo(string id)
+        {
+            return await _airportRepository.GetById(id);
+        }
+
+        public async Task UpdateAirports(string id, UpdateAirportRequest updateAirportRequest)
+        {
+            var airport = await _airportRepository.GetById(id);
+            _mapper.Map(updateAirportRequest, airport);
+            await _airportRepository.Update(airport);
+        }
+
+        public async Task ChangeAirportsStatus(string id)
+        {
+            var airport = await _airportRepository.GetById(id);
+            var currentStatus = airport.Status;
+            airport.Status = !currentStatus;
+            await _airportRepository.Update(airport);
+        }
+
+
     }
 }
+

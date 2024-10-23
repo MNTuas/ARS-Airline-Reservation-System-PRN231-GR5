@@ -9,14 +9,20 @@ using BusinessObjects.Models;
 using DAO;
 using System.Text;
 using System.Text.Json;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using BusinessObjects.RequestModels.Airport;
+using BusinessObjects.RequestModels.Airlines;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
     public class CreateModel : PageModel
     {
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public CreateModel()
+        public CreateModel(IHttpClientFactory httpClientFactory)
         {
+            _httpClientFactory = httpClientFactory;
         }
 
         public IActionResult OnGet()
@@ -25,7 +31,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         }
 
         [BindProperty]
-        public string AirlineName { get; set; } = default!;
+        public AirlinesCreateModel airlinesCreateModel { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -33,24 +39,39 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             {
                 return Page();
             }
+            var client = CreateAuthorizedClient();
 
-            using (var httpClient = new HttpClient())
+            var n = new AirlinesCreateModel
             {
-                var airlineName = AirlineName; 
+                Name = airlinesCreateModel.Name,
+                Code = airlinesCreateModel.Code,
+            };
 
-                var response = await APIHelper.PostAsJson(httpClient, APIHelper.Url + "airline", airlineName);
+            var response = await APIHelper.PostAsJson(client, "airline", n);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    return RedirectToPage("./Index");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");
-                    return Page();
-                }
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
             }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the airline.");
+                return Page();
+            }
+
         }
 
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
     }
 }
