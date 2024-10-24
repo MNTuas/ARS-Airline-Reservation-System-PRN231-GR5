@@ -34,8 +34,4 @@
     <None Include="wwwroot\scss\bootstrap\.DS_Store" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\User\" />
-  </ItemGroup>
-
 </Project>

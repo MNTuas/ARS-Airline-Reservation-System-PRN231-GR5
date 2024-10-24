@@ -29,7 +29,8 @@ namespace AirlinesReservationSystem.Controllers
                 return Ok(new
                 {
                     message = result.Message,
-                    tickets = result.Data
+                    bookingId = result.Data.Id, // Giả sử Data chứa BookingId
+                    tickets = result.Data.Tickets // Danh sách vé
                 });
             }
             else

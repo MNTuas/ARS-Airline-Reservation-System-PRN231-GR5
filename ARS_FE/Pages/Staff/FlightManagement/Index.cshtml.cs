@@ -47,7 +47,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
         }
 

@@ -1,0 +1,65 @@
+﻿@page
+@model ARS_FE.Pages.UserPage.TicketManagement.CreateModel
+
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Ticket</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CreateTicketRequest.TicketClassId" class="control-label"></label>
+                <input asp-for="CreateTicketRequest.TicketClassId" class="form-control" />
+                <span asp-validation-for="CreateTicketRequest.TicketClassId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateTicketRequest.BookingId" class="control-label"></label>
+                <input asp-for="CreateTicketRequest.BookingId" class="form-control" />
+                <span asp-validation-for="CreateTicketRequest.BookingId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateTicketRequest.FirstName" class="control-label"></label>
+                <input asp-for="CreateTicketRequest.FirstName" class="form-control" />
+                <span asp-validation-for="CreateTicketRequest.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateTicketRequest.LastName" class="control-label"></label>
+                <input asp-for="CreateTicketRequest.LastName" class="form-control" />
+                <span asp-validation-for="CreateTicketRequest.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateTicketRequest.Gender" class="control-label"></label>
+                <input asp-for="CreateTicketRequest.Gender" class="form-control" />
+                <span asp-validation-for="CreateTicketRequest.Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateTicketRequest.Dob" class="control-label"></label>
+                <input asp-for="CreateTicketRequest.Dob" class="form-control" />
+                <span asp-validation-for="CreateTicketRequest.Dob" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreateTicketRequest.Country" class="control-label"></label>
+                <input asp-for="CreateTicketRequest.Country" class="form-control" />
+                <span asp-validation-for="CreateTicketRequest.Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
