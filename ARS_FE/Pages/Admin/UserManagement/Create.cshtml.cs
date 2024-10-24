@@ -21,7 +21,7 @@ namespace ARS_FE.Pages.Admin.UserManagement
 
         public IActionResult OnGet()
         {
-        ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Id");
+            ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Id");
             return Page();
         }
 

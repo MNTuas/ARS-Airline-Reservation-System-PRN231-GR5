@@ -1,0 +1,87 @@
+﻿@page
+@model ARS_FE.Pages.UserPage.BookingManager.IndexModel
+
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Index";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center">Flight Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Flight Information</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Airline</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Flight.Airlines)</dd>
+
+                <dt class="col-sm-3">Airplane Code</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Flight.AirplaneCode)</dd>
+
+                <dt class="col-sm-3">Scheduled Departure Time</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Flight.DepartureTime)</dd>
+
+                <dt class="col-sm-3">Scheduled Arrival Time</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Flight.ArrivalTime)</dd>
+
+                <dt class="col-sm-3">From</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Flight.FromName)</dd>
+
+                <dt class="col-sm-3">To</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Flight.ToName)</dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Flight.Status)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Ticket Class Prices</h4>
+        </div>
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Choose your seat</th>
+                        <th>Cost:</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var price in Model.Flight.TicketClassPrices)
+                    {
+                        <tr>
+                            <td>
+                                <!-- Radio button để chọn SeatClassId -->
+                                <input type="radio" name="selectedTicketClass" value="@price.Id" /> @price.SeatClassName
+                            </td>
+                            <td>@price.Price.ToString("#,##0 VND")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <label asp-for="createBookingRequest.Quantity" class="control-label"></label>
+                <select asp-for="createBookingRequest.Quantity" class="form-control">
+                    <option value="">-- Ticket Quantity --</option>
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <option value="@i">@i</option>
+                    }
+                </select>
+                <span asp-validation-for="createBookingRequest.Quantity" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Continute</button>
+        </form>
+
+
+</div>
+

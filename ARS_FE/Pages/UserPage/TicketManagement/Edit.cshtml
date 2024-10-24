@@ -1,0 +1,70 @@
+﻿@page
+@model ARS_FE.Pages.UserPage.TicketManagement.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Ticket</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Ticket.Id" />
+            <div class="form-group">
+                <label asp-for="Ticket.TicketClassId" class="control-label"></label>
+                <select asp-for="Ticket.TicketClassId" class="form-control" asp-items="ViewBag.TicketClassId"></select>
+                <span asp-validation-for="Ticket.TicketClassId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ticket.BookingId" class="control-label"></label>
+                <select asp-for="Ticket.BookingId" class="form-control" asp-items="ViewBag.BookingId"></select>
+                <span asp-validation-for="Ticket.BookingId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ticket.FirstName" class="control-label"></label>
+                <input asp-for="Ticket.FirstName" class="form-control" />
+                <span asp-validation-for="Ticket.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ticket.LastName" class="control-label"></label>
+                <input asp-for="Ticket.LastName" class="form-control" />
+                <span asp-validation-for="Ticket.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ticket.Gender" class="control-label"></label>
+                <input asp-for="Ticket.Gender" class="form-control" />
+                <span asp-validation-for="Ticket.Gender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ticket.Dob" class="control-label"></label>
+                <input asp-for="Ticket.Dob" class="form-control" />
+                <span asp-validation-for="Ticket.Dob" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ticket.Country" class="control-label"></label>
+                <input asp-for="Ticket.Country" class="form-control" />
+                <span asp-validation-for="Ticket.Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ticket.Status" class="control-label"></label>
+                <input asp-for="Ticket.Status" class="form-control" />
+                <span asp-validation-for="Ticket.Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
