@@ -1,33 +1,28 @@
-using BusinessObjects.RequestModels;
-using BusinessObjects.RequestModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Service.Services.AuthService;
+using System.ComponentModel.DataAnnotations;
 
 namespace ARS_FE.Pages
 {
-    public class RegisterModel : PageModel
+    public class ForgotPasswordModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public RegisterModel(IHttpClientFactory httpClientFactory)
+        [BindProperty]
+        [Required(ErrorMessage = "Please enter your email address.")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address.")]
+        public string Email { get; set; } = default!;
+
+        public ForgotPasswordModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        [BindProperty]
-        public RegisterRequest request { get; set; } = default!;
-
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             var client = _httpClientFactory.CreateClient("ApiClient");
 
-            var response = await APIHelper.PostAsJson(client, "Auth/register", request);
+            var response = await APIHelper.PutAsJson(client, "Auth/reset-password", Email);
 
             if (response.IsSuccessStatusCode)
             {
@@ -38,6 +33,7 @@ namespace ARS_FE.Pages
                 ModelState.AddModelError(string.Empty, "Error occurred while logging in");
                 return Page();
             }
+
         }
     }
 }

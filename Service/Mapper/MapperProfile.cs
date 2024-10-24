@@ -8,6 +8,7 @@ using BusinessObjects.RequestModels.Booking;
 using BusinessObjects.RequestModels.Flight;
 using BusinessObjects.RequestModels.Passenger;
 using BusinessObjects.RequestModels.Ticket;
+using BusinessObjects.RequestModels.User;
 using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Airport;
@@ -98,6 +99,7 @@ namespace Service.Mapper
             //User
             CreateMap<User, UserInfoResponseModel>()
                 .ForMember(dest => dest.RankName, otp => otp.MapFrom(src => src.Rank.Type));
+            CreateMap<UserInfoUpdateModel, User>();
         }
     }
 }
