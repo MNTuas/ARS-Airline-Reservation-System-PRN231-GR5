@@ -15,16 +15,14 @@ namespace ARS_FE.Pages
     public class LoginModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LoginModel(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+        public LoginModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [BindProperty]
-        public LoginRequest request { get; set; }
+        public LoginRequest request { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {

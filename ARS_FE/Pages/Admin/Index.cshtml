@@ -1,4 +1,13 @@
 ﻿@page
 @model ARS_FE.Pages.Admin.IndexModel
 @{
+    Layout = "_LayoutManage";
 }
+
+<div class="container mt-4">
+    <h1>Welcome to Staff Management</h1>
+    <div class="mb-4">
+        <a class="btn btn-primary" asp-page="./UserManagement/Index">User Management</a>
+        <a class="btn btn-primary" asp-page="./RankManagement/Index">Rank Management</a>
+    </div>
+</div>

@@ -7,19 +7,21 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.ResponseModels.User;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Admin.UserManagement
 {
     public class DetailsModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public DetailsModel(DAO.AirlinesReservationSystemContext context)
+        public DetailsModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
-        public User User { get; set; } = default!;
+        public UserInfoResponseModel UserInfo { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -28,16 +30,30 @@ namespace ARS_FE.Pages.Admin.UserManagement
                 return NotFound();
             }
 
-            var user = await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            var client = CreateAuthorizedClient();
+            var response = await APIHelper.GetAsJsonAsync<UserInfoResponseModel>(client, $"users/{id}");
+            if (response != null)
             {
-                return NotFound();
+                UserInfo = response;
+                return Page();
             }
             else
             {
-                User = user;
+                return BadRequest();
             }
-            return Page();
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }

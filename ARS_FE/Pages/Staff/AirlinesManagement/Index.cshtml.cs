@@ -30,7 +30,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
         }
 
@@ -46,7 +46,7 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
         }
 

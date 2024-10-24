@@ -8,15 +8,15 @@ namespace ARS_FE.Pages
 {
     public class RegisterModel : PageModel
     {
-        private readonly IConfiguration _configuration;
-        private readonly IAuthService _authService;
-        public RegisterModel(IConfiguration configuration, IAuthService authService)
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public RegisterModel(IHttpClientFactory httpClientFactory)
         {
-            _configuration = configuration;
-            _authService = authService;
+            _httpClientFactory = httpClientFactory;
         }
+
         [BindProperty]
-        public RegisterRequest request { get; set; }
+        public RegisterRequest request { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -24,14 +24,20 @@ namespace ARS_FE.Pages
             {
                 return Page();
             }
-            var result = await _authService.RegisterAsync(request);
-            if (result.Success)
-            {
-                return RedirectToPage("/Index");
-            }
 
-            ModelState.AddModelError(string.Empty, result.Message);
-            return Page();
+            var client = _httpClientFactory.CreateClient("ApiClient");
+
+            var response = await APIHelper.PostAsJson(client, "Auth/register", request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("/Login");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while logging in");
+                return Page();
+            }
         }
     }
 }

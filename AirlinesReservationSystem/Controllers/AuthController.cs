@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AuthService;
+using Service.Services.UserServices;
 using System.Security.Claims;
 
 namespace AirlinesReservationSystem.Controllers
@@ -15,9 +16,12 @@ namespace AirlinesReservationSystem.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IUserService _userService;
+
+        public AuthController(IAuthService authService, IUserService userService)
         {
             _authService = authService;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -64,17 +68,27 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPut]
         [Route("change-password")]
         [Authorize]
-        public async Task<IActionResult> ChangePassword([FromBody]ChangePasswordRequest request)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             string currentUserId = HttpContext.User.FindFirstValue("UserId");
             var result = await _authService.ChangePassword(currentUserId, request);
-            if (result.Success != false) {
+            if (result.Success != false)
+            {
                 return Ok(new
                 {
                     Status = result.Success,
                     Message = result.Message,
-                }); }
+                });
+            }
             return BadRequest();
-        } 
+        }
+
+        [HttpPut]
+        [Route("reset-password")]
+        public async Task<IActionResult> SendEmailResetPassword([FromBody] string email)
+        {
+            await _userService.SendEmailWhenForgotPassword(email);
+            return Ok("Success");
+        }
     }
 }

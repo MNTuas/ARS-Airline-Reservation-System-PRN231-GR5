@@ -13,7 +13,7 @@
             <div class="col-12">
                 <div class="mb-5">
                     <h2 style="color:orange" class="display-5 fw-bold text-center">Login</h2>
-                    <p class="text-center m-0">Already have an account? <a  asp-page="/Register" class="link-primary text-decoration-none">Sign in</a></p>
+                    <p class="text-center m-0">Do not have an account? <a  asp-page="/Register" class="link-primary text-decoration-none">Register</a></p>
                 </div>
             </div>
         </div>
@@ -41,11 +41,10 @@
                                         <span asp-validation-for="request.Password" class="text-danger"></span>
                                         <label for="password" class="label">Password</label>
                                     </div>
+                                    <div class="text-end">
+                                        <a asp-page="/ForgotPassword" class="link-primary text-decoration-none">Forgot Password?</a>
+                                    </div>
                                 </div>
-
-
-
-
                                 <div class="col-12">
                                     <div class="d-grid">
                                         <button class="btn btn-lg btn-dark rounded-0 fs-6" type="submit">Login</button>
