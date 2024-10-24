@@ -4,58 +4,84 @@
 @{
     ViewData["Title"] = "Index";
     Layout = "_LayoutManage";
+
+    var prevDisabled = !Model.UserInfo.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.UserInfo.HasNextPage ? "disabled" : "";
+
+    var minPage = Math.Max(1, Model.UserInfo.PageIndex - 2);
+    var maxPage = Math.Min(minPage + 4, Model.UserInfo.TotalPages);
+
+    var currentPageIndex = Model.UserInfo.PageIndex;
 }
 
-<h1>Index</h1>
+<h1>User Management</h1>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Role)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User[0].RankName)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.UserInfo[0].Email)</th>
+            <th>@Html.DisplayNameFor(model => model.UserInfo[0].Name)</th>
+            <th>@Html.DisplayNameFor(model => model.UserInfo[0].Role)</th>
+            <th>@Html.DisplayNameFor(model => model.UserInfo[0].Status)</th>
+            <th>@Html.DisplayNameFor(model => model.UserInfo[0].RankName)</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.User) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RankName)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.UserInfo)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.Role)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                <td>@Html.DisplayFor(modelItem => item.RankName)</td>
+                <td>
+                    @if (item.Status == "Inactive")
+                    {
+                        <form method="post" asp-page-handler="Activate" asp-route-id="@item.Id">
+                            <button type="submit" class="btn btn-success">Activate</button>
+                        </form>
+                    }
+                    else if (item.Status == "Active")
+                    {
+                        <form method="post" asp-page-handler="Deactivate" asp-route-id="@item.Id">
+                            <button type="submit" class="btn btn-danger">Deactivate</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+<div class="row">
+    <div class="col">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center m-0">
+                <li class="page-item @prevDisabled">
+                    <a class="page-link" aria-label="Previous"
+                       asp-page="./Index"
+                       asp-route-pageIndex="@(Model.UserInfo.PageIndex - 1)">
+                        <span aria-hidden="true"><i class="bi bi-arrow-left"></i> Previous</span>
+                    </a>
+                </li>
+
+                @for (var i = minPage; i <= maxPage; i++)
+                {
+                    <li class="page-item @(Model.UserInfo.PageIndex == i ? "active" : "")">
+                        <a class="page-link" asp-page="./Index"
+                           asp-route-pageIndex="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @nextDisabled">
+                    <a class="page-link" aria-label="Next"
+                       asp-page="./Index"
+                       asp-route-pageIndex="@(Model.UserInfo.PageIndex + 1)">
+                        <span aria-hidden="true">Next <i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

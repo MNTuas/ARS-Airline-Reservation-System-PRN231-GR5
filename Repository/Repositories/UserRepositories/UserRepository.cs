@@ -16,5 +16,15 @@ namespace Repository.Repositories.UserRepositories
             var list = await Get(u => !u.Role.Equals(UserRolesEnums.Admin.ToString()), includeProperties: "Rank");
             return list.ToList();
         }
+
+        public async Task<User> GetUserById(string id)
+        {
+            return await GetSingle(u => u.Id.Equals(id), includeProperties: "Rank");
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await GetSingle(u => u.Email.ToLower().Equals(email.ToLower()), includeProperties: "Rank");
+        }
     }
 }
