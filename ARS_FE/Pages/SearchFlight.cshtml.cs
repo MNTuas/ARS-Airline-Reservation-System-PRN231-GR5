@@ -43,7 +43,7 @@ namespace ARS_FE.Pages
             // Encode the DateTime values for URL
             var checkinEncoded = Uri.EscapeDataString(checkin.ToString("yyyy-MM-ddTHH:mm:ssZ"));
 
-            // Determine the URL based on whether checkout is provided
+            // chọn url khi có checkout hoặc ko có
             if (checkout == null)
             {
                 response = await APIHelper.GetAsJsonAsync<List<FlightResponseModel>>(client, $"Flight/search?from={from}&to={to}&checkin={checkinEncoded}");
@@ -66,9 +66,6 @@ namespace ARS_FE.Pages
             }
         }
 
-
-
-
         private async Task LoadData()
         {
             var client = CreateAuthorizedClient();
@@ -83,9 +80,6 @@ namespace ARS_FE.Pages
             ViewData["From"] = new SelectList(airportList, "Id", "Name");
             ViewData["To"] = new SelectList(airportList, "Id", "Name");
         }
-
-
-
 
         private HttpClient CreateAuthorizedClient()
         {

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 
-namespace ARS_FE.Pages.Admin.UserManagement
+namespace ARS_FE.Pages.UserPage.BookingManager
 {
     public class EditModel : PageModel
     {
@@ -21,7 +21,7 @@ namespace ARS_FE.Pages.Admin.UserManagement
         }
 
         [BindProperty]
-        public User User { get; set; } = default!;
+        public BookingInformation BookingInformation { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -30,13 +30,13 @@ namespace ARS_FE.Pages.Admin.UserManagement
                 return NotFound();
             }
 
-            var user =  await _context.Users.FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
+            var bookinginformation =  await _context.BookingInformations.FirstOrDefaultAsync(m => m.Id == id);
+            if (bookinginformation == null)
             {
                 return NotFound();
             }
-            User = user;
-           ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Id");
+            BookingInformation = bookinginformation;
+           ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return Page();
         }
 
@@ -49,7 +49,7 @@ namespace ARS_FE.Pages.Admin.UserManagement
                 return Page();
             }
 
-            _context.Attach(User).State = EntityState.Modified;
+            _context.Attach(BookingInformation).State = EntityState.Modified;
 
             try
             {
@@ -57,7 +57,7 @@ namespace ARS_FE.Pages.Admin.UserManagement
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(User.Id))
+                if (!BookingInformationExists(BookingInformation.Id))
                 {
                     return NotFound();
                 }
@@ -70,9 +70,9 @@ namespace ARS_FE.Pages.Admin.UserManagement
             return RedirectToPage("./Index");
         }
 
-        private bool UserExists(string id)
+        private bool BookingInformationExists(string id)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return _context.BookingInformations.Any(e => e.Id == id);
         }
     }
 }

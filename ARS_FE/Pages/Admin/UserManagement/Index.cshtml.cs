@@ -22,7 +22,7 @@ namespace ARS_FE.Pages.Admin.UserManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<UserInfoResponseModel> User { get; set; } = default!;
+        public PaginatedList<UserInfoResponseModel> UserInfo { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
@@ -30,7 +30,7 @@ namespace ARS_FE.Pages.Admin.UserManagement
             var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<UserInfoResponseModel>>>(client, "users");
             if (response != null)
             {
-                User = PaginatedList<UserInfoResponseModel>.Create(response.Value, pageIndex ?? 1, 6);
+                UserInfo = PaginatedList<UserInfoResponseModel>.Create(response.Value, pageIndex ?? 1, 6);
                 return Page();
             }
             else
@@ -38,9 +38,49 @@ namespace ARS_FE.Pages.Admin.UserManagement
                 return BadRequest();
             }
         }
+
+        public async Task<IActionResult> OnPostActivateAsync(string id)
+        {
+            var client = CreateAuthorizedApiClient();
+            var response = await APIHelper.PutAsJson(client, $"users/{id}/status", "Active");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage();
+            }
+
+            return BadRequest();
+        }
+
+        public async Task<IActionResult> OnPostDeactivateAsync(string id)
+        {
+            var client = CreateAuthorizedApiClient();
+            var response = await APIHelper.PutAsJson(client, $"users/{id}/status", "Inactive");
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage();
+            }
+
+            return BadRequest();
+        }
+
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("OdataClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
+        }
+
+        private HttpClient CreateAuthorizedApiClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
             var token = HttpContext.Session.GetString("JWToken");
 
             if (!string.IsNullOrEmpty(token))
