@@ -1,0 +1,280 @@
+﻿@page
+@model ARS_FE.Pages.SearchFlightModel
+@{
+    ViewData["Title"] = "Flight Management";
+
+    var prevDisabled = !Model.Flight.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Flight.HasNextPage ? "disabled" : "";
+
+    var minPage = Math.Max(1, Model.Flight.PageIndex - 2);
+    var maxPage = Math.Min(minPage + 4, Model.Flight.TotalPages);
+
+    var currentPageIndex = Model.Flight.PageIndex;
+}
+
+<div class="hero-wrap js-fullheight" style="background-image: url('images/bg_2.jpg');" data-stellar-background-ratio="0.5">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text js-fullheight align-items-center justify-content-center" data-scrollax-parent="true">
+            <div class="col-md-9 text text-center ftco-animate" data-scrollax=" properties: { translateY: '70%' }">
+                <a href="https://vimeo.com/45830194" class="icon-video popup-vimeo d-flex align-items-center justify-content-center mb-4">
+                    <span class="ion-ios-play"></span>
+                </a>
+                <p class="caps" data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Travel to the any corner of the world, without going around in circles</p>
+                <h1 data-scrollax="properties: { translateY: '30%', opacity: 1.6 }">Make Your Tour Amazing With Us</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    /* Thêm vào file CSS của bạn */
+    .custom-select {
+        background-color: #343a40; /* Màu nền tối */
+        color: #ffd700; /* Màu chữ vàng */
+        border: 1px solid #ffffff; /* Đường viền trắng */
+        padding: 10px; /* Padding để cải thiện diện mạo */
+    }
+
+        .custom-select option {
+            background-color: #343a40; /* Màu nền cho các tùy chọn */
+            color: #ffd700; /* Màu chữ cho các tùy chọn */
+        }
+
+    .custom-select {
+        background-color: #343a40;
+        color: #ffd700;
+        border: 1px solid #ffffff;
+        padding: 10px;
+        border-radius: 5px; /* Thêm bo tròn cho dropdown */
+        transition: background-color 0.3s ease;
+    }
+
+        .custom-select:hover {
+            background-color: #495057; /* Màu nền khi hover */
+        }
+
+        .custom-select option {
+            background-color: #343a40;
+            color: #ffd700;
+        }
+
+    .form-control {
+        border-radius: 5px; /* Bo tròn cho input */
+    }
+
+    .table {
+        margin-top: 20px;
+        border-radius: 5px; /* Bo tròn cho bảng */
+        overflow: hidden; /* Giúp bo tròn hiệu quả */
+    }
+
+        .table th {
+            background-color: #343a40; /* Màu nền cho tiêu đề bảng */
+            color: #ffffff; /* Màu chữ cho tiêu đề */
+        }
+
+    .table-hover tbody tr:hover {
+        background-color: #495057; /* Màu nền khi hover lên dòng */
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #ffd700; /* Màu nền cho trang hiện tại */
+        color: #343a40; /* Màu chữ cho trang hiện tại */
+    }
+
+</style>
+
+<section class="ftco-section ftco-no-pb ftco-no-pt">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="search-wrap-1 ftco-animate p-4">
+                    <form method="get" asp-page="/SearchFlight" class="search-property-1">
+                        <div class="row">
+                            <div class="col-lg align-items-end">
+                                <div class="form-group">
+                                    <label asp-for="Flights.From" class="control-label"></label>
+                                    <div class="form-field">
+                                        <select name="from" asp-for="Flights.From" class="form-control custom-select" asp-items="ViewBag.From" id="fromSelect">
+                                            <option value="" disabled selected>Select Departure</option>
+                                        </select>
+                                        <span asp-validation-for="Flights.From" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg align-items-end">
+                                <div class="form-group">
+                                    <label asp-for="Flights.To" class="control-label"></label>
+                                    <div class="form-field">
+                                        <select name="to" asp-for="Flights.To" class="form-control custom-select" asp-items="ViewBag.To" id="toSelect">
+                                            <option value="" disabled selected>Select Arrival</option>
+                                        </select>
+                                        <span asp-validation-for="Flights.To" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg align-items-end">
+                                <div class="form-group">
+                                    <label for="#">Check-in date</label>
+                                    <div class="form-field">
+                                        <div class="icon"><span class="ion-ios-calendar"></span></div>
+                                        <input name="checkin" type="text" class="form-control checkin_date" placeholder="Check In Date">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg align-items-end">
+                                <div class="form-group">
+                                    <label>
+                                        <input type="checkbox" id="checkout-checkbox"> Check-out date
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-lg align-items-end" id="checkout-date-form" style="display:none;">
+                                <div class="form-group">
+                                    <label for="#">Check-out date</label>
+                                    <div class="form-field">
+                                        <div class="icon"><span class="ion-ios-calendar"></span></div>
+                                        <input name="checkout" type="text" class="form-control checkout_date" placeholder="Check Out Date">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg align-self-end">
+                                <div class="form-group">
+                                    <div class="form-field">
+                                        <input type="submit" value="Search" class="form-control btn btn-primary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!--LIST FLIGHT-->
+<div class="container" id="filter" style="margin-top: 100px">
+    <table class="table table-hover table-striped table-bordered">
+        <thead style="color: red">
+            <tr>
+                <th>Flight Number</th>
+                <th>Scheduled Departure Time</th>
+                <th>Scheduled Arrival Time</th>
+                <th>Duration</th>
+                <th>@Html.DisplayNameFor(model => model.Flight[0].Airlines)</th>
+                <th>Airplane</th>
+                <th>From</th>
+                <th>To</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Flight.Count == 0)
+            {
+                <tr>
+                    <td colspan="10" class="text-center">No flights found.</td>
+                </tr>
+            }
+            else
+            {
+                @foreach (var item in Model.Flight)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.FlightNumber)</td>
+                        <td>@Html.DisplayFor(modelItem => item.DepartureTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ArrivalTime)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Duration)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Airlines)</td>
+                        <td>@Html.DisplayFor(modelItem => item.AirplaneCode)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FromName)</td>
+                        <td>@Html.DisplayFor(modelItem => item.ToName)</td>
+                        <td class="text-center">
+                            <div class="btn-group" role="group">
+                                <a asp-page="./UserPage/BookingManager/Index" asp-route-id="@item.Id" class="btn btn-warning btn-sm mr-2">Choose</a>                               
+                            </div>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div class="row">
+    <div class="col">
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center m-0">
+                <li class="page-item @prevDisabled">
+                    <a class="page-link" aria-label="Previous"
+                       asp-page="./Index"
+                       asp-route-pageIndex="@(Model.Flight.PageIndex - 1)">
+                        <span aria-hidden="true"><i class="bi bi-arrow-left"></i> Previous</span>
+                    </a>
+                </li>
+
+                @for (var i = minPage; i <= maxPage; i++)
+                {
+                    <li class="page-item @(Model.Flight.PageIndex == i ? "active" : "")">
+                        <a class="page-link" asp-page="./Index"
+                           asp-route-pageIndex="@i">@i</a>
+                    </li>
+                }
+
+                <li class="page-item @nextDisabled">
+                    <a class="page-link" aria-label="Next"
+                       asp-page="./Index"
+                       asp-route-pageIndex="@(Model.Flight.PageIndex + 1)">
+                        <span aria-hidden="true">Next <i class="bi bi-arrow-right"></i></span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        document.getElementById('checkout-checkbox').addEventListener('change', function () {
+            document.getElementById('checkout-date-form').style.display = this.checked ? 'block' : 'none';
+        });
+    </script>
+}
+
+
+<script>
+    document.getElementById('checkout-checkbox').addEventListener('change', function () {
+        var checkoutDateForm = document.getElementById('checkout-date-form');
+        if (this.checked) {
+            checkoutDateForm.style.display = 'block'; // Show the form
+        } else {
+            checkoutDateForm.style.display = 'none';  // Hide the form
+        }
+    });
+
+    window.onload = function () {
+        // Cuộn đến phần tử phân trang sau khi trang được tải
+        var paginationElement = document.getElementById("filter");
+        if (paginationElement) {
+            paginationElement.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+
+        document.getElementById('checkout-checkbox').addEventListener('change', function () {
+            var checkoutDateForm = document.getElementById('checkout-date-form');
+            if (this.checked) {
+                checkoutDateForm.style.display = 'block'; // Show the form
+            } else {
+                checkoutDateForm.style.display = 'none';  // Hide the form
+            }
+        });
+
+
+</script>
+
+    

@@ -9,7 +9,7 @@ public partial class Rank
 
     public string Type { get; set; } = null!;
 
-    public string Description { get; set; } = null!;
+    public string? Description { get; set; }
 
     public decimal Discount { get; set; }
 

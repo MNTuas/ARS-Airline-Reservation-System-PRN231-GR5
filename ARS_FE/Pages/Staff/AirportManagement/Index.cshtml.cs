@@ -8,11 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 using Service;
-using BusinessObjects.ResponseModels;
 using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels.Airport;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
 {
+    
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -35,7 +37,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
         }
 

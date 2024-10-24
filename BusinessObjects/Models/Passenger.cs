@@ -17,11 +17,9 @@ public partial class Passenger
 
     public string Country { get; set; } = null!;
 
-    public string Type { get; set; } = null!;
+    public string? Type { get; set; }
 
-    public string? UserId { get; set; }
+    public string UserId { get; set; } = null!;
 
-    public virtual ICollection<PassengerOfBooking> PassengerOfBookings { get; set; } = new List<PassengerOfBooking>();
-
-    public virtual User? User { get; set; }
+    public virtual User User { get; set; } = null!;
 }

@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using Service.Services.AIrlineServices;
-using Newtonsoft.Json;
 using Service;
-using BusinessObjects.ResponseModels;
 using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Authorization;
+using BusinessObjects.ResponseModels.Airlines;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {
@@ -30,16 +20,17 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
+            var url = "airlines";
 
-            var response = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline");
+            var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<AllAirlinesResponseModel>>>(client, url);
             if (response != null)
             {
-                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response, pageIndex ?? 1, 6);
+                Airline = PaginatedList<AllAirlinesResponseModel>.Create(response.Value, pageIndex ?? 1, 5);
                 return Page();
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
         }
 
@@ -55,13 +46,13 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
         }
 
         private HttpClient CreateAuthorizedClient()
         {
-            var client = _httpClientFactory.CreateClient("ApiClient");
+            var client = _httpClientFactory.CreateClient("OdataClient");
             var token = HttpContext.Session.GetString("JWToken");
 
             if (!string.IsNullOrEmpty(token))

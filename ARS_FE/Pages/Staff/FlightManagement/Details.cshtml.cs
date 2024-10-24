@@ -8,8 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels;
 using Service;
+using BusinessObjects.ResponseModels.Flight;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {
@@ -41,7 +41,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
         }
 

@@ -24,7 +24,7 @@ namespace AirlinesReservationSystem.Controllers
         [Route("get-airplane/{id}")]
         public async Task<IActionResult> GetAirplane(string id)
         {
-            var airplane = await _airplaneService.GetAirlane(id);
+            var airplane = await _airplaneService.GetAirplane(id);
             if (airplane == null)
             {
                 return NotFound();
@@ -34,24 +34,18 @@ namespace AirlinesReservationSystem.Controllers
         }
         [HttpPost]
         [Route("add-airplane")]
-        public async Task<IActionResult> AddAirplane([FromBody]AddAirplaneRequest addAirplane)
+        public async Task<IActionResult> AddAirplane([FromBody] AddAirplaneRequest addAirplane)
         {
-            var result = await _airplaneService.AddAirplane(addAirplane);
-            if (result)
-            {
-                return Ok("Add Airplane success");
-            }
-            return BadRequest();
+            await _airplaneService.AddAirplane(addAirplane);
+            return Ok("Add Airplane success");
         }
+
         [HttpPut]
         [Route("update-airplane/{id}")]
-        public async Task<IActionResult> UpdateAirplane(string id,[FromBody]UpdateAirplaneRequest updateAirplane)
+        public async Task<IActionResult> UpdateAirplane(string id, [FromBody] UpdateAirplaneRequest updateAirplane)
         {
-            var result = await _airplaneService.UpdateAirplane(id, updateAirplane);
-            if (result) {
-                return Ok("Update Airplane success");
-            }
-            return BadRequest();
+            await _airplaneService.UpdateAirplaneAsync(id, updateAirplane);
+            return Ok("Update Airplane success");
         }
     }
 }

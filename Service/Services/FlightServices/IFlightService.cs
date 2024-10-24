@@ -1,17 +1,15 @@
 ﻿using BusinessObjects.Models;
-using BusinessObjects.ResponseModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BusinessObjects.RequestModels.Flight;
+using BusinessObjects.ResponseModels.Flight;
 
 namespace Service.Services.FlightServices
 {
     public interface IFlightService
     {
-        Task<List<Flight>> GetAllFlight();
-        Task<List<FlightResponseModel>> GetAllFlightsDetails();
+        Task<List<FlightResponseModel>> GetAllFlights();
         Task<FlightResponseModel> GetFlightById(string id);
+        Task CreateFlight(CreateFlightRequest request);
+        Task UpdateFlight(string flightId, UpdateFlightRequest request);
+        Task<List<FlightResponseModel>> GetFlightByFilter(string from, string to, DateTime checkin, DateTime? checkout);
     }
 }
