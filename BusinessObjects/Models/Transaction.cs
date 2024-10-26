@@ -13,9 +13,11 @@ public partial class Transaction
 
     public decimal FinalPrice { get; set; }
 
-    public DateTime PayDate { get; set; }
+    public DateTime? PayDate { get; set; }
 
     public string Status { get; set; } = null!;
+
+    public DateTime CreatedDate { get; set; }
 
     public virtual BookingInformation Booking { get; set; } = null!;
 

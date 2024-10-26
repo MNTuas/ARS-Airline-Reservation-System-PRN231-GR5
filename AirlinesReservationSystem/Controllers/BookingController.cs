@@ -18,7 +18,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreateBooking(CreateBookingRequest createBookingRequest)
         {
 
@@ -40,6 +40,33 @@ namespace AirlinesReservationSystem.Controllers
                     message = result.Message
                 });
             }
+        }
+
+        [HttpPut]
+        [Authorize(Roles = "User")]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdateBookingStatus(string id, [FromBody] string status)
+        {
+            await _bookingService.UpdateBookingStatus(id, status);
+            return Ok("Update successfully!");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        [Route("own")]
+        public async Task<IActionResult> GetOwnBookings()
+        {
+            var response = await _bookingService.GetOwnBookings();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "User")]
+        [Route("{id}")]
+        public async Task<IActionResult> GetBookingById(string id)
+        {
+            var response = await _bookingService.GetBookingById(id);
+            return Ok(response);
         }
     }
 }

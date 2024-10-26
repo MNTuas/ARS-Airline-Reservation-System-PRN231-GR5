@@ -21,5 +21,11 @@ namespace Repository.Repositories.TicketRepositories
         {
             return await GetSingle(a => a.Id.Equals(id));
         }
+
+        public async Task<List<Ticket>> GetTicketByBookingId(string bookingId)
+        {
+            var list = await Get(b => b.BookingId.Equals(bookingId));
+            return list.ToList();
+        }
     }
 }
