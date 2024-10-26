@@ -12,7 +12,9 @@ using BusinessObjects.RequestModels.User;
 using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Airport;
+using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Flight;
+using BusinessObjects.ResponseModels.Ticket;
 using BusinessObjects.ResponseModels.User;
 using Repository.Enums;
 using Service.Enums;
@@ -86,6 +88,9 @@ namespace Service.Mapper
             CreateMap<CreateBookingRequest, BookingInformation>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => BookingStatusEnums.Pending.ToString()));
+            CreateMap<BookingInformation, UserBookingResponseModel>()
+                .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets))
+                ;
 
             //Passenger
             CreateMap<CreatePassengerRequest, Passenger>()
@@ -95,6 +100,9 @@ namespace Service.Mapper
             CreateMap<CreateTicketRequest, Ticket>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => TicketStatusEnums.Pending.ToString()));
+            CreateMap<Ticket, TicketResponseModel>()
+                .ForMember(dest => dest.ClassName, opt => opt.MapFrom(src => src.TicketClass.SeatClass.Name))
+                .ForMember(dest => dest.ClassPrice, opt => opt.MapFrom(src => src.TicketClass.Price));
 
             //User
             CreateMap<User, UserInfoResponseModel>()

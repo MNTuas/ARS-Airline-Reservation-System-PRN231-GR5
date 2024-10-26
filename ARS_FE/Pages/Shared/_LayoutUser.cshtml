@@ -72,10 +72,12 @@
 
                 <div class="collapse navbar-collapse" id="ftco-nav">
                     <ul class="navbar-nav ml-auto">
+                        <li class="nav-item"><a asp-page="/UserPage/Profile/Index" class="nav-link">Profile</a></li>
+                        <li class="nav-item"><a asp-page="/UserPage/BookingManager/BookingList" class="nav-link">Bookings</a></li>
                         @if (Context.Session.GetString("Username") != null)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-danger">Wellcome @Context.Session.GetString("Username")</span>
+                                <span class="nav-link text-danger">Welcome @Context.Session.GetString("Username")</span>
                             </li>
                         }
 
