@@ -63,7 +63,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark" id="ftco-navbar">
             <div class="container">
-                <a @* asp-page="/Staff/Index" *@ class="navbar-brand">
+                <a asp-page="/Staff/Index" class="navbar-brand">
                     Vacation<span>Travel Agency</span>
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
                         @if (Context.Session.GetString("Username") != null)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-danger">Wellcome @Context.Session.GetString("Username")</span>
+                                <span class="nav-link text-danger">Welcome @Context.Session.GetString("Username")</span>
                             </li>
                         }
 

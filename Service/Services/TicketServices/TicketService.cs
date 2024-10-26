@@ -53,7 +53,7 @@ namespace Service.Services.TicketServices
                 {
                     Id = Guid.NewGuid().ToString(),
                     Country = createTicketRequest.Country,
-                    Dob = DateOnly.FromDateTime(DateTime.UtcNow),
+                    Dob = createTicketRequest.Dob,
                     FirstName = createTicketRequest.FirstName,
                     LastName = createTicketRequest.LastName,
                     Gender = createTicketRequest.Gender,

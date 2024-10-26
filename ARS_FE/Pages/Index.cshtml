@@ -30,8 +30,11 @@
             background-color: #343a40; /* Màu nền cho các tùy chọn */
             color: #ffd700; /* Màu chữ cho các tùy chọn */
         }
-
 </style>
+<!-- Thêm các link tới jQuery và jQuery UI -->
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
 <section class="ftco-section ftco-no-pb ftco-no-pt">
     <div class="container">
@@ -40,6 +43,7 @@
                 <div class="search-wrap-1 ftco-animate p-4">
                     <form method="get" asp-page="/SearchFlight" class="search-property-1">
                         <div class="row">
+                            <!-- Select Departure -->
                             <div class="col-lg align-items-end">
                                 <div class="form-group">
                                     <label asp-for="Flight.From" class="control-label"></label>
@@ -52,6 +56,7 @@
                                 </div>
                             </div>
 
+                            <!-- Select Arrival -->
                             <div class="col-lg align-items-end">
                                 <div class="form-group">
                                     <label asp-for="Flight.To" class="control-label"></label>
@@ -64,16 +69,18 @@
                                 </div>
                             </div>
 
+                            <!-- Check-in Date -->
                             <div class="col-lg align-items-end">
                                 <div class="form-group">
                                     <label for="#">Check-in date</label>
                                     <div class="form-field">
                                         <div class="icon"><span class="ion-ios-calendar"></span></div>
-                                        <input name="checkin" type="text" class="form-control checkin_date" placeholder="Check In Date">
+                                        <input id="checkin" name="checkin" type="text" class="form-control checkin_date" placeholder="Check In Date" readonly>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- Check-out Checkbox -->
                             <div class="col-lg align-items-end">
                                 <div class="form-group">
                                     <label>
@@ -82,16 +89,18 @@
                                 </div>
                             </div>
 
+                            <!-- Check-out Date (ẩn đi khi chưa chọn checkbox) -->
                             <div class="col-lg align-items-end" id="checkout-date-form" style="display:none;">
                                 <div class="form-group">
                                     <label for="#">Check-out date</label>
                                     <div class="form-field">
                                         <div class="icon"><span class="ion-ios-calendar"></span></div>
-                                        <input name="checkout" type="text" class="form-control checkout_date" placeholder="Check Out Date">
+                                        <input id="checkout" name="checkout" type="text" class="form-control checkout_date" placeholder="Check Out Date" readonly>
                                     </div>
                                 </div>
                             </div>
 
+                            <!-- Search Button -->
                             <div class="col-lg align-self-end">
                                 <div class="form-group">
                                     <div class="form-field">
@@ -108,16 +117,38 @@
 </section>
 
 <script>
-    document.getElementById('checkout-checkbox').addEventListener('change', function () {
-        var checkoutDateForm = document.getElementById('checkout-date-form');
-        if (this.checked) {
-            checkoutDateForm.style.display = 'block'; // Show the form
-        } else {
-            checkoutDateForm.style.display = 'none';  // Hide the form
-        }
-    });
+    $(function () {
+        // Lấy ngày hiện tại
+        var today = new Date();
 
+        // Khởi tạo datepicker cho Check-in date với minDate là ngày hôm nay
+        $('#checkin').datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: today,
+            onSelect: function () {
+                // Khi ngày được chọn, kiểm tra và thiết lập lại ngày Check-out
+                $('#checkout').datepicker('option', 'minDate', $(this).datepicker('getDate'));
+            }
+        });
+
+        // Khởi tạo datepicker cho Check-out date với minDate là hôm nay
+        $('#checkout').datepicker({
+            dateFormat: 'yy-mm-dd',
+            minDate: today
+        });
+
+        // Hiển thị/Ẩn trường Check-out date khi chọn checkbox
+        $('#checkout-checkbox').change(function () {
+            if ($(this).is(':checked')) {
+                $('#checkout-date-form').show();
+            } else {
+                $('#checkout-date-form').hide();
+                $('#checkout').val(''); // Clear giá trị nếu bỏ chọn
+            }
+        });
+    });
 </script>
+
 
 <!--KHÔNG CẦN QUAN TÂM-->
 <section class="ftco-section services-section bg-light">

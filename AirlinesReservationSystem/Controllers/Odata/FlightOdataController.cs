@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Service.Services.FlightServices;
 
-namespace AirlinesReservationSystem.Controllers
+namespace AirlinesReservationSystem.Controllers.Odata
 {
     [Route("odata/flights")]
     [ApiController]
@@ -18,6 +19,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Staff")]
         [EnableQuery]
         public async Task<IActionResult> GetAllFlightsDetails()
         {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using BusinessObjects.Models;
 using DAO;
 
-namespace ARS_FE.Pages.Admin.UserManagement
+namespace ARS_FE.Pages.UserPage.BookingManager
 {
     public class CreateModel : PageModel
     {
@@ -21,12 +21,12 @@ namespace ARS_FE.Pages.Admin.UserManagement
 
         public IActionResult OnGet()
         {
-            ViewData["RankId"] = new SelectList(_context.Ranks, "Id", "Id");
+        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return Page();
         }
 
         [BindProperty]
-        public User User { get; set; } = default!;
+        public BookingInformation BookingInformation { get; set; } = default!;
 
         // For more information, see https://aka.ms/RazorPagesCRUD.
         public async Task<IActionResult> OnPostAsync()
@@ -36,7 +36,7 @@ namespace ARS_FE.Pages.Admin.UserManagement
                 return Page();
             }
 
-            _context.Users.Add(User);
+            _context.BookingInformations.Add(BookingInformation);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
