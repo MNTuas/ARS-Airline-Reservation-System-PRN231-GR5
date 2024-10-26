@@ -21,10 +21,12 @@ namespace Service.Services.AuthService
     {
         private readonly IAuthRepository _authRepository;
         private readonly IConfiguration _configuration;
-        public AuthService(IAuthRepository authRepository, IConfiguration configuration)
+        private readonly IRankRepository _rankRepository;
+        public AuthService(IAuthRepository authRepository, IConfiguration configuration, IRankRepository rankRepository)
         {
             _authRepository = authRepository;
             _configuration = configuration;
+            _rankRepository = rankRepository;
         }
         public async Task<Result<User>> RegisterAsync(RegisterRequest request)
         {
