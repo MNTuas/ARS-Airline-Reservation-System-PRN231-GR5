@@ -1,50 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BusinessObjects.Models;
+using BusinessObjects.ResponseModels.Airport;
+using BusinessObjects.ResponseModels.Booking;
+using BusinessObjects.ResponseModels.Flight;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
+using Service;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels.Ticket;
-using BusinessObjects.ResponseModels.Booking;
 
 namespace ARS_FE.Pages.UserPage.BookingManager
 {
-    public class DetailsModel : PageModel
+    public class BookingListModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public DetailsModel(IHttpClientFactory httpClientFactory)
+        public BookingListModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public List<TicketResponseModel> Tickets { get; set; } = default!;
+        public PaginatedList<UserBookingResponseModel> Bookings { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
+        //[BindProperty(SupportsGet = true)]
+        //public DateTime? FromDate { get; set; }
+
+        public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
             var client = CreateAuthorizedClient();
-
-
-            var response = await APIHelper.GetAsJsonAsync<UserBookingResponseModel>(client, $"Booking/{id}");
-
+            var response = await APIHelper.GetAsJsonAsync<List<UserBookingResponseModel>>(client, "Booking/own");
             if (response != null)
             {
-                Tickets = response.Tickets;
+                Bookings = PaginatedList<UserBookingResponseModel>.Create(response, pageIndex ?? 1, 6);
                 return Page();
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/403Page");
             }
-
         }
 
         private HttpClient CreateAuthorizedClient()
@@ -60,5 +51,4 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             return client;
         }
     }
-
 }

@@ -373,6 +373,7 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.FinalPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.PayDate).HasColumnType("datetime");
             entity.Property(e => e.Status)

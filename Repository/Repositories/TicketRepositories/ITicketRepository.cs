@@ -12,5 +12,6 @@ namespace Repository.Repositories.TicketRepositories
     {
         Task<List<Ticket>> GetAllTicket();
         Task<Ticket> GetById(string id);
+        Task<List<Ticket>> GetTicketByBookingId(string bookingId);
     }
 }

@@ -11,6 +11,8 @@ namespace Repository.Repositories.BookingRepositories
     public interface IBookingRepository : IGenericRepository<BookingInformation>
     {
         Task<List<BookingInformation>> GetAllBooking();
+        Task<List<BookingInformation>> GetAllBookingOfUser(string userId);
         Task<BookingInformation> GetById(string id);
+        Task<decimal> GetTotalPriceOfBooking(string id);
     }
 }
