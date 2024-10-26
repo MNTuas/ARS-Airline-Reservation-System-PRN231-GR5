@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects.RequestModels.Passenger
 {
-    public class CreatePassengerRequest
+    public class UpdatePassengerRequest
     {
-        [Required(ErrorMessage = "Vui lòng nhập họ")]
+        [Required]
         public string FirstName { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng nhập tên")]
+        [Required]
         public string LastName { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng chọn giới tính")]
+        [Required]
         public string Gender { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng nhập ngày sinh")]
+        [Required]
         public DateOnly Dob { get; set; }
-        [Required(ErrorMessage = "Vui lòng chọn quốc tịch")]
+        [Required]
         public string Country { get; set; } = null!;
-
+        [Required]
         public string Type { get; set; } = null!;
-
     }
 }
