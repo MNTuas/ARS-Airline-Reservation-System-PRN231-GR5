@@ -34,6 +34,8 @@ using Service.Services.UserServices;
 using Service.Services.AirlineServices;
 using BusinessObjects.ResponseModels.User;
 using Service.Services.VNPayServices;
+using Microsoft.EntityFrameworkCore;
+using DAO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -107,6 +109,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
     };
 });
+
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);

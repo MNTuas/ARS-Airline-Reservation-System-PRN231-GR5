@@ -62,10 +62,10 @@ namespace ARS_FE.Pages.UserPage.BookingManager
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    return Page();
+            //}
 
             var client = CreateAuthorizedClient();
             if (client == null)

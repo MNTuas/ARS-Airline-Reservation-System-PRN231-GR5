@@ -28,6 +28,10 @@ namespace ARS_FE.Pages.Staff.FlightManagement
         [BindProperty(SupportsGet = true)]
         public DateTime? FromDate { get; set; }
 
+        [BindProperty]
+        public IFormFile UploadedFile { get; set; }
+
+
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
@@ -42,7 +46,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<FlightResponseModel>>>(client, query);
             if (response != null)
             {
-                Flight = PaginatedList<FlightResponseModel>.Create(response.Value, pageIndex ?? 1, 10);
+                Flight = PaginatedList<FlightResponseModel>.Create(response.Value, pageIndex ?? 1, 5);
                 return Page();
             }
             else
@@ -50,6 +54,39 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 return RedirectToPage("/403Page");
             }
         }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            if (UploadedFile == null || UploadedFile.Length == 0)
+            {
+                ModelState.AddModelError(string.Empty, "Please upload a valid file.");
+                return Page();
+            }
+
+            var client = CreateAuthorizedClient();
+            using var content = new MultipartFormDataContent();
+
+            // Tạo nội dung file từ StreamContent và thiết lập ContentType
+            using var fileContent = new StreamContent(UploadedFile.OpenReadStream());
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue(UploadedFile.ContentType);
+            content.Add(fileContent, "file", UploadedFile.FileName);
+
+            // Sử dụng PostAsync để gửi yêu cầu
+            var response = await client.PostAsync("https://localhost:7168/api/UploadFlight/UploadExcelFile", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while uploading the file.");
+                return Page();
+            }
+        }
+
+
+
 
         private HttpClient CreateAuthorizedClient()
         {
