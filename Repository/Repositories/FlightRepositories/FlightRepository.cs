@@ -20,13 +20,10 @@ namespace Repository.Repositories.FlightRepositories
             return list.ToList();
         }
 
-
-
         public async Task<Flight> GetFlightById(string id)
         {
             return await GetSingle(f => f.Id.Equals(id), includeProperties: "FromNavigation,ToNavigation,Airplane.Airlines,TicketClasses.SeatClass");
         }
-
 
         public async Task<List<Flight>> GetFlightsByFilter(string from, string to, DateTime checkin, DateTime? checkout)
         {
@@ -46,6 +43,13 @@ namespace Repository.Repositories.FlightRepositories
 
             return filteredFlights.ToList();
         }
+
+        public async Task<Flight> GetFlightByNumber(string flightNumber, DateTime departureTime)
+        {
+            var flight = await GetSingle(r => r.FlightNumber.Equals(flightNumber) && r.DepartureTime.Date == departureTime.Date);
+            return flight;
+        }
+
 
     }
 }

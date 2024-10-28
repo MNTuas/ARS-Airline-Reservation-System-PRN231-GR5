@@ -120,7 +120,6 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             return new JsonResult(ticketClassPrices);
         }
 
-
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");

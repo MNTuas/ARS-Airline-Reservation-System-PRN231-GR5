@@ -56,58 +56,26 @@ namespace ARS_FE.Pages.UserPage.BookingManager
 
         [BindProperty]
         public CreateBookingRequest createBookingRequest { get; set; } = default!;
-            
+
         [BindProperty]
         public string SelectedTicketClass { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return Page();
-            //}
-
             var client = CreateAuthorizedClient();
             if (client == null)
             {
                 return RedirectToPage("/Login");
             }
-
             // Lấy SeatClassId đã chọn từ form
             string seatClassId = SelectedTicketClass;
 
-            var n = new CreateBookingRequest
-            {
-                Quantity = createBookingRequest.Quantity,
-            };
+            return RedirectToPage("/UserPage/TicketManagement/Index", new
+            { quantity = createBookingRequest.Quantity,
+                ticketClassId = seatClassId,
 
-            var response = await APIHelper.PostAsJson(client, "Booking", n);
-
-            if (response.IsSuccessStatusCode)
-            {
-                // Đọc nội dung phản hồi JSON bên api
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var createBookingResponse = JsonDocument.Parse(responseContent);
-
-                // Lấy BookingId từ phản hồi
-                string bookingId = createBookingResponse.RootElement.GetProperty("bookingId").GetString();
-
-                
-                // Nếu Booking tạo thành công, chuyển hướng đến trang Ticket
-                return RedirectToPage("/UserPage/TicketManagement/Index", new 
-                { quantity = createBookingRequest.Quantity, 
-                  ticketClassId = seatClassId,
-                  bookingId = bookingId
-
-                });
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error occurred while creating the Booking.");
-                return Page();
-            }
+            });
         }
-
 
         private HttpClient? CreateAuthorizedClient()
         {

@@ -14,8 +14,19 @@
     var currentPageIndex = Model.Flight.PageIndex;
 }
 
+
 <div class="container mt-4">
     <h1 class="text-center mb-4">Flight Management</h1>
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@error.ErrorMessage</div>
+            }
+        </div>
+    }
 
     <div class="text-right mb-3">
         <a asp-page="Create" class="btn btn-primary">Create Flight</a>

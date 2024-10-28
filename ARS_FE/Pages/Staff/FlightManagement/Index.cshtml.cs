@@ -60,33 +60,29 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             if (UploadedFile == null || UploadedFile.Length == 0)
             {
                 ModelState.AddModelError(string.Empty, "Please upload a valid file.");
-                return Page();
+                return await OnGetAsync(null); 
             }
 
             var client = CreateAuthorizedClient();
             using var content = new MultipartFormDataContent();
 
-            // Tạo nội dung file từ StreamContent và thiết lập ContentType
             using var fileContent = new StreamContent(UploadedFile.OpenReadStream());
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(UploadedFile.ContentType);
             content.Add(fileContent, "file", UploadedFile.FileName);
 
-            // Sử dụng PostAsync để gửi yêu cầu
             var response = await client.PostAsync("https://localhost:7168/api/UploadFlight/UploadExcelFile", content);
 
             if (response.IsSuccessStatusCode)
             {
+                ModelState.AddModelError(string.Empty, "Upload successfull");
                 return RedirectToPage("./Index");
             }
             else
             {
                 ModelState.AddModelError(string.Empty, "Error occurred while uploading the file.");
-                return Page();
+                return await OnGetAsync(null); // Gọi lại OnGetAsync với null
             }
         }
-
-
-
 
         private HttpClient CreateAuthorizedClient()
         {
