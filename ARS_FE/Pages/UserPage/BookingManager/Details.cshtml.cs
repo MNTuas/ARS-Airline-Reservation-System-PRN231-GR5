@@ -7,37 +7,58 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using System.Net.Http.Headers;
+using BusinessObjects.ResponseModels.Ticket;
+using BusinessObjects.ResponseModels.Booking;
 
 namespace ARS_FE.Pages.UserPage.BookingManager
 {
     public class DetailsModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public DetailsModel(DAO.AirlinesReservationSystemContext context)
+        public DetailsModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
-        public BookingInformation BookingInformation { get; set; } = default!;
+        public List<TicketResponseModel> Tickets { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string id)
+        public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
         {
             if (id == null)
             {
                 return NotFound();
             }
+            var client = CreateAuthorizedClient();
 
-            var bookinginformation = await _context.BookingInformations.FirstOrDefaultAsync(m => m.Id == id);
-            if (bookinginformation == null)
+
+            var response = await APIHelper.GetAsJsonAsync<UserBookingResponseModel>(client, $"Booking/{id}");
+
+            if (response != null)
             {
-                return NotFound();
+                Tickets = response.Tickets;
+                return Page();
             }
             else
             {
-                BookingInformation = bookinginformation;
+                return BadRequest();
             }
-            return Page();
+
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
+
 }

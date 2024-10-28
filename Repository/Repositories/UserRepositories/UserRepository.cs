@@ -18,5 +18,14 @@ namespace Repository.Repositories.UserRepositories
             return list.ToList();
         }
 
+        public async Task<User> GetUserById(string id)
+        {
+            return await GetSingle(u => u.Id.Equals(id), includeProperties: "Rank");
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await GetSingle(u => u.Email.ToLower().Equals(email.ToLower()), includeProperties: "Rank");
+        }
     }
 }

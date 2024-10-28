@@ -1,0 +1,58 @@
+﻿@page
+@model ARS_FE.Pages.UserPage.Profile.IndexModel
+@{
+    ViewData["Title"] = "User Profile";
+    Layout = "_LayoutUser";
+}
+
+<div class="text-center my-4">
+    <h2><strong>User Profile</strong></h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- Name Field -->
+            <div class="form-group">
+                <label asp-for="UserInfo.Name" class="control-label font-weight-bold text-center d-block"></label>
+                <input asp-for="UserInfo.Name" class="form-control" />
+                <span asp-validation-for="UserInfo.Name" class="text-danger"></span>
+            </div>
+
+            <!-- Phone Number Field -->
+            <div class="form-group">
+                <label asp-for="UserInfo.PhoneNumber" class="control-label font-weight-bold"></label>
+                <input asp-for="UserInfo.PhoneNumber" class="form-control" />
+                <span asp-validation-for="UserInfo.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Email (Readonly, No Input) -->
+            <div class="form-group">
+                <label class="control-label font-weight-bold">Email:</label>
+                <p class="form-control-plaintext">@Model.UserInfo.Email</p>
+            </div>
+
+            <!-- Address Field -->
+            <div class="form-group">
+                <label asp-for="UserInfo.Address" class="control-label font-weight-bold"></label>
+                <input asp-for="UserInfo.Address" class="form-control" />
+                <span asp-validation-for="UserInfo.Address" class="text-danger"></span>
+            </div>
+
+            <!-- Save Button -->
+            <div class="form-group text-center">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

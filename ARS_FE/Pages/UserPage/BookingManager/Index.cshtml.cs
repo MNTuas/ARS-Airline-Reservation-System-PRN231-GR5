@@ -109,7 +109,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
         }
 
 
-        private HttpClient CreateAuthorizedClient()
+        private HttpClient? CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");
             var token = HttpContext.Session.GetString("JWToken");

@@ -91,6 +91,7 @@ namespace Service.Services.FlightServices
             return flightResponseModels;
         }
 
+        //upload excel flight
         public async Task<Result<Flight>> UploadFile(IFormFile file)
         {
             try
@@ -132,8 +133,14 @@ namespace Service.Services.FlightServices
                             {
                                 if (!isHeaderSkipped)
                                 {
-                                    isHeaderSkipped = true; // Skip the header row
+                                    isHeaderSkipped = true; 
                                     continue;
+                                }
+
+                                // Kiểm tra ô đầu tiên (FlightNumber) xem có null hoặc trống không để ngừng xử lý các hàng trống
+                                if (reader.GetValue(0) == null || string.IsNullOrWhiteSpace(reader.GetValue(0).ToString()))
+                                {
+                                    break; 
                                 }
 
                                 var flight = new Flight
@@ -149,39 +156,42 @@ namespace Service.Services.FlightServices
                                     Status = FlightStatusEnums.Schedule.ToString()
                                 };
 
-                                // Create seat class prices
+                               
                                 var ticketClasses = new List<TicketClass>
                                 {
-                                new TicketClass
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    SeatClassId = await GetSeatClassIdByName("Economy"),
-                                    Price = decimal.Parse(reader.GetValue(6).ToString()),
-                                    Status = "Available"
-                                },
-                                new TicketClass
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    SeatClassId = await GetSeatClassIdByName("Business"),
-                                    Price = decimal.Parse(reader.GetValue(7).ToString()),
-                                    Status = "Available"
-                                },
-                                new TicketClass
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    SeatClassId = await GetSeatClassIdByName("FirstClass"),
-                                    Price = decimal.Parse(reader.GetValue(8).ToString()),
-                                    Status = "Available"
-                                }
-                            };
+                                        new TicketClass
+                                        {
+                                            FlightId = flight.Id,
+                                            Id = Guid.NewGuid().ToString(),
+                                            SeatClassId = await GetSeatClassIdByName("Economy"),
+                                            Price = decimal.Parse(reader.GetValue(6).ToString()),
+                                            Status = "Available"
+                                        },
+                                        new TicketClass
+                                        {
+                                            FlightId = flight.Id,
+                                            Id = Guid.NewGuid().ToString(),
+                                            SeatClassId = await GetSeatClassIdByName("Business"),
+                                            Price = decimal.Parse(reader.GetValue(7).ToString()),
+                                            Status = "Available"
+                                        },
+                                        new TicketClass
+                                        {
+                                            FlightId = flight.Id,
+                                            Id = Guid.NewGuid().ToString(),
+                                            SeatClassId = await GetSeatClassIdByName("FirstClass"),
+                                            Price = decimal.Parse(reader.GetValue(8).ToString()),
+                                            Status = "Available"
+                                        }
+                                    };
 
                                 flight.TicketClasses = ticketClasses;
-
                                 flights.Add(flight);
                             }
+
                         } while (reader.NextResult());
 
-                        // Save all flights with their seat classes to the database
+                        
                         await _flightRepository.InsertRange(flights);
 
                     }
@@ -202,6 +212,7 @@ namespace Service.Services.FlightServices
                 };
             }
         }
+
 
 
         // lấy thông tin của từng cái name ở flight

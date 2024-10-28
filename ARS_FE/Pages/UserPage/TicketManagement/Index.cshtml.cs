@@ -13,6 +13,8 @@ using BusinessObjects.RequestModels.Ticket;
 using BusinessObjects.RequestModels.Booking;
 using BusinessObjects.RequestModels.Airport;
 using System.Text.Json;
+using Azure;
+using FFilms.Application.Shared.Response;
 
 namespace ARS_FE.Pages.UserPage.TicketManagement
 {
@@ -40,7 +42,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
 
         [BindProperty]
         public List<CreateTicketRequest> Tickets { get; set; } = new List<CreateTicketRequest>();
-        
+
         public List<Country> Countries { get; set; } = new List<Country>();
 
         public async Task OnGetAsync(int quantity)
@@ -60,9 +62,9 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         }
 
         public async Task<IActionResult> OnPostAsync()
-        {           
+        {
             if (!ModelState.IsValid)
-            {                
+            {
                 await LoadCountriesAsync();
                 return Page();
             }
@@ -74,8 +76,8 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             {
                 var n = new CreateTicketRequest
                 {
-                    BookingId = bookingId,          
-                    TicketClassId = TicketClassId, 
+                    BookingId = bookingId,
+                    TicketClassId = TicketClassId,
                     Country = ticket.Country,
                     FirstName = ticket.FirstName,
                     LastName = ticket.LastName,
@@ -91,8 +93,11 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                     await LoadCountriesAsync();
                     return Page();
                 }
+
             }
-            return RedirectToPage("./Index");
+            var returnUrlResponse = await APIHelper.PostAsJson(client, $"Transaction", bookingId);
+            var returnUrl = await returnUrlResponse.Content.ReadFromJsonAsync<string>();
+            return Redirect(returnUrl);
         }
 
 
@@ -148,7 +153,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                 Console.WriteLine($"Error: {response.StatusCode}");
             }
         }
-        
+
         public class Country
         {
             public Name Name { get; set; }
