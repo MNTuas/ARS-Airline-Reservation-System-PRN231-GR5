@@ -5,6 +5,7 @@ using Service.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,5 +37,6 @@ namespace Repository.Repositories.BookingRepositories
             var classPrice = booking.Tickets.Select(t => t.TicketClass.Price).FirstOrDefault();
             return classPrice * booking.Quantity;
         }
+
     }
 }

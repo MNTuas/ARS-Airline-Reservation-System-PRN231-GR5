@@ -3,6 +3,7 @@ using DAO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,7 +16,6 @@ namespace Repository.Repositories.RankRepositories
             var listRank = await Get();
             return listRank.ToList();
         }
-
         public async Task<Rank> GetRank(string id)
         {
             var rank = await GetSingle(r => r.Id.Equals(id));
