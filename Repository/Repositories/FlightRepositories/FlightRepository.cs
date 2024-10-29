@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,6 +43,13 @@ namespace Repository.Repositories.FlightRepositories
 
             return filteredFlights.ToList();
         }
+
+        public async Task<Flight> GetFlightByNumber(string flightNumber, DateTime departureTime)
+        {
+            var flight = await GetSingle(r => r.FlightNumber.Equals(flightNumber) && r.DepartureTime.Date == departureTime.Date);
+            return flight;
+        }
+
 
     }
 }

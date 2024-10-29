@@ -5,6 +5,7 @@ using Repository.Repositories.RankRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,5 +34,13 @@ namespace Repository.Repositories.AirplaneRepositories
 
             return airplane;
         }
+
+        public async Task<Airplane> GetAirplaneByCodeAsync(string airplaneCode)
+        {
+            var airplane = await GetSingle(r => r.CodeNumber.Equals(airplaneCode));
+            return airplane;
+        }
     }
-}
+            
+    }
+

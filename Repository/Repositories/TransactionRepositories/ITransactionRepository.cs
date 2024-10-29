@@ -6,10 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repository.Repositories.TransactionReposotories
+namespace Repository.Repositories.TransactionRepositories
 {
     public interface ITransactionRepository : IGenericRepository<Transaction>
     {
         Task<Transaction> GetTransactionByUserId(string userId);
+
+        Task<Transaction> GetTransactionById(string id);
     }
 }

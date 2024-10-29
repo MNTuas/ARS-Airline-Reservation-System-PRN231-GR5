@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Service.Services.FlightServices;
 
-namespace AirlinesReservationSystem.Controllers
+namespace AirlinesReservationSystem.Controllers.Odata
 {
     [Route("odata/flights")]
     [ApiController]

@@ -34,6 +34,11 @@ using Service.Services.UserServices;
 using Service.Services.AirlineServices;
 using Service.Services.VNPayServices;
 using BusinessObjects.ResponseModels.User;
+using Service.Services.VNPayServices;
+using Repository.Repositories.TransactionRepositories;
+using Service.Services.TransactionServices;
+using Microsoft.EntityFrameworkCore;
+using DAO;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,7 +53,7 @@ modelBuilder.EntityType<FlightResponseModel>().HasKey(n => n.Id);
 modelBuilder.EntitySet<AllAirlinesResponseModel>("airlines");
 
 modelBuilder.EntitySet<AirplaneResponseModel>("airplanes");
-modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats"); 
+modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats");
 
 modelBuilder.EntitySet<AirportResponseModel>("airports");
 
@@ -107,6 +112,7 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Secret"]))
     };
 });
+
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
@@ -123,6 +129,7 @@ builder.Services.AddScoped<IBookingRepository, BookingRepository>();
 builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();
@@ -136,7 +143,7 @@ builder.Services.AddScoped<ISeatClassService, SeatClassService>();
 builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IPassengerService, PassengerService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-
+builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 

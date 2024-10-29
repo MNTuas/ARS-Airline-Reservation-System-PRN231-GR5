@@ -137,31 +137,48 @@ namespace Service.Services.AuthService
 
         public async Task<Result<string>> ChangePassword(string userId, ChangePasswordRequest passwordRequest)
         {
+            // Kiểm tra nếu người dùng có tồn tại trong hệ thống
             var user = await _authRepository.GetSingle(i => i.Id == userId);
-            if (user == null) {
+            if (user == null)
+            {
                 return new Result<string>
                 {
                     Success = false,
                     Message = "User not found",
                 };
             }
-            bool isValid = BCrypt.Net.BCrypt.Verify(passwordRequest.oldPassword, user.Password);
-            if (isValid)
+
+            // Kiểm tra mật khẩu hiện tại
+            bool isValid = BCrypt.Net.BCrypt.Verify(passwordRequest.OldPassword, user.Password);
+            if (!isValid)
             {
-                user.Password = BCrypt.Net.BCrypt.HashPassword(passwordRequest.newPassword);
-                await _authRepository.Update(user);
                 return new Result<string>
                 {
-                    Success = true,
-                    Message = "Change password successfully"
+                    Success = false,
+                    Message = "Old password is incorrect"
                 };
             }
+
+            // Kiểm tra ConfirmPassword
+            if (passwordRequest.NewPassword != passwordRequest.ConfirmPassword)
+            {
+                return new Result<string>
+                {
+                    Success = false,
+                    Message = "New password and confirm password do not match"
+                };
+            }
+
+            // Cập nhật mật khẩu mới
+            user.Password = BCrypt.Net.BCrypt.HashPassword(passwordRequest.NewPassword);
+            await _authRepository.Update(user);
+
             return new Result<string>
             {
-                Success = false,
-                Message = "Old password wrong"
-                
+                Success = true,
+                Message = "Password changed successfully"
             };
         }
+
     }
 }
