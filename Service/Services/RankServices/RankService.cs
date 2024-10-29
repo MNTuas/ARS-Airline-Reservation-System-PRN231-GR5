@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Rank;
+using Microsoft.EntityFrameworkCore;
 using Repository.Repositories.RankRepositories;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,8 @@ namespace Service.Services.RankServices
             var rankExist = await _rankRepository.GetRank(id);
             return rankExist;
         }
+
+        
 
         public Task<bool> RemoveRank(Guid id)
         {

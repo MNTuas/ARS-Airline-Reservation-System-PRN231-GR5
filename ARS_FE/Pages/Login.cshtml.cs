@@ -5,7 +5,7 @@ using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
-using Service.Enums;
+using Repository.Enums;
 using Service.Services.AuthService;
 using System.Net.Http;
 using System.Security.Claims;
@@ -15,16 +15,14 @@ namespace ARS_FE.Pages
     public class LoginModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public LoginModel(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+        public LoginModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         [BindProperty]
-        public LoginRequest request { get; set; }
+        public LoginRequest request { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -39,8 +37,10 @@ namespace ARS_FE.Pages
 
                 var userId = DecodeToken.DecodeTokens(token, "UserId");
                 var role = DecodeToken.DecodeTokens(token, ClaimTypes.Role);
+                var name = DecodeToken.DecodeTokens(token, "Username");
                 HttpContext.Session.SetString("JWToken", token);
                 HttpContext.Session.SetString("UserId", userId);
+                HttpContext.Session.SetString("Username", name);
                 if (role.Equals(UserRolesEnums.Staff.ToString()))
                 {
                     return RedirectToPage("/Staff/Index");

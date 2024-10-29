@@ -10,5 +10,6 @@ namespace Service.Services.FlightServices
         Task<FlightResponseModel> GetFlightById(string id);
         Task CreateFlight(CreateFlightRequest request);
         Task UpdateFlight(string flightId, UpdateFlightRequest request);
+        Task<List<FlightResponseModel>> GetFlightByFilter(string from, string to, DateTime checkin, DateTime? checkout);
     }
 }

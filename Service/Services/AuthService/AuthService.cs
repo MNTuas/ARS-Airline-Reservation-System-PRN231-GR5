@@ -3,9 +3,9 @@ using BusinessObjects.RequestModels.Auth;
 using FFilms.Application.Shared.Response;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Repository.Enums;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.RankRepositories;
-using Service.Enums;
 using Service.Helper;
 using System;
 using System.Collections.Generic;
@@ -102,6 +102,7 @@ namespace Service.Services.AuthService
                         new Claim(ClaimTypes.Role, user.Role),
                         new Claim("Email", user.Email),
                         new Claim("UserId", user.Id),
+                        new Claim("Username", user.Name),
                     };
                 var token = GenerateJwtToken(authClaims);
 

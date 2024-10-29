@@ -2,7 +2,6 @@ using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AuthRepositories;
 using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.AirporRepositories;
-using Service.Services.AirlineServices;
 using Service.Services.AuthService;
 using Service.Services.AirportService;
 using Service.Services.EmailServices;
@@ -23,8 +22,18 @@ using Microsoft.OData.ModelBuilder;
 using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Airlines;
 using BusinessObjects.ResponseModels.Airplane;
-using Repository.Repositories.TransactionReposotories;
-using Service.Services.TransactionService;
+using BusinessObjects.ResponseModels.Airport;
+using Repository.Repositories.BookingRepositories;
+using Repository.Repositories.PassengerRepositories;
+using Repository.Repositories.TicketRepositories;
+using Service.Services.BookingServices;
+using Service.Services.TicketServices;
+using Service.Services.PassengerServices;
+using Repository.Repositories.UserRepositories;
+using Service.Services.UserServices;
+using Service.Services.AirlineServices;
+using Service.Services.VNPayServices;
+using BusinessObjects.ResponseModels.User;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,8 +48,12 @@ modelBuilder.EntityType<FlightResponseModel>().HasKey(n => n.Id);
 modelBuilder.EntitySet<AllAirlinesResponseModel>("airlines");
 
 modelBuilder.EntitySet<AirplaneResponseModel>("airplanes");
-modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats");
+modelBuilder.EntitySet<AirplaneSeatResponse>("airplaneseats"); 
 
+modelBuilder.EntitySet<AirportResponseModel>("airports");
+
+modelBuilder.EntitySet<UserInfoResponseModel>("users");
+modelBuilder.EntityType<UserInfoResponseModel>().HasKey(n => n.Id);
 
 // Add OData configuration with Select, Filter, OrderBy, Expand, etc.
 builder.Services.AddControllers().AddOData(option => option.Select().Filter()
@@ -95,7 +108,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 builder.Services.AddHttpClient();
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 //========================================== REPOSITORY ===========================================
@@ -106,7 +119,11 @@ builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IRankRepository, RankRepository>();
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 builder.Services.AddScoped<ISeatClassRepository, SeatClassRepository>();
-builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IPassengerRepository, PassengerRepository>();
+builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IFlightService, FlightService>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
@@ -116,7 +133,12 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IRankService, RankService>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
 builder.Services.AddScoped<ISeatClassService, SeatClassService>();
-builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITicketService, TicketService>();
+builder.Services.AddScoped<IPassengerService, PassengerService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 //=========================================== CORS ================================================
 builder.Services.AddCors(options =>

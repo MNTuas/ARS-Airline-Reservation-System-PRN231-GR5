@@ -17,6 +17,6 @@ namespace BusinessObjects.ResponseModels.Transaction
 
         public virtual BookingInformation Booking { get; set; } = null!;
 
-        public virtual User User { get; set; } = null!;
+        public virtual Models.User User { get; set; } = null!;
     }
 }

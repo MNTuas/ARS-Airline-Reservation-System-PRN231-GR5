@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Service.Enums
 {
-    public enum FlightStatusEnums
+    public enum TicketStatusEnums
     {
-        Schedule
+        Pending,
+        Finished
     }
 }

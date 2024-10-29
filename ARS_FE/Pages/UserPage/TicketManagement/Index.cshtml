@@ -1,0 +1,78 @@
+﻿@page
+@model ARS_FE.Pages.UserPage.TicketManagement.IndexModel
+
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<form method="post" asp-page="/Create">
+    <input type="hidden" asp-for="Quantity" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    @for (var i = 0; i < Model.Quantity; i++)
+    {
+        <div class="form-group">
+            <h4>Thông tin vé @i :</h4>
+
+            <input type="hidden" asp-for="Tickets[@i].TicketClassId" />
+            <input type="hidden" asp-for="Tickets[@i].BookingId" />
+
+            <div class="form-group">
+                <label asp-for="Tickets[@i].FirstName" class="control-label">FirstName:</label>
+                <input name="Tickets[@i].FirstName" class="form-control" type="text" placeholder="FirstName" />
+                <span asp-validation-for="Tickets[@i].FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tickets[@i].LastName" class="control-label">LastName:</label>
+                <input name="Tickets[@i].LastName" class="form-control" type="text" placeholder="LastName" />
+                <span asp-validation-for="Tickets[@i].LastName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tickets[@i].Gender" class="control-label">Gender:</label>
+                <select name="Tickets[@i].Gender" class="form-control">
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <span asp-validation-for="Tickets[@i].Gender" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tickets[@i].Dob" class="control-label">DayofBirth</label>
+                <input name="Tickets[@i].Dob" class="form-control" type="date" placeholder="DayofBirth" />
+                <span asp-validation-for="Tickets[@i].Dob" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Tickets[@i].Country" class="control-label">Country</label>
+                <select name="Tickets[@i].Country" class="form-control">
+                    <option value="">Choose your country</option>
+                    @foreach (var country in Model.Countries)
+                    {
+                        <option value="@country.Name.Common">@country.Name.Common</option>
+                    }
+                </select>
+                <span asp-validation-for="Tickets[@i].Country" class="text-danger"></span>
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>
+
+
+
+
+</table>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

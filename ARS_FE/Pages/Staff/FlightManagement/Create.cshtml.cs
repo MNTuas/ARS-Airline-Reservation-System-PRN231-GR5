@@ -43,7 +43,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             var airlineList = new List<AllAirlinesResponseModel>();
             var airportList = new List<AirportResponseModel>();
 
-            var responseAirline = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline");
+            var responseAirline = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline/Get_AllAirline");
             if (responseAirline != null)
             {
                 airlineList = responseAirline;
