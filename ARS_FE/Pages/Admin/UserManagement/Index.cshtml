@@ -49,6 +49,8 @@
                             <button type="submit" class="btn btn-danger">Deactivate</button>
                         </form>
                     }
+                    <a asp-page="./Transaction" asp-route-userId="@item.Id" class="btn btn-info ml-2">View Transactions</a>
+
                 </td>
             </tr>
         }

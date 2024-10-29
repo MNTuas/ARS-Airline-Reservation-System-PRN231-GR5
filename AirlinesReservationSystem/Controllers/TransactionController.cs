@@ -34,6 +34,7 @@ namespace AirlinesReservationSystem.Controllers
         public async Task<IActionResult> GetTranSactionOfUser(string userId)
         {
             var trans = await _transactionService.GetTransactionByUserId(userId);
+           
             return Ok(trans);
         }
 
