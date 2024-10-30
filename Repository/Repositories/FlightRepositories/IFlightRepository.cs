@@ -15,5 +15,6 @@ namespace Repository.Repositories.FlightRepositories
         Task<Flight> GetFlightById(string id);
         Task<List<Flight>> GetFlightsByFilter(string from, string to, DateTime checkin, DateTime? checkout);
         Task<Flight> GetFlightByNumber(string flightNumber, DateTime departureTime);
+        Task<List<Flight>> GetAllScheduledFlight();
     }
 }
