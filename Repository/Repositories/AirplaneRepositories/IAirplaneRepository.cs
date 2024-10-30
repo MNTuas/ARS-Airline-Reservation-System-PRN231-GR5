@@ -13,5 +13,6 @@ namespace Repository.Repositories.AirplaneRepositories
         Task<List<Airplane>> GetAllAirplaneAsync();
         Task<List<Airplane>> GetAllActiveAirplanes();
         Task<Airplane> GetAirplane(string id);
+        Task<Airplane> GetAirplaneByCodeAsync(string airplaneCode);
     }
 }

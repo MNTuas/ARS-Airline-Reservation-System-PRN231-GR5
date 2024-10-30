@@ -5,6 +5,7 @@ using Service.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,6 +36,13 @@ namespace Repository.Repositories.BookingRepositories
             var booking = await GetSingle(b => b.Id.Equals(id), includeProperties: "Tickets.TicketClass");
             var classPrice = booking.Tickets.Select(t => t.TicketClass.Price).FirstOrDefault();
             return classPrice * booking.Quantity;
+        }
+
+        public async Task<List<BookingInformation>> GetAllPendingBookings()
+        {
+            var list = await Get(b => b.Status.Equals(BookingStatusEnums.Pending.ToString())
+                                    , includeProperties: "Tickets.TicketClass.SeatClass,Transactions");
+            return list.ToList();
         }
     }
 }

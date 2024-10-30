@@ -68,5 +68,14 @@ namespace AirlinesReservationSystem.Controllers
             var response = await _bookingService.GetBookingById(id);
             return Ok(response);
         }
+
+        [HttpPut]
+        [Authorize(Roles = "User")]
+        [Route("{id}/cancel")]
+        public async Task<IActionResult> CancelBooking(string id)
+        {
+            await _bookingService.CancelBooking(id);
+            return Ok("Cancel booking successfully!");
+        }
     }
 }

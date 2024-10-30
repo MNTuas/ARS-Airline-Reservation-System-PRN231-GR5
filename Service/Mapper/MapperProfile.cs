@@ -34,7 +34,7 @@ namespace Service.Mapper
             //Flight
             CreateMap<CreateFlightRequest, Flight>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => FlightStatusEnums.Schedule.ToString()))
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => FlightStatusEnums.Scheduled.ToString()))
                 .ForMember(dest => dest.ArrivalTime, opt => opt.MapFrom(src => src.DepartureTime.AddMinutes(src.Duration)))
                 .ForMember(dest => dest.TicketClasses, opt => opt.MapFrom(src => src.TicketClassPrices));
             CreateMap<UpdateFlightRequest, Flight>()
@@ -46,7 +46,27 @@ namespace Service.Mapper
                 .ForMember(dest => dest.AirplaneCode, opt => opt.MapFrom(src => src.Airplane.CodeNumber))
                 .ForMember(dest => dest.FromName, opt => opt.MapFrom(src => src.FromNavigation.Name))
                 .ForMember(dest => dest.ToName, opt => opt.MapFrom(src => src.ToNavigation.Name))
-                .ForMember(dest => dest.TicketClassPrices, opt => opt.MapFrom(src => src.TicketClasses));
+                .ForMember(dest => dest.TicketClassPrices, opt => opt.MapFrom(src => src.TicketClasses))
+                .AfterMap((src, dest) =>
+                {
+                    var airplaneSeats = src.Airplane.AirplaneSeats.ToList();
+                    var ticketClasses = src.TicketClasses.ToList();
+
+                    for (int i = 0; i < ticketClasses.Count; i++)
+                    {
+                        if (i < airplaneSeats.Count)
+                        {
+                            dest.TicketClassPrices[i].TotalSeat = airplaneSeats[i].SeatCount;
+                        }
+
+                        int paidTicketsCount = ticketClasses[i].Tickets
+                            .Count(ticket => ticket.Status == BookingStatusEnums.Paid.ToString());
+                        dest.TicketClassPrices[i].RemainSeat = airplaneSeats[i].SeatCount - paidTicketsCount;
+                    }
+                });
+
+
+
 
             //TicketClass
             CreateMap<TicketClassPrice, TicketClass>()

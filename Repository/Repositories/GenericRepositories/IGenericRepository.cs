@@ -36,5 +36,6 @@ namespace Repository.Repositories.GenericRepositories
         Task UpdateRange(List<TEntity> entities);
 
         Task DeleteRange(List<TEntity> entities);
+
     }
 }
