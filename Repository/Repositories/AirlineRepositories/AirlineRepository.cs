@@ -25,7 +25,7 @@ namespace Repository.Repositories.AirlineRepositories
         }
         public async Task<Airline> GetDetailsById(string id)
         {
-            return await GetSingle(a => a.Id.Equals(id), includeProperties: "Airplanes.AirplaneSeats");
+            return await GetSingle(a => a.Id.Equals(id), includeProperties: "Airplanes.AirplaneSeats.SeatClass");
         }
     }
 }

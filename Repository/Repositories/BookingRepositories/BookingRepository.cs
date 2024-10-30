@@ -38,5 +38,11 @@ namespace Repository.Repositories.BookingRepositories
             return classPrice * booking.Quantity;
         }
 
+        public async Task<List<BookingInformation>> GetAllPendingBookings()
+        {
+            var list = await Get(b => b.Status.Equals(BookingStatusEnums.Pending.ToString())
+                                    , includeProperties: "Tickets.TicketClass.SeatClass,Transactions");
+            return list.ToList();
+        }
     }
 }
