@@ -43,12 +43,11 @@ namespace AirlinesReservationSystem.Controllers
                 });
             }
         }
-
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetPassengerInfo(string id)
         {
-            var response = await _PassengerService.GetDetailsPassengerrInfo(id);
+            var response = await _PassengerService.GetDetailsPassengerInfo(id);
             return Ok(response);
         }
 

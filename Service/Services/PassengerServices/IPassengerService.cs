@@ -12,7 +12,7 @@ namespace Service.Services.PassengerServices
 {
     public interface IPassengerService
     {
-        Task<PassengerResposeModel> GetDetailsPassengerrInfo(string id);
+        Task<PassengerResposeModel> GetDetailsPassengerInfo(string id);
         Task<List<PassengerResposeModel>> GetAllPassengers();
         Task<Result<Passenger>> addPassenger(CreatePassengerRequest createPassengerRequest);
         Task UpdatePassenger(string id, UpdatePassengerRequest request);
