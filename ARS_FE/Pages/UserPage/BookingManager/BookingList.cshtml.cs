@@ -29,7 +29,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             var response = await APIHelper.GetAsJsonAsync<List<UserBookingResponseModel>>(client, "Booking/own");
             if (response != null)
             {
-                Bookings = PaginatedList<UserBookingResponseModel>.Create(response, pageIndex ?? 1, 6);
+                Bookings = PaginatedList<UserBookingResponseModel>.Create(response, pageIndex ?? 1, 12);
                 return Page();
             }
             else

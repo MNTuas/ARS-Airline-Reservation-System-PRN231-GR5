@@ -16,6 +16,8 @@ using Service.Services.AirportService;
 using Service.Mapper;
 using Repository.Repositories.AirporRepositories;
 using Service.Services.AirlineServices;
+using Repository.Repositories.SeatClassRepositories;
+using Service.Services.SeatClassServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +79,9 @@ builder.Services.AddScoped<IRankService, RankService>();
 
 builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
+
+builder.Services.AddScoped<ISeatClassRepository, SeatClassRepository>();
+builder.Services.AddScoped<ISeatClassService , SeatClassService>(); 
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 

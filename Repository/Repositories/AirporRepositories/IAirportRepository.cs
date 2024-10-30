@@ -13,5 +13,6 @@ namespace Repository.Repositories.AirporRepositories
     {
         Task<List<Airport>> GetAllAirport();
         Task<Airport> GetById(string id);
+        Task<Airport> GetAirportByCodeAsync(string airportName);
     }
 }
