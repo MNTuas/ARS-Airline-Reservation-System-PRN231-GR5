@@ -1,0 +1,90 @@
+﻿@page
+@model EditModel
+@{
+    Layout = "_LayoutManage";
+    ViewData["Title"] = "Edit Passenger";
+}
+<h1>Edit Passenger</h1>
+<h4>Passenger Details</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="PassengerId" />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="updatePassengerRequest.FirstName" class="form-label">First Name</label>
+                        <input asp-for="updatePassengerRequest.FirstName" class="form-control" required />
+                        <span asp-validation-for="updatePassengerRequest.FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="updatePassengerRequest.LastName" class="form-label">Last Name</label>
+                        <input asp-for="updatePassengerRequest.LastName" class="form-control" required />
+                        <span asp-validation-for="updatePassengerRequest.LastName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="updatePassengerRequest.Gender" class="form-label">Gender</label>
+                        <select asp-for="updatePassengerRequest.Gender" class="form-select" asp-items="ViewBag.Genders" required>
+                            <option value="">-- Select Gender --</option>
+                        </select>
+                        <span asp-validation-for="updatePassengerRequest.Gender" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="updatePassengerRequest.Dob" class="form-label">Date of Birth</label>
+                        <input asp-for="updatePassengerRequest.Dob" class="form-control" type="date" required />
+                        <span asp-validation-for="updatePassengerRequest.Dob" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="updatePassengerRequest.Country" class="form-label">Country</label>
+                        <select asp-for="updatePassengerRequest.Country" class="form-select" asp-items="ViewBag.Countries" required>
+                            <option value="">-- Select Country --</option>
+                        </select>
+                        <span asp-validation-for="updatePassengerRequest.Country" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="updatePassengerRequest.Type" class="form-label">Passenger Type</label>
+                        <select asp-for="updatePassengerRequest.Type" class="form-select" asp-items="ViewBag.PassengerTypes" required>
+                            <option value="">-- Select Passenger Type --</option>
+                        </select>
+                        <span asp-validation-for="updatePassengerRequest.Type" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group mt-3">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function (e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        });
+    </script>
+}
