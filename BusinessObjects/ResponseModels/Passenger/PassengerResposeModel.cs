@@ -5,22 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessObjects.RequestModels.Passenger
+namespace BusinessObjects.ResponseModels.Passenger
 {
-    public class CreatePassengerRequest
+    public class PassengerResposeModel
     {
-        [Required(ErrorMessage = "Vui lòng nhập họ")]
+        public string Id { get; set; } = null!;
         public string FirstName { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng nhập tên")]
         public string LastName { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng chọn giới tính")]
         public string Gender { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng nhập ngày sinh")]
         public DateOnly Dob { get; set; }
-        [Required(ErrorMessage = "Vui lòng chọn quốc tịch")]
         public string Country { get; set; } = null!;
-
         public string Type { get; set; } = null!;
-
     }
 }
