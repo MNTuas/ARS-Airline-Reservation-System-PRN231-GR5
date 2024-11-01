@@ -49,5 +49,9 @@ namespace BusinessObjects.ResponseModels.Flight
         public string SeatClassId { get; set; } = null!;
 
         public decimal Price { get; set; }
+
+        public int TotalSeat { get; set; }
+
+        public int RemainSeat { get; set; }
     }
 }

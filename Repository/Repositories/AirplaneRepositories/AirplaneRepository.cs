@@ -1,9 +1,11 @@
 ﻿using BusinessObjects.Models;
 using DAO;
+using Microsoft.EntityFrameworkCore;
 using Repository.Repositories.RankRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,5 +30,13 @@ namespace Repository.Repositories.AirplaneRepositories
             var airplane = await GetSingle(r => r.Id.Equals(id), includeProperties: "AirplaneSeats.SeatClass");
             return airplane;
         }
+
+        public async Task<Airplane> GetAirplaneByCodeAsync(string airplaneCode)
+        {
+            var airplane = await GetSingle(r => r.CodeNumber.Equals(airplaneCode));
+            return airplane;
+        }
     }
-}
+            
+    }
+
