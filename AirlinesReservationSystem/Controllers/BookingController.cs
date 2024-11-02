@@ -71,8 +71,8 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpPut]
         [Authorize(Roles = "User")]
-        [Route("{id}/cancel")]
-        public async Task<IActionResult> CancelBooking(string id)
+        [Route("cancel")]
+        public async Task<IActionResult> CancelBooking([FromBody] string id)
         {
             await _bookingService.CancelBooking(id);
             return Ok("Cancel booking successfully!");

@@ -21,8 +21,8 @@ namespace Repository.Repositories.BookingRepositories
 
         public async Task<List<BookingInformation>> GetAllBookingOfUser(string userId)
         {
-            var list = await Get(b => b.UserId.Equals(userId) && (b.Status.Equals(BookingStatusEnums.Paid.ToString()) || b.Status.Equals(BookingStatusEnums.Pending.ToString())) && b.Tickets.Count() > 0,
-                orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions");
+            var list = await Get(b => b.UserId.Equals(userId),
+    orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight");
             return list.ToList();
         }
 

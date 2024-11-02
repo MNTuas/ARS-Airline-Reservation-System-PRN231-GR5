@@ -111,7 +111,10 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => BookingStatusEnums.Pending.ToString()));
             CreateMap<BookingInformation, UserBookingResponseModel>()
                 .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets))
+                .ForMember(dest => dest.FlightStatus, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Flight.Status))
+                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Price * src.Quantity))
                 ;
+            
 
             //Passenger
             CreateMap<CreatePassengerRequest, Passenger>()
