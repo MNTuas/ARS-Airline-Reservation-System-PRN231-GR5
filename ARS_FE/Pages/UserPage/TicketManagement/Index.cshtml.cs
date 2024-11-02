@@ -44,16 +44,26 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
 
         public async Task OnGetAsync(int quantity)
         {
-            //lấy quantity để tạo form 
             Quantity = quantity;
 
-            for (int i = 0; i < Quantity; i++)
+            // Kiểm tra xem có dữ liệu vé trong session không
+            var ticketsFromSession = HttpContext.Session.GetString("Tickets");
+            if (!string.IsNullOrEmpty(ticketsFromSession))
             {
-                Tickets.Add(new CreateTicketRequest
-                {
-                    TicketClassId = TicketClassId,
-                });
+                Tickets = JsonSerializer.Deserialize<List<CreateTicketRequest>>(ticketsFromSession);
             }
+            else
+            {
+                // Khởi tạo danh sách vé mới nếu không có dữ liệu trong session
+                for (int i = 0; i < Quantity; i++)
+                {
+                    Tickets.Add(new CreateTicketRequest
+                    {
+                        TicketClassId = TicketClassId,
+                    });
+                }
+            }
+
             await LoadCountriesAsync();
         }
 
@@ -61,6 +71,8 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         {
             if (!ModelState.IsValid)
             {
+                // Lưu thông tin vé vào session khi có lỗi
+                HttpContext.Session.SetString("Tickets", JsonSerializer.Serialize(Tickets));
                 await LoadCountriesAsync();
                 return Page();
             }
@@ -93,6 +105,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                 }
 
             }
+            HttpContext.Session.Remove("Tickets");
             var returnUrlResponse = await APIHelper.PostAsJson(client, $"Transaction", bookingId);
             var returnUrl = await returnUrlResponse.Content.ReadFromJsonAsync<string>();
             return Redirect(returnUrl);

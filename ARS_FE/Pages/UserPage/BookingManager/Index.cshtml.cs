@@ -38,7 +38,18 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             var client = CreateAuthorizedClient();
             if (client == null)
             {
-                return RedirectToPage("/Login");
+                // Lấy các thông tin từ query string
+                var from = HttpContext.Request.Query["from"];
+                var to = HttpContext.Request.Query["to"];
+                var checkin = HttpContext.Request.Query["checkin"];
+                var checkout = HttpContext.Request.Query["checkout"];
+
+                // Tạo URL quay lại với các thông tin đã lấy từ query string
+                var returnUrl = $"https://localhost:7223/SearchFlight?from={from}&to={to}&checkin={checkin}&checkout={checkout}";
+
+                // Chuyển hướng đến trang Login và gửi returnUrl
+                return RedirectToPage("/Login", new { ReturnUrl = returnUrl });
+
             }
 
             var response = await APIHelper.GetAsJsonAsync<FlightResponseModel>(client, $"Flight/{id}");
