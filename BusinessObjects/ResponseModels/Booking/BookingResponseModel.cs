@@ -1,5 +1,4 @@
-﻿using BusinessObjects.Models;
-using BusinessObjects.ResponseModels.Ticket;
+﻿using BusinessObjects.ResponseModels.Ticket;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace BusinessObjects.ResponseModels.Booking
 {
-    public class UserBookingResponseModel
+    public class BookingResponseModel
     {
         public string Id { get; set; } = null!;
+
+        public string UserName { get; set; } = null!;
 
         public DateTime CreatedDate { get; set; }
 
@@ -23,8 +24,5 @@ namespace BusinessObjects.ResponseModels.Booking
         public decimal TotalAmount { get; set; }
 
         public virtual List<TicketResponseModel> Tickets { get; set; } = new List<TicketResponseModel>();
-
     }
-
-
 }
