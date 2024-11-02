@@ -121,6 +121,8 @@ namespace Service.Services.FlightServices
 
                 var flights = new List<Flight>();
                 var existingFlightNumbers = new HashSet<string>(); // Để lưu trữ các chuyến bay đã kiểm tra
+                var existingAirplane = new HashSet<string>();
+                var flightsPerDay = new Dictionary<string, int>();
 
                 using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
                 {
@@ -145,6 +147,16 @@ namespace Service.Services.FlightServices
 
                                 var flightNumber = reader.GetValue(0).ToString();
                                 var departureTime = DateTime.Parse(reader.GetValue(2).ToString());
+                                var AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString());
+
+                                if (departureTime < DateTime.UtcNow)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Departure time is pass over"
+                                    };
+                                }
 
                                 if (existingFlightNumbers.Contains($"{flightNumber}|{departureTime}"))
                                 {
@@ -152,6 +164,27 @@ namespace Service.Services.FlightServices
                                     {
                                         Success = false,
                                         Message = $"Flight Number '{flightNumber}' already exists for the given departure time."
+                                    };
+                                }
+
+                                var dateKey = $"{AirplaneId}|{departureTime.Date}";
+
+                                if (flightsPerDay.ContainsKey(dateKey))
+                                {
+                                    flightsPerDay[dateKey]++;
+                                }
+                                else
+                                {
+                                    flightsPerDay[dateKey] = 1;
+                                }
+
+                                // Kiểm tra nếu số chuyến bay đã vượt quá 2
+                                if (flightsPerDay[dateKey] > 2)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Airplane already have 2 flight per day"
                                     };
                                 }
 
@@ -165,11 +198,23 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
+                                var flightInDay = await _flightRepository.CountFlightsForAirplaneOnDate(AirplaneId, departureTime);
+                                if (flightInDay > 2)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Airplane already have 2 flight per day "
+                                    };
+                                }
+
+                         
+
                                 var flight = new Flight
                                 {
                                     Id = Guid.NewGuid().ToString(),
                                     FlightNumber = flightNumber,
-                                    AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString()),
+                                    AirplaneId = AirplaneId,
                                     DepartureTime = departureTime,
                                     Duration = ParsePositiveDuration(reader.GetValue(3).ToString()),
                                     ArrivalTime = departureTime.AddMinutes(int.Parse(reader.GetValue(3).ToString())),
@@ -211,6 +256,7 @@ namespace Service.Services.FlightServices
 
                                 // Thêm chuyến bay vào bộ nhớ để kiểm tra cho các chuyến bay tiếp theo
                                 existingFlightNumbers.Add($"{flightNumber}|{departureTime}");
+                                existingAirplane.Add($"{AirplaneId}|{departureTime}");
                             }
 
                         } while (reader.NextResult());

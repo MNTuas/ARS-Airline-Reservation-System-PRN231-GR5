@@ -48,6 +48,14 @@ namespace Repository.Repositories.FlightRepositories
             return flight;
         }
 
+        public async Task<int> CountFlightsForAirplaneOnDate(string airplaneId, DateTime departureTime)
+        {
+            // Truy vấn số chuyến bay cho máy bay với ngày khởi hành trong ngày đó
+            var flight = await Get(f => f.AirplaneId == airplaneId && f.DepartureTime.Date == departureTime);
+            return flight.Count();
+        }
+
+
         public async Task<List<Flight>> GetAllScheduledFlight()
         {
             var list = await Get(f => f.Status.Equals(FlightStatusEnums.Scheduled.ToString()));
