@@ -1,7 +1,8 @@
 ﻿@page
-@model ARS_FE.Pages.UserPage.BookingManager.BookingListModel
+@model ARS_FE.Pages.Admin.BookingManagement.IndexModel
+
 @{
-    Layout = "_LayoutUser";
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Airports";
 
     var prevDisabled = !Model.Bookings.HasPreviousPage ? "disabled" : "";
@@ -30,8 +31,11 @@
             <table class="table table-hover table-striped table-bordered">
                 <thead class="thead-dark">
                     <tr>
+                        <th class="text-center">Username</th>
                         <th class="text-center">Quantity</th>
                         <th class="text-center">Created Date</th>
+                        <th class="text-center">Total Price</th>
+                        <th class="text-center">Flight Status</th>
                         <th class="text-center">Status</th>
                         <th class="text-center">Actions</th>
                     </tr>
@@ -48,8 +52,11 @@
                         @foreach (var item in Model.Bookings)
                         {
                             <tr>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.UserName)</td>
                                 <td class="text-center">@Html.DisplayFor(modelItem => item.Quantity)</td>
                                 <td class="text-center">@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                                <td class="text-center">@item.TotalAmount.ToString("#,##0 VND")</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.FlightStatus)</td>
                                 <td class="text-center">
                                     @{
                                         string statusClass = item.Status switch
@@ -64,13 +71,6 @@
                                 </td>
                                 <td class="text-center">
                                     <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-
-                                    @if ((item.Status == "Pending" || item.Status == "Paid") && !item.FlightStatus.Equals("Arrived"))
-                                    {
-                                        <form method="post" asp-page-handler="Cancel" asp-route-id="@item.Id" class="d-inline">
-                                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
-                                        </form>
-                                    }
                                 </td>
                             </tr>
                         }
@@ -84,7 +84,7 @@
         <ul class="pagination">
             <li class="page-item @prevDisabled">
                 <a class="page-link" aria-label="Previous"
-                   asp-page="./BookingList"
+                   asp-page="./Index"
                    asp-route-pageIndex="@(Model.Bookings.PageIndex - 1)">
                     <span aria-hidden="true"><i class="bi bi-arrow-left"></i> Previous</span>
                 </a>
@@ -93,14 +93,14 @@
             @for (var i = minPage; i <= maxPage; i++)
             {
                 <li class="page-item @(Model.Bookings.PageIndex == i ? "active" : "")">
-                    <a class="page-link" asp-page="./BookingList"
+                    <a class="page-link" asp-page="./Index"
                        asp-route-pageIndex="@i">@i</a>
                 </li>
             }
 
             <li class="page-item @nextDisabled">
                 <a class="page-link" aria-label="Next"
-                   asp-page="./BookingList"
+                   asp-page="./Index"
                    asp-route-pageIndex="@(Model.Bookings.PageIndex + 1)">
                     <span aria-hidden="true">Next <i class="bi bi-arrow-right"></i></span>
                 </a>
