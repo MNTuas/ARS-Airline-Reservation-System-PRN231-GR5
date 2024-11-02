@@ -15,6 +15,7 @@ using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Ticket;
+using BusinessObjects.ResponseModels.Passenger;
 using BusinessObjects.ResponseModels.User;
 using Repository.Enums;
 using Service.Enums;
@@ -115,7 +116,17 @@ namespace Service.Mapper
             //Passenger
             CreateMap<CreatePassengerRequest, Passenger>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()));
-
+            CreateMap<Passenger, PassengerResposeModel>();
+            CreateMap<UpdatePassengerRequest, Passenger>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.UserId, opt => opt.Ignore())
+            .ForMember(dest => dest.User, opt => opt.Ignore())
+            .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+            .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+            .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))
+            .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
+            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type)).ReverseMap();
             //Ticket
             CreateMap<CreateTicketRequest, Ticket>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))

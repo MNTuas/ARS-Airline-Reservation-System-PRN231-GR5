@@ -33,5 +33,9 @@ namespace ARS_FE
                 return default; 
             }
         }
+        public static async Task<HttpResponseMessage> DeleteAsync(this HttpClient httpClient, string url)
+        {
+            return await httpClient.DeleteAsync(url);
+        }
     }
 }
