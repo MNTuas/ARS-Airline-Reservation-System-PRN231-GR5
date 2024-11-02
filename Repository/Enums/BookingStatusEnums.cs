@@ -9,6 +9,7 @@ namespace Service.Enums
     public enum BookingStatusEnums
     {
         Pending,
-        Finished
+        Paid, 
+        Cancelled
     }
 }

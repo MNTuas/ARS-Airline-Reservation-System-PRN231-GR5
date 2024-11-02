@@ -8,6 +8,7 @@ namespace Repository.Enums
 {
     public enum FlightStatusEnums
     {
-        Schedule
+        Scheduled, 
+        Arrived
     }
 }

@@ -4,6 +4,7 @@ using Repository.Repositories.TicketRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,12 @@ namespace Repository.Repositories.TicketRepositories
         public async Task<Ticket> GetById(string id)
         {
             return await GetSingle(a => a.Id.Equals(id));
+        }
+
+        public async Task<List<Ticket>> GetTicketByBookingId(string bookingId)
+        {
+            var list = await Get(b => b.BookingId.Equals(bookingId));
+            return list.ToList();
         }
     }
 }

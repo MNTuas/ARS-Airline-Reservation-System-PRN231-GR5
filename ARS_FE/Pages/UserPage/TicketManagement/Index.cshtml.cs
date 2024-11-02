@@ -13,6 +13,8 @@ using BusinessObjects.RequestModels.Ticket;
 using BusinessObjects.RequestModels.Booking;
 using BusinessObjects.RequestModels.Airport;
 using System.Text.Json;
+using Azure;
+using FFilms.Application.Shared.Response;
 
 namespace ARS_FE.Pages.UserPage.TicketManagement
 {
@@ -31,16 +33,13 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         [BindProperty(SupportsGet = true)]
         public string TicketClassId { get; set; } // Nhận TicketClassId từ URL
 
-        [BindProperty(SupportsGet = true)]
-        public string bookingId { get; set; }
-
 
         [BindProperty]
         public CreateTicketRequest CreateTicketRequest { get; set; } = default!;
 
         [BindProperty]
         public List<CreateTicketRequest> Tickets { get; set; } = new List<CreateTicketRequest>();
-        
+
         public List<Country> Countries { get; set; } = new List<Country>();
 
         public async Task OnGetAsync(int quantity)
@@ -53,29 +52,30 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                 Tickets.Add(new CreateTicketRequest
                 {
                     TicketClassId = TicketClassId,
-                    BookingId = bookingId,
                 });
             }
             await LoadCountriesAsync();
         }
 
         public async Task<IActionResult> OnPostAsync()
-        {           
+        {
             if (!ModelState.IsValid)
-            {                
+            {
                 await LoadCountriesAsync();
                 return Page();
             }
 
             var client = CreateAuthorizedClient();
 
+            var bookingId = await CreateBooking();
+
             //lặp cái list ticket lấy info 
             foreach (var ticket in Tickets)
             {
                 var n = new CreateTicketRequest
                 {
-                    BookingId = bookingId,          
-                    TicketClassId = TicketClassId, 
+                    BookingId = bookingId ,
+                    TicketClassId = TicketClassId,
                     Country = ticket.Country,
                     FirstName = ticket.FirstName,
                     LastName = ticket.LastName,
@@ -91,8 +91,39 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                     await LoadCountriesAsync();
                     return Page();
                 }
+
             }
-            return RedirectToPage("./Index");
+            var returnUrlResponse = await APIHelper.PostAsJson(client, $"Transaction", bookingId);
+            var returnUrl = await returnUrlResponse.Content.ReadFromJsonAsync<string>();
+            return Redirect(returnUrl);
+        }
+
+        public async Task<string> CreateBooking()
+        {
+            var client = CreateAuthorizedClient();
+
+            var bookingRequest = new CreateBookingRequest
+            {
+                Quantity = Quantity,
+            };
+
+            var response = await APIHelper.PostAsJson(client, "Booking", bookingRequest);
+
+            // Check if the response was successful and extract BookingId
+            if (response.IsSuccessStatusCode)
+            {
+                // Đọc nội dung phản hồi JSON bên api
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var createBookingResponse = JsonDocument.Parse(responseContent);
+
+                // Lấy BookingId từ phản hồi
+                string bookingId = createBookingResponse.RootElement.GetProperty("bookingId").GetString();
+                return bookingId;
+            }
+
+            // Handle error scenario (optional: throw an exception or return null)
+            ModelState.AddModelError(string.Empty, "Error occurred while creating the booking.");
+            return null;
         }
 
 
@@ -148,7 +179,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                 Console.WriteLine($"Error: {response.StatusCode}");
             }
         }
-        
+
         public class Country
         {
             public Name Name { get; set; }

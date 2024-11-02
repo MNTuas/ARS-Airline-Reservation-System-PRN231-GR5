@@ -14,12 +14,36 @@
     var currentPageIndex = Model.Flight.PageIndex;
 }
 
+
 <div class="container mt-4">
     <h1 class="text-center mb-4">Flight Management</h1>
+
+    @if (!ModelState.IsValid)
+    {
+        <div class="alert alert-danger">
+            @foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <div>@error.ErrorMessage</div>
+            }
+        </div>
+    }
 
     <div class="text-right mb-3">
         <a asp-page="Create" class="btn btn-primary">Create Flight</a>
     </div>
+    <!-- Form 2: Upload Excel File -->
+    <form method="post" enctype="multipart/form-data">
+        <!-- Existing flight inputs... -->
+        <div class="form-group">
+            <label for="fileUpload">Upload File</label>
+            <input type="file" id="fileUpload" name="UploadedFile" class="form-control" />
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+
+
 
     <form method="get" class="form-inline mb-4">
         <div class="form-group mr-2">

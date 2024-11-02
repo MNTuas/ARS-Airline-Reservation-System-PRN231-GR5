@@ -1,4 +1,5 @@
 ﻿using DAO;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,5 +38,7 @@ namespace Repository.Repositories.GenericRepositories
         public async Task UpdateRange(List<TEntity> entities) => await GenericDAO<TEntity>.Instance.UpdateRange(entities);
 
         public async Task DeleteRange(List<TEntity> entities) => await GenericDAO<TEntity>.Instance.DeleteRange(entities);
+
+
     }
 }
