@@ -2,53 +2,109 @@
 @model ARS_FE.Pages.Admin.BookingManagement.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Airports";
+
+    var prevDisabled = !Model.Bookings.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Bookings.HasNextPage ? "disabled" : "";
+
+    var minPage = Math.Max(1, Model.Bookings.PageIndex - 2);
+    var maxPage = Math.Min(minPage + 4, Model.Bookings.TotalPages);
+
+    var currentPageIndex = Model.Bookings.PageIndex;
 }
 
-<h1>Index</h1>
+<div class="container mt-4">
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Booking List</h1>
+    </div>
 
-<p>
-    <a asp-page="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingInformation[0].CreatedDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingInformation[0].Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingInformation[0].Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.BookingInformation[0].User)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.BookingInformation) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreatedDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="text-center">Username</th>
+                        <th class="text-center">Quantity</th>
+                        <th class="text-center">Created Date</th>
+                        <th class="text-center">Total Price</th>
+                        <th class="text-center">Flight Status</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Bookings.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center">No bookings found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.Bookings)
+                        {
+                            <tr>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.UserName)</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.Quantity)</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                                <td class="text-center">@item.TotalAmount.ToString("#,##0 VND")</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.FlightStatus)</td>
+                                <td class="text-center">
+                                    @{
+                                        string statusClass = item.Status switch
+                                        {
+                                            "Pending" => "text-warning",
+                                            "Paid" => "text-success",
+                                            "Cancelled" => "text-danger",
+                                            _ => ""
+                                        };
+                                    }
+                                    <span class="@statusClass">@item.Status</span>
+                                </td>
+                                <td class="text-center">
+                                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <nav aria-label="Page navigation" class="d-flex justify-content-center mt-3">
+        <ul class="pagination">
+            <li class="page-item @prevDisabled">
+                <a class="page-link" aria-label="Previous"
+                   asp-page="./Index"
+                   asp-route-pageIndex="@(Model.Bookings.PageIndex - 1)">
+                    <span aria-hidden="true"><i class="bi bi-arrow-left"></i> Previous</span>
+                </a>
+            </li>
+
+            @for (var i = minPage; i <= maxPage; i++)
+            {
+                <li class="page-item @(Model.Bookings.PageIndex == i ? "active" : "")">
+                    <a class="page-link" asp-page="./Index"
+                       asp-route-pageIndex="@i">@i</a>
+                </li>
+            }
+
+            <li class="page-item @nextDisabled">
+                <a class="page-link" aria-label="Next"
+                   asp-page="./Index"
+                   asp-route-pageIndex="@(Model.Bookings.PageIndex + 1)">
+                    <span aria-hidden="true">Next <i class="bi bi-arrow-right"></i></span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</div>

@@ -12,6 +12,7 @@ namespace Service.Services.BookingServices
 {
     public interface IBookingService
     {
+        Task<List<BookingResponseModel>> GetAllBookings();
         Task<Result<BookingInformation>> addBooking(CreateBookingRequest createBookingRequest);
         Task UpdateBookingStatus(string id, string status);
         Task<List<UserBookingResponseModel>> GetOwnBookings();

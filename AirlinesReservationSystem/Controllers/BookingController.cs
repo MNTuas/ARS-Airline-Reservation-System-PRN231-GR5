@@ -61,7 +61,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         [Route("{id}")]
         public async Task<IActionResult> GetBookingById(string id)
         {
@@ -76,6 +76,14 @@ namespace AirlinesReservationSystem.Controllers
         {
             await _bookingService.CancelBooking(id);
             return Ok("Cancel booking successfully!");
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllBookings()
+        {
+            var response = await _bookingService.GetAllBookings();
+            return Ok(response);
         }
     }
 }

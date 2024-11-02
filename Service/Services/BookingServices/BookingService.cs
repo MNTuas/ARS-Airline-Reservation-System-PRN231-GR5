@@ -29,6 +29,12 @@ namespace Service.Services.BookingServices
             _mapper = mapper;
         }
 
+        public async Task<List<BookingResponseModel>> GetAllBookings()
+        {
+            var list = await _bookingRepository.GetAllBooking();
+            return _mapper.Map<List<BookingResponseModel>>(list);
+        }
+
         public async Task<Result<BookingInformation>> addBooking(CreateBookingRequest createBookingRequest)
         {
             try
