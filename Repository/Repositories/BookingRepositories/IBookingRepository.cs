@@ -14,5 +14,6 @@ namespace Repository.Repositories.BookingRepositories
         Task<List<BookingInformation>> GetAllBookingOfUser(string userId);
         Task<BookingInformation> GetById(string id);
         Task<decimal> GetTotalPriceOfBooking(string id);
+        Task<List<BookingInformation>> GetAllPendingBookings();
     }
 }

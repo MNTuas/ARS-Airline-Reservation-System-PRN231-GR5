@@ -14,5 +14,6 @@ namespace Service.Services.FlightServices
         Task UpdateFlight(string flightId, UpdateFlightRequest request);
         Task<List<FlightResponseModel>> GetFlightByFilter(string from, string to, DateTime checkin, DateTime? checkout);
         Task<Result<Flight>> UploadFile(IFormFile file);
+        Task<string> AutoUpdateFlightStatus();
     }
 }

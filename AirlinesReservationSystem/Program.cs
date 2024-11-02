@@ -38,6 +38,7 @@ using Repository.Repositories.TransactionRepositories;
 using Service.Services.TransactionServices;
 using Microsoft.EntityFrameworkCore;
 using DAO;
+using Service.Services.BackgroundServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -66,6 +67,7 @@ builder.Services.AddControllers().AddOData(option => option.Select().Filter()
 
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHostedService<EntityUpdateBackgroundService>();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

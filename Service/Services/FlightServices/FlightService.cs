@@ -121,6 +121,8 @@ namespace Service.Services.FlightServices
 
                 var flights = new List<Flight>();
                 var existingFlightNumbers = new HashSet<string>(); // Để lưu trữ các chuyến bay đã kiểm tra
+                var existingAirplane = new HashSet<string>();
+                var flightsPerDay = new Dictionary<string, int>();
 
                 using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
                 {
@@ -138,7 +140,6 @@ namespace Service.Services.FlightServices
                                     continue;
                                 }
 
-                                // Kiểm tra ô đầu tiên (FlightNumber) xem có null hoặc trống không
                                 if (reader.GetValue(0) == null || string.IsNullOrWhiteSpace(reader.GetValue(0).ToString()))
                                 {
                                     break;
@@ -146,14 +147,44 @@ namespace Service.Services.FlightServices
 
                                 var flightNumber = reader.GetValue(0).ToString();
                                 var departureTime = DateTime.Parse(reader.GetValue(2).ToString());
+                                var AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString());
 
-                                // Kiểm tra chuyến bay đã tồn tại hay không trước khi kiểm tra trong bộ nhớ
+                                if (departureTime < DateTime.UtcNow)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Departure time is pass over"
+                                    };
+                                }
+
                                 if (existingFlightNumbers.Contains($"{flightNumber}|{departureTime}"))
                                 {
                                     return new Result<Flight>
                                     {
                                         Success = false,
                                         Message = $"Flight Number '{flightNumber}' already exists for the given departure time."
+                                    };
+                                }
+
+                                var dateKey = $"{AirplaneId}|{departureTime.Date}";
+
+                                if (flightsPerDay.ContainsKey(dateKey))
+                                {
+                                    flightsPerDay[dateKey]++;
+                                }
+                                else
+                                {
+                                    flightsPerDay[dateKey] = 1;
+                                }
+
+                                // Kiểm tra nếu số chuyến bay đã vượt quá 2
+                                if (flightsPerDay[dateKey] > 2)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Airplane already have 2 flight per day"
                                     };
                                 }
 
@@ -167,52 +198,65 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
+                                var flightInDay = await _flightRepository.CountFlightsForAirplaneOnDate(AirplaneId, departureTime);
+                                if (flightInDay > 2)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Airplane already have 2 flight per day "
+                                    };
+                                }
+
+                         
+
                                 var flight = new Flight
                                 {
                                     Id = Guid.NewGuid().ToString(),
                                     FlightNumber = flightNumber,
-                                    AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString()),
+                                    AirplaneId = AirplaneId,
                                     DepartureTime = departureTime,
                                     Duration = ParsePositiveDuration(reader.GetValue(3).ToString()),
                                     ArrivalTime = departureTime.AddMinutes(int.Parse(reader.GetValue(3).ToString())),
                                     From = await GetAirportIdByName(reader.GetValue(4).ToString()),
                                     To = await GetAirportIdByName(reader.GetValue(5).ToString()),
-                                    Status = FlightStatusEnums.Schedule.ToString()
+                                    Status = FlightStatusEnums.Scheduled.ToString()
                                 };
 
                                 var ticketClasses = new List<TicketClass>
-                        {
-                            new TicketClass
-                            {
-                                FlightId = flight.Id,
-                                Id = Guid.NewGuid().ToString(),
-                                SeatClassId = await GetSeatClassIdByName("Economy"),
-                                Price = ParsePositivePrice(reader.GetValue(6).ToString()),
-                                Status = "Available"
-                            },
-                            new TicketClass
-                            {
-                                FlightId = flight.Id,
-                                Id = Guid.NewGuid().ToString(),
-                                SeatClassId = await GetSeatClassIdByName("Business"),
-                                Price = ParsePositivePrice(reader.GetValue(7).ToString()),
-                                Status = "Available"
-                            },
-                            new TicketClass
-                            {
-                                FlightId = flight.Id,
-                                Id = Guid.NewGuid().ToString(),
-                                SeatClassId = await GetSeatClassIdByName("FirstClass"),
-                                Price = ParsePositivePrice(reader.GetValue(8).ToString()),
-                                Status = "Available"
-                            }
-                        };
+                                {
+                                    new TicketClass
+                                    {
+                                        FlightId = flight.Id,
+                                        Id = Guid.NewGuid().ToString(),
+                                        SeatClassId = await GetSeatClassIdByName("Economy"),
+                                        Price = ParsePositivePrice(reader.GetValue(6).ToString()),
+                                        Status = "Available"
+                                    },
+                                    new TicketClass
+                                    {
+                                        FlightId = flight.Id,
+                                        Id = Guid.NewGuid().ToString(),
+                                        SeatClassId = await GetSeatClassIdByName("Business"),
+                                        Price = ParsePositivePrice(reader.GetValue(7).ToString()),
+                                        Status = "Available"
+                                    },
+                                    new TicketClass
+                                    {
+                                        FlightId = flight.Id,
+                                        Id = Guid.NewGuid().ToString(),
+                                        SeatClassId = await GetSeatClassIdByName("FirstClass"),
+                                        Price = ParsePositivePrice(reader.GetValue(8).ToString()),
+                                        Status = "Available"
+                                    }
+                                };
 
                                 flight.TicketClasses = ticketClasses;
                                 flights.Add(flight);
 
                                 // Thêm chuyến bay vào bộ nhớ để kiểm tra cho các chuyến bay tiếp theo
                                 existingFlightNumbers.Add($"{flightNumber}|{departureTime}");
+                                existingAirplane.Add($"{AirplaneId}|{departureTime}");
                             }
 
                         } while (reader.NextResult());
@@ -240,29 +284,21 @@ namespace Service.Services.FlightServices
             }
         }
 
-
-
-
-        // lấy thông tin của từng cái name ở flight
         private async Task<string> GetAirplaneIdByCodeAsync(string airplaneCode)
         {
-            // Gọi phương thức bất đồng bộ để lấy máy bay
             var airplane = await _airplaneRepository.GetAirplaneByCodeAsync(airplaneCode);
 
-            // Kiểm tra nếu máy bay không tồn tại
             if (airplane == null)
             {
                 throw new Exception($"Airplane with code '{airplaneCode}' not found");
             }
 
-            // Trả về ID của máy bay
             return airplane.Id.ToString();
         }
 
         private async Task<string> GetAirportIdByName(string airportName)
         {
             var airport = await _airportRepository.GetAirportByCodeAsync(airportName);
-            //var airport = _context.Airports.FirstOrDefault(a => a.Name == airportName);
             if (airport == null)
             {
                 throw new Exception($"Airport with name {airportName} not found");
@@ -291,6 +327,7 @@ namespace Service.Services.FlightServices
                 throw new ArgumentException("Price must be a positive decimal value.");
             }
         }
+
         private int ParsePositiveDuration(string durationString)
         {
             if (int.TryParse(durationString, out int duration) && duration >= 0)
@@ -303,6 +340,21 @@ namespace Service.Services.FlightServices
             }
         }
 
+        public async Task<string> AutoUpdateFlightStatus()
+        {
+            var scheduledFlightList = await _flightRepository.GetAllScheduledFlight();
+            var updateList = new List<Flight>();
+            foreach (var flight in scheduledFlightList)
+            {
+                if (DateTime.Now.CompareTo(flight.ArrivalTime) > 0)
+                {
+                    flight.Status = FlightStatusEnums.Arrived.ToString();
+                    updateList.Add(flight);
+                }
+            }
+            await _flightRepository.UpdateRange(updateList);
+            return "Flight update successfully!";
+        }
 
     }
 }
