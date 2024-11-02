@@ -114,7 +114,12 @@ namespace Service.Mapper
                 .ForMember(dest => dest.FlightStatus, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Flight.Status))
                 .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Price * src.Quantity))
                 ;
-            
+            CreateMap<BookingInformation, BookingResponseModel>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets))
+                .ForMember(dest => dest.FlightStatus, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Flight.Status))
+                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Price * src.Quantity))
+                ;
 
             //Passenger
             CreateMap<CreatePassengerRequest, Passenger>()

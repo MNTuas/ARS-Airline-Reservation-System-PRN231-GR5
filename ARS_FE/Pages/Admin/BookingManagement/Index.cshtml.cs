@@ -7,24 +7,49 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DAO;
+using BusinessObjects.ResponseModels.Booking;
+using Service;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Admin.BookingManagement
 {
     public class IndexModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public IndexModel(DAO.AirlinesReservationSystemContext context)
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
-        public IList<BookingInformation> BookingInformation { get;set; } = default!;
+        public PaginatedList<BookingResponseModel> Bookings { get; set; } = default!;
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
-            BookingInformation = await _context.BookingInformations
-                .Include(b => b.User).ToListAsync();
+            var client = CreateAuthorizedClient();
+            var response = await APIHelper.GetAsJsonAsync<List<BookingResponseModel>>(client, "Booking");
+            if (response != null)
+            {
+                Bookings = PaginatedList<BookingResponseModel>.Create(response, pageIndex ?? 1, 10);
+                return Page();
+            }
+            else
+            {
+                return RedirectToPage("/403Page");
+            }
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }

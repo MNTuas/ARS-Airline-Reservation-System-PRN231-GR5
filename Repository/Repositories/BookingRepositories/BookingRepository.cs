@@ -15,7 +15,7 @@ namespace Repository.Repositories.BookingRepositories
     {
         public async Task<List<BookingInformation>> GetAllBooking()
         {
-            var list = await Get(orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions");
+            var list = await Get(orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User");
             return list.ToList();
         }
 
@@ -28,7 +28,7 @@ namespace Repository.Repositories.BookingRepositories
 
         public async Task<BookingInformation> GetById(string id)
         {
-            return await GetSingle(a => a.Id.Equals(id), includeProperties: "Tickets.TicketClass.SeatClass,Transactions");
+            return await GetSingle(a => a.Id.Equals(id), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight");
         }
 
         public async Task<decimal> GetTotalPriceOfBooking(string id)
