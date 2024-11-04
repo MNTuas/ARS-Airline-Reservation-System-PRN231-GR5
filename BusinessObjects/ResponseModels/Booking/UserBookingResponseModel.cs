@@ -18,6 +18,10 @@ namespace BusinessObjects.ResponseModels.Booking
 
         public string Status { get; set; } = null!;
 
+        public string FlightStatus { get; set; } = null!;
+
+        public decimal TotalAmount { get; set; }
+
         public virtual List<TicketResponseModel> Tickets { get; set; } = new List<TicketResponseModel>();
 
     }

@@ -20,13 +20,13 @@ namespace Service.Services.AuthService
     public class AuthService : IAuthService
     {
         private readonly IAuthRepository _authRepository;
-        private readonly IRankRepository _rankRepository;
         private readonly IConfiguration _configuration;
+        private readonly IRankRepository _rankRepository;
         public AuthService(IAuthRepository authRepository, IConfiguration configuration, IRankRepository rankRepository)
         {
             _authRepository = authRepository;
-            _rankRepository = rankRepository;
             _configuration = configuration;
+            _rankRepository = rankRepository;
         }
         public async Task<Result<User>> RegisterAsync(RegisterRequest request)
         {

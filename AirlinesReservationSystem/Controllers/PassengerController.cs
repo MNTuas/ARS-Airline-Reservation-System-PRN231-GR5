@@ -1,4 +1,7 @@
-﻿using BusinessObjects.RequestModels.Passenger;
+﻿using Azure;
+using BusinessObjects.RequestModels.Airlines;
+using BusinessObjects.RequestModels.Passenger;
+using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +42,36 @@ namespace AirlinesReservationSystem.Controllers
                     message = result.Message
                 });
             }
+        }
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<IActionResult> GetPassengerInfo(string id)
+        {
+            var response = await _PassengerService.GetDetailsPassengerInfo(id);
+            return Ok(response);
+        }
+
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllPassengers()
+        {
+            var response = await _PassengerService.GetAllPassengers();
+            return Ok(response);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> UpdatePassenger(string id, UpdatePassengerRequest request)
+        {
+            await _PassengerService.UpdatePassenger(id, request);
+            return Ok("Update passenger successfully");
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> DeletePassenger(string id)
+        {
+            await _PassengerService.DeletePassenger(id);
+            return Ok("Delete passenger successfully");
         }
     }
 }

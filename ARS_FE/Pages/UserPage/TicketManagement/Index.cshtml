@@ -3,10 +3,21 @@
 
 @{
     Layout = "_LayoutUser";
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Create Ticket";
+    var today = DateTime.Now.ToString("yyyy-MM-dd");
 }
 
-<h1>Index</h1>
+<h1 class="text-center my-4">Fill Your Ticket Information</h1>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 
 <form method="post" asp-page="/Create">
     <input type="hidden" asp-for="Quantity" />
@@ -15,62 +26,62 @@
 
     @for (var i = 0; i < Model.Quantity; i++)
     {
-        <div class="form-group">
-            <h4>Thông tin vé @i :</h4>
-
-            <input type="hidden" asp-for="Tickets[@i].TicketClassId" />
-            <input type="hidden" asp-for="Tickets[@i].BookingId" />
-
-            <div class="form-group">
-                <label asp-for="Tickets[@i].FirstName" class="control-label">FirstName:</label>
-                <input name="Tickets[@i].FirstName" class="form-control" type="text" placeholder="FirstName" />
-                <span asp-validation-for="Tickets[@i].FirstName" class="text-danger"></span>
+        <div class="card my-3">
+            <div class="card-header">
+                <h4>Ticket Information @i</h4>
             </div>
+            <div class="card-body">
+                <input type="hidden" asp-for="Tickets[@i].TicketClassId" />
+                <input type="hidden" asp-for="Tickets[@i].BookingId" />
 
-            <div class="form-group">
-                <label asp-for="Tickets[@i].LastName" class="control-label">LastName:</label>
-                <input name="Tickets[@i].LastName" class="form-control" type="text" placeholder="LastName" />
-                <span asp-validation-for="Tickets[@i].LastName" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Tickets[@i].FirstName" class="control-label">First Name:</label>
+                    <input name="Tickets[@i].FirstName" class="form-control" type="text" placeholder="Enter First Name" required />
+                    <span asp-validation-for="Tickets[@i].FirstName" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Tickets[@i].Gender" class="control-label">Gender:</label>
-                <select name="Tickets[@i].Gender" class="form-control">
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-                <span asp-validation-for="Tickets[@i].Gender" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Tickets[@i].LastName" class="control-label">Last Name:</label>
+                    <input name="Tickets[@i].LastName" class="form-control" type="text" placeholder="Enter Last Name" required />
+                    <span asp-validation-for="Tickets[@i].LastName" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Tickets[@i].Dob" class="control-label">DayofBirth</label>
-                <input name="Tickets[@i].Dob" class="form-control" type="date" placeholder="DayofBirth" />
-                <span asp-validation-for="Tickets[@i].Dob" class="text-danger"></span>
-            </div>
+                <div class="form-group">
+                    <label asp-for="Tickets[@i].Gender" class="control-label">Gender:</label>
+                    <select name="Tickets[@i].Gender" class="form-control" required>
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                    <span asp-validation-for="Tickets[@i].Gender" class="text-danger"></span>
+                </div>
 
-            <div class="form-group">
-                <label asp-for="Tickets[@i].Country" class="control-label">Country</label>
-                <select name="Tickets[@i].Country" class="form-control">
-                    <option value="">Choose your country</option>
-                    @foreach (var country in Model.Countries)
-                    {
-                        <option value="@country.Name.Common">@country.Name.Common</option>
-                    }
-                </select>
-                <span asp-validation-for="Tickets[@i].Country" class="text-danger"></span>
+                <div class="form-group">
+                    <label asp-for="Tickets[@i].Dob" class="control-label">Date of Birth</label>
+                    <input name="Tickets[@i].Dob" class="form-control" type="date" placeholder="Date of Birth" max="@today" required />
+                    <span asp-validation-for="Tickets[@i].Dob" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Tickets[@i].Country" class="control-label">Country</label>
+                    <select name="Tickets[@i].Country" class="form-control" required>
+                        <option value="">Choose your country</option>
+                        @foreach (var country in Model.Countries)
+                        {
+                            <option value="@country.Name.Common">@country.Name.Common</option>
+                        }
+                    </select>
+                    <span asp-validation-for="Tickets[@i].Country" class="text-danger"></span>
+                </div>
             </div>
         </div>
     }
 
-    <div class="form-group">
-        <input type="submit" value="Create" class="btn btn-primary" />
+    <div class="form-group text-center">
+        <input type="submit" value="Create Ticket" class="btn btn-warning btn-lg" /> <!-- Giữ màu cam với lớp btn-warning -->
     </div>
 </form>
 
-
-
-
-</table>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

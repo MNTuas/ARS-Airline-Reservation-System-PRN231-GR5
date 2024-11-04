@@ -1,4 +1,4 @@
-using BusinessObjects.Models;
+﻿using BusinessObjects.Models;
 using BusinessObjects.RequestModels;
 using BusinessObjects.RequestModels.Auth;
 using FFilms.Application.Shared.Response;
@@ -41,6 +41,14 @@ namespace ARS_FE.Pages
                 HttpContext.Session.SetString("JWToken", token);
                 HttpContext.Session.SetString("UserId", userId);
                 HttpContext.Session.SetString("Username", name);
+
+                // Lấy ReturnUrl từ query string
+                var returnUrl = Request.Query["ReturnUrl"].ToString();
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
+                    return Redirect(returnUrl); // Quay lại trang đã lưu
+                }
+
                 if (role.Equals(UserRolesEnums.Staff.ToString()))
                 {
                     return RedirectToPage("/Staff/Index");
@@ -49,6 +57,7 @@ namespace ARS_FE.Pages
                 {
                     return RedirectToPage("/Admin/Index");
                 }
+
                 return RedirectToPage("/Index");
             }
             else

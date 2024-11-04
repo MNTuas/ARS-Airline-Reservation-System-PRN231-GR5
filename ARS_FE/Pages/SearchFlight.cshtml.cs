@@ -62,7 +62,7 @@ namespace ARS_FE.Pages
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/Index");
             }
         }
 

@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using BusinessObjects.RequestModels.VnPay;
+using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Transaction;
 using Microsoft.AspNetCore.Http;
 using Repository.Repositories.BookingRepositories;
 using Repository.Repositories.TransactionRepositories;
+using Repository.Repositories.UserRepositories;
 using Service.Enums;
+using Service.Services.EmailServices;
 using Service.Services.VNPayServices;
 using Service.Ultis;
 using System;
@@ -21,14 +24,20 @@ namespace Service.Services.TransactionServices
         private readonly ITransactionRepository _transactionRepository;
         private readonly IBookingRepository _bookingRepository;
         private readonly IVnPayService _vnPayService;
+        private readonly IUserRepository _userRepository;
+        private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
 
-        public TransactionService(ITransactionRepository transactionRepository, IBookingRepository bookingRepository, IVnPayService vnPayService,IMapper mapper)
+        public TransactionService(ITransactionRepository transactionRepository, IBookingRepository bookingRepository,
+                                  IVnPayService vnPayService, IUserRepository userRepository,
+                                  IEmailService emailService, IMapper mapper)
         {
             _transactionRepository = transactionRepository;
             _bookingRepository = bookingRepository;
             _vnPayService = vnPayService;
-            this._mapper = mapper;
+            _userRepository = userRepository;
+            _emailService = emailService;
+            _mapper = mapper;
         }
         public async Task<List<TransactionResponseModel>> GetTransactionByUserId(string userId)
         {
@@ -59,6 +68,10 @@ namespace Service.Services.TransactionServices
             };
 
             await _transactionRepository.Insert(newTransaction);
+
+            // Gửi email thông báo
+            await SendEmailWhenBuySucces(userId, bookingId); // Thêm hàm gửi email tại đây
+
             string checkOutUrl = _vnPayService.CreatePaymentUrl(httpContext, vnPayment);
             return checkOutUrl;
         }
@@ -72,6 +85,43 @@ namespace Service.Services.TransactionServices
             }
             transaction.Status = status;
             await _transactionRepository.Update(transaction);
+            
         }
+
+        public async Task SendEmailWhenBuySucces(string userId, string bookingId)
+        {
+           
+            var user = await _userRepository.GetUserById(userId);
+            if (user == null)
+            {
+                throw new Exception("User not found!");
+            }
+
+          
+            var booking = await _bookingRepository.GetById(bookingId);
+            if (booking == null)
+            {
+                throw new Exception("Booking not found!");
+            }
+
+            // Ánh xạ booking sang UserBookingResponseModel
+            var userBookingResponse = _mapper.Map<UserBookingResponseModel>(booking);
+
+            
+            var tickets = userBookingResponse.Tickets;
+
+            
+            var htmlBody = EmailTemplate.ListTicket(user.Name, user.Email, tickets);
+
+            // Gửi email
+            bool sendEmailSuccess = await _emailService.SendEmail(user.Email, "Your Booking Confirmation", htmlBody);
+
+            if (!sendEmailSuccess)
+            {
+                throw new Exception("Error in sending email");
+            }
+        }
+
+
     }
 }

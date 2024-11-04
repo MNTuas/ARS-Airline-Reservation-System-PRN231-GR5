@@ -1,0 +1,43 @@
+﻿@page
+@model DetailsModel
+
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Passenger Details";
+}
+
+
+<div class="container mt-4">
+    <h1 class="text-center">Flight Details</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Flight Information</h4>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Airline</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.FirstName)</dd>
+
+                <dt class="col-sm-3">Airplane Code</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.LastName)</dd>
+
+                <dt class="col-sm-3">Scheduled Departure Time</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Dob)</dd>
+
+                <dt class="col-sm-3">Scheduled Arrival Time</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Gender)</dd>
+
+                <dt class="col-sm-3">From</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Country)</dd>
+
+                <dt class="col-sm-3">To</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Type)</dd>
+            </dl>
+        </div>
+    </div>
+    <div>
+        <a asp-page="./Edit" asp-route-id="@Model.Passenger.Id" class="btn btn-warning">Edit Passenger</a>
+        <a asp-page="./Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

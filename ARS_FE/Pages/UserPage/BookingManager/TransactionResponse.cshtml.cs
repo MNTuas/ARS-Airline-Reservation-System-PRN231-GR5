@@ -53,11 +53,17 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             }
             else
             {
-                var transactionUpdate = await APIHelper.PutAsJson<string>(client, $"Transaction/{response.PaymentId}", "Unpaid");
+                var transactionUpdate = await APIHelper.PutAsJson<string>(client, $"Transaction/{response.PaymentId}", "Cancelled");
                 if (!transactionUpdate.IsSuccessStatusCode)
                 {
                     throw new Exception("Error in update transaction status");
                 }
+                var bookingUpdate = await APIHelper.PutAsJson<string>(client, $"Booking/{response.OrderId}", "Cancelled");
+                if (!bookingUpdate.IsSuccessStatusCode)
+                {
+                    throw new Exception("Error in update booking status");
+                }
+
             }
 
             return RedirectToPage("./BookingList");
