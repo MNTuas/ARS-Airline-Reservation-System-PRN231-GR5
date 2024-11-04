@@ -19,15 +19,6 @@ namespace AirlinesReservationSystem.Controllers
             _vnPayService = vnPayService;
         }
 
-        [HttpPost]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateTransactionForBooking([FromBody] string bookingId)
-        {
-            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var result = await _transactionService.CreateTransaction(bookingId, token, HttpContext);
-            return Ok(result);
-        }
-
         [HttpPut]
         [Route("{id}")]
         [Authorize(Roles = "User")]
@@ -44,6 +35,24 @@ namespace AirlinesReservationSystem.Controllers
         {
             var response = _vnPayService.PaymentResponse(keyValuePairs);
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> CreateTransactionForBooking([FromBody] string bookingId)
+        {
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = await _transactionService.CreateTransaction(bookingId, token, HttpContext);
+            return Ok(result);
+        }
+
+        [HttpPost("SendEmailSuccess/{bookingId}")]
+        [Authorize]  
+        
+        public async Task<IActionResult> SendEmailWhenSuccess(string bookingId, string flightId)
+        {
+            bool result =  await _transactionService.SendEmailWhenBuySucces(bookingId, flightId);
+            return Ok(result);
         }
     }
 }

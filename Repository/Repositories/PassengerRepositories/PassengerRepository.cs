@@ -23,6 +23,15 @@ namespace Repository.Repositories.PassengerRepositories
             return await GetSingle(a => a.Id.Equals(id));
         }
 
+        public async Task<List<Passenger>> GetByLogin(string id)
+        {          
+            var result = await Get(a => a.UserId.Equals(id));
+            return result.ToList();
+        }
+
+
+
+
 
     }
 }

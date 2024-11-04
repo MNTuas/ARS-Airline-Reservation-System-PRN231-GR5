@@ -11,6 +11,8 @@ using BusinessObjects.RequestModels.Airplane;
 using BusinessObjects.RequestModels.Rank;
 using System.Net.Http.Headers;
 using BusinessObjects.ResponseModels;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airport;
 
 namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
@@ -25,70 +27,81 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         }
 
         public List<SelectListItem> AirlinesList { get; set; } = new List<SelectListItem>();
+        
+        [BindProperty]
+        public AddAirplaneRequest Airplane { get; set; } = default!;
+
+        [BindProperty]
+        public SeatClass SeatClass { get; set; } = default!;
 
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var client = CreateAuthorizedClient();
-
-            // Gọi API để lấy danh sách Airlines
-            var response = await APIHelper.GetAsJsonAsync<List<Airline>>(client, "airline");
-
-            if (response != null)
+           await LoadData();
+            // Initialize the AirplaneSeatRequest list
+            Airplane = new AddAirplaneRequest
             {
-                //var airlines = await response.Content.ReadAsAsync<List<Airline>>();
-
-                // Chuyển đổi danh sách airlines thành SelectList
-                AirlinesList = response.Select(a => new SelectListItem
-                {
-                    Value = a.Id.ToString(),
-                    Text = a.Name
-                }).ToList();
-
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error occurred while fetching the airlines.");
-            }
-
+                AirplaneSeatRequest = new List<AirplaneSeatRequest>()
+            };
             return Page();
         }
 
+        public async Task<IActionResult> OnPostAsync()
+        {
 
-        [BindProperty]
-        public AddAirplaneRequest Airplane { get; set; } = default!;
-
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        //public async Task<IActionResult> OnPostAsync()
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Page();
-        //    }
-        //    var client = CreateAuthorizedClient();
+            var client = CreateAuthorizedClient();
 
             //var n = new AddAirplaneRequest
             //{
-                //Code = Airplane.Code,
-                //AirlinesId = Airplane.AirlinesId,
-                //AvailableSeat = Airplane.AvailableSeat,
-                //Status = Airplane.Status,
-                //Type = Airplane.Type
+            //    CodeNumber = Airplane.CodeNumber,
+            //    AirlinesId = Airplane.AirlinesId,
+            //    AirplaneSeatRequest = Airplane.AirplaneSeatRequest,
 
-        //    };
+            //};
 
-        //    var response = await APIHelper.PostAsJson(client, "airplane/add-airplane", n);
+            var response = await APIHelper.PostAsJson(client, "airplane/add-airplane", Airplane);
 
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        return RedirectToPage("./Index");
-        //    }
-        //    else
-        //    {
-        //        ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
-        //        return Page();
-        //    }
-        //}
+            if (response.IsSuccessStatusCode)
+            {
+
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                await LoadData();
+                // Initialize the AirplaneSeatRequest list
+                Airplane = new AddAirplaneRequest
+                {
+                    AirplaneSeatRequest = new List<AirplaneSeatRequest>()
+                };
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
+                return Page();
+            }
+        }
+
+        private async Task LoadData()
+        {
+            var client = CreateAuthorizedClient();
+            var airlineList = new List<AllAirlinesResponseModel>();
+            var airportList = new List<AirportResponseModel>();
+            var seatClass = new List<SeatClass>();
+
+            var responseAirline = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline/Get_AllAirline");
+            if (responseAirline != null)
+            {
+                airlineList = responseAirline;
+            }
+
+            var responseSeatClass = await APIHelper.GetAsJsonAsync<List<SeatClass>>(client, "seat-class");
+            if (responseSeatClass != null)
+            {
+                seatClass = responseSeatClass;
+            }
+
+            ViewData["AirlinesId"] = new SelectList(airlineList, "Id", "Name");
+            ViewData["SeatclassId"] = new SelectList(seatClass, "Id", "Name");
+        }
+
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");

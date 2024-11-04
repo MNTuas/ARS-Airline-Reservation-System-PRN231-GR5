@@ -11,5 +11,6 @@ namespace Service.Services.TransactionServices
     {
         Task<string> CreateTransaction(string bookingId, string token, HttpContext httpContext);
         Task UpdateTransactionStatus(string id, string status);
+        Task<bool> SendEmailWhenBuySucces(string bookingId, string flightId);
     }
 }
