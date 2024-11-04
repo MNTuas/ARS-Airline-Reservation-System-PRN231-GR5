@@ -27,12 +27,15 @@ namespace Service.Services.PassengerServices
         private readonly IPassengerRepository _PassengerRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
 
-        public PassengerService(IPassengerRepository PassengerRepository, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+        public PassengerService(IPassengerRepository PassengerRepository, IHttpContextAccessor httpContextAccessor,
+                                IMapper mapper, IUserRepository userRepository)
         {
             _PassengerRepository = PassengerRepository;
             _httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         public async Task<Result<Passenger>> addPassenger(CreatePassengerRequest createPassengerRequest)
@@ -42,7 +45,6 @@ namespace Service.Services.PassengerServices
 
                 var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
                 var userid = idclaim.Value;
-
 
                 var newPassenger = new Passenger
                 {
@@ -73,22 +75,41 @@ namespace Service.Services.PassengerServices
                 };
             }
         }
+        
         public async Task<List<PassengerResposeModel>> GetAllPassengers()
         {
             var result = await _PassengerRepository.GetAllPassenger();
             return _mapper.Map<List<PassengerResposeModel>>(result);
         }
+
+        public async Task<List<PassengerResposeModel>> GetPassengerByLogin()
+        {
+            var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
+            var userid = idclaim?.Value;
+
+            if (string.IsNullOrEmpty(userid))
+            {
+                throw new Exception("User ID not found in claims.");
+            }
+
+            var passengers = await _PassengerRepository.GetByLogin(userid);
+            return _mapper.Map<List<PassengerResposeModel>>(passengers);
+        }
+
+
         public async Task<PassengerResposeModel> GetDetailsPassengerInfo(string id)
         {
             var passenger = await _PassengerRepository.GetById(id);
             return _mapper.Map<PassengerResposeModel>(passenger);
         }
+        
         public async Task UpdatePassenger(string id, UpdatePassengerRequest request)
         {
             var passenger = await _PassengerRepository.GetById(id);
             _mapper.Map(request, passenger);
             await _PassengerRepository.Update(passenger);
         }
+        
         public async Task DeletePassenger(string id)
         {
             var passenger = await _PassengerRepository.GetById(id);

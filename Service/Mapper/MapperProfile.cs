@@ -104,6 +104,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<Airport, AirportResponseModel>();
+            CreateMap<UpdateAirportRequest, Airport>();
 
             //Booking
             CreateMap<CreateBookingRequest, BookingInformation>()

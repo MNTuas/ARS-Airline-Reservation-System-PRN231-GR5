@@ -73,6 +73,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
                 {
                     throw new Exception("Error in update booking status");
                 }
+                return RedirectToPage("./BookingList");
 
             }
 

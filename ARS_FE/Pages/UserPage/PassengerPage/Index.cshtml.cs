@@ -30,14 +30,14 @@ namespace ARS_FE.Pages.UserPage.PassengerPage
         public async Task<IActionResult> OnGetAsync()
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<PassengerResposeModel>>(client, "Passenger/get-all");
+            var response = await APIHelper.GetAsJsonAsync<List<PassengerResposeModel>>(client, "Passenger/GetPassengerByLogin");
             if (response != null)
             {
                 PassengerRespose = response;
             }
             else
             {
-                PassengerRespose = new List<PassengerResposeModel>();
+                return RedirectToPage("/403Page");
             }
             return Page();
         }

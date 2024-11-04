@@ -49,10 +49,6 @@ namespace ARS_FE.Pages.Staff.AirportManagement
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
 
             var client = CreateAuthorizedClient();
 

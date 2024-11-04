@@ -12,5 +12,6 @@ namespace Repository.Repositories.PassengerRepositories
     {
         Task<List<Passenger>> GetAllPassenger();
         Task<Passenger> GetById(string id);
+        Task<List<Passenger>> GetByLogin(string id);
     }
 }

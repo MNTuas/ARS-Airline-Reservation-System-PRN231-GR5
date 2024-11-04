@@ -15,6 +15,10 @@ using BusinessObjects.RequestModels.Airport;
 using System.Text.Json;
 using Azure;
 using FFilms.Application.Shared.Response;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airport;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using BusinessObjects.ResponseModels.Passenger;
 
 namespace ARS_FE.Pages.UserPage.TicketManagement
 {
@@ -42,12 +46,14 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         [BindProperty]
         public List<CreateTicketRequest> Tickets { get; set; } = new List<CreateTicketRequest>();
 
+        private List<PassengerResposeModel> _passengerList = new List<PassengerResposeModel>();
+
         public List<Country> Countries { get; set; } = new List<Country>();
 
         public async Task OnGetAsync(int quantity)
         {
             Quantity = quantity;
-
+            await LoadData();
             // Kiểm tra xem có dữ liệu vé trong session không
             var ticketsFromSession = HttpContext.Session.GetString("Tickets");
             if (!string.IsNullOrEmpty(ticketsFromSession))
@@ -115,6 +121,19 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             return Redirect(returnUrl);
         }
 
+        private async Task LoadData()
+        {
+            var client = CreateAuthorizedClient();
+
+            var responsePassenger = await APIHelper.GetAsJsonAsync<List<PassengerResposeModel>>(client, "Passenger/GetPassengerByLogin");
+            if (responsePassenger != null)
+            {
+                _passengerList = responsePassenger;
+            }
+
+            ViewData["PassengerList"] = _passengerList;
+        }
+
         public async Task<string> CreateBooking()
         {
             var client = CreateAuthorizedClient();
@@ -142,7 +161,6 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             ModelState.AddModelError(string.Empty, "Error occurred while creating the booking.");
             return null;
         }
-
 
         private HttpClient CreateAuthorizedClient()
         {
