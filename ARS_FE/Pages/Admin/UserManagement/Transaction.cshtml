@@ -1,11 +1,9 @@
-﻿@page "{userId}"
+﻿@page 
 @model ARS_FE.Pages.Admin.UserManagement.TransactionsModel
-
 @{
-    ViewData["Title"] = "Transaction Details for User " + Model.UserId;
+    ViewData["Title"] = "Transaction Details for User ";
     Layout = "_LayoutManage";
 }
-
 <h1>Transaction Details</h1>
 
 @if (Model.Transactions != null && Model.Transactions.Any())
@@ -16,7 +14,9 @@
                 <th>Final Price</th>
                 <th>Pay Date</th>
                 <th>Status</th>
-                <th>Booking Information</th>
+                <th>Booking ID</th>
+                <th>Quantity</th>
+                <th>Booking Status</th>
             </tr>
         </thead>
         <tbody>
@@ -24,9 +24,11 @@
             {
                 <tr>
                     <td>@transaction.FinalPrice.ToString("C")</td>
-                    <td>@transaction.PayDate.ToString("dd/MM/yyyy")</td>
+                    <td>@transaction.PayDate?.ToString("dd/MM/yyyy")</td>
                     <td>@transaction.Status</td>
-                    <td>@transaction.Booking?</td> 
+                    <td>@transaction.Booking?.Id</td>  <!-- Displays Booking ID -->
+                    <td>@transaction.Booking?.Quantity</td>  <!-- Displays Quantity in Booking -->
+                    <td>@transaction.Booking?.Status</td>  <!-- Displays Status of Booking -->
                 </tr>
             }
         </tbody>

@@ -18,6 +18,11 @@ using Repository.Repositories.AirporRepositories;
 using Service.Services.AirlineServices;
 using Repository.Repositories.SeatClassRepositories;
 using Service.Services.SeatClassServices;
+using Repository.Repositories.TransactionRepositories;
+using Service.Services.TransactionServices;
+using Repository.Repositories.BookingRepositories;
+using Service.Services.BookingServices;
+using Service.Services.VNPayServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,8 +70,16 @@ builder.Services.AddHttpClient("OdataClient", client =>
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
+
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAirportService, AirportService>();

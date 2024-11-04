@@ -6,7 +6,7 @@ using Service.Services.VNPayServices;
 
 namespace AirlinesReservationSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -31,7 +31,7 @@ namespace AirlinesReservationSystem.Controllers
         [HttpGet]
         [Route("transaction-of-user/{userId}")]
         [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> GetTranSactionOfUser(string userId)
+        public async Task<IActionResult> GetTranSactionOfUser([FromRoute] string userId)
         {
             var trans = await _transactionService.GetTransactionByUserId(userId);
            

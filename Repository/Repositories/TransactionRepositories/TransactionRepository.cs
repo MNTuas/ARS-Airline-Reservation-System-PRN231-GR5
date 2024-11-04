@@ -14,10 +14,10 @@ namespace Repository.Repositories.TransactionRepositories
         {
             return await GetSingle(t => t.Id.Equals(id));
         }
-        public async Task<Transaction> GetTransactionByUserId(string userId)
+        public async Task<List<Transaction>> GetTransactionByUserId(string userId)
         {
-            var tranList = await GetSingle(t => t.UserId == userId, includeProperties: "Booking");
-            return tranList;
+            var tranList = await Get(t => t.UserId == userId, includeProperties: "Booking");
+            return tranList.ToList();
         }
     }
 }

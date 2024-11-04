@@ -13,7 +13,7 @@ using System.Net.Http.Headers;
 namespace ARS_FE.Pages.Admin.UserManagement
 {
     public class DetailsModel : PageModel
-    {
+    {   
         private readonly IHttpClientFactory _httpClientFactory;
 
         public DetailsModel(IHttpClientFactory httpClientFactory)

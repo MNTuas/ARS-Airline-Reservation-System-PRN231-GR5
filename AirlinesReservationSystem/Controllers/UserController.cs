@@ -19,7 +19,7 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpGet]
         [Route("own")]
-        [Authorize(Roles = "User")]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> GetOwnUserInfo()
         {
             string token = Request.Headers["Authorization"].ToString().Split(" ")[1];

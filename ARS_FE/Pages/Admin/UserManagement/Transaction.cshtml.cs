@@ -1,13 +1,11 @@
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BusinessObjects.RequestModels;
-using BusinessObjects.RequestModels.Auth;
-using DAO;
-using ARS_FE.Pages.UserPage.BookingManager; 
+using System.Collections.Generic;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using BusinessObjects.ResponseModels.Transaction;
 
-namespace ARS_FE.Pages.UserPage.Transactions
+namespace ARS_FE.Pages.Admin.UserManagement
 {
     public class TransactionsModel : PageModel
     {
@@ -18,21 +16,30 @@ namespace ARS_FE.Pages.UserPage.Transactions
             _httpClientFactory = httpClientFactory;
         }
 
-        public List<TransactionResponse> Transactions { get; set; } = new List<TransactionResponse>();
+        public List<TransactionResponseModel> Transactions { get; set; } = new List<TransactionResponseModel>();
 
         [TempData]
         public string StatusMessage { get; set; }
 
         public async Task<IActionResult> OnGetAsync(string userId)
         {
-            var client = CreateAuthorizedClient();
-
-           
-            Transactions = await APIHelper.GetAsJsonAsync<List<TransactionResponse>>(client, $"transaction-of-user/{userId}");
-
-            if (Transactions == null)
+            Console.WriteLine("OnGetAsync called with userId: " + userId);
+            if (string.IsNullOrEmpty(userId))
             {
-                StatusMessage = "An error occurred while retrieving transactions.";
+                StatusMessage = "User ID is required.";
+                return Page();
+            }
+
+            var client = CreateAuthorizedClient();
+            var response = await APIHelper.GetAsJsonAsync<List<TransactionResponseModel>>(client, $"transaction/transaction-of-user/{userId}");
+
+            if (response == null || response.Count == 0)
+            {
+                StatusMessage = "No transactions found for this user.";
+            }
+            else
+            {
+                Transactions = response;
             }
 
             return Page();

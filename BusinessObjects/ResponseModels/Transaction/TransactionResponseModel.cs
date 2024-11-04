@@ -9,14 +9,34 @@ namespace BusinessObjects.ResponseModels.Transaction
 {
     public class TransactionResponseModel
     {
+        public string Id { get; set; } = null!;
+
+        public string BookingId { get; set; } = null!;
+
+        public string UserId { get; set; } = null!;
+
         public decimal FinalPrice { get; set; }
 
-        public DateTime PayDate { get; set; }
+        public DateTime? PayDate { get; set; }
 
         public string Status { get; set; } = null!;
 
-        public virtual BookingInformation Booking { get; set; } = null!;
+        public DateTime CreatedDate { get; set; }
 
-        public virtual Models.User User { get; set; } = null!;
+        public virtual BookingInformationResponseModel Booking { get; set; } = null!;
+
+    }
+    public class BookingInformationResponseModel
+    {
+        public string Id { get; set; } = null!;
+
+        public DateTime CreatedDate { get; set; }
+
+        public int Quantity { get; set; }
+
+        public string UserId { get; set; } = null!;
+
+        public string Status { get; set; } = null!;
+
     }
 }

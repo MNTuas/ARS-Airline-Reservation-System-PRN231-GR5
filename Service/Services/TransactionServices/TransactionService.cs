@@ -30,10 +30,10 @@ namespace Service.Services.TransactionServices
             _vnPayService = vnPayService;
             this._mapper = mapper;
         }
-        public async Task<TransactionResponseModel> GetTransactionByUserId(string userId)
+        public async Task<List<TransactionResponseModel>> GetTransactionByUserId(string userId)
         {
             var tran = await _transactionRepository.GetTransactionByUserId(userId);
-            return _mapper.Map<TransactionResponseModel>(tran);
+            return _mapper.Map<List<TransactionResponseModel>>(tran);
         }
         public async Task<string> CreateTransaction(string bookingId, string token, HttpContext httpContext)
         {

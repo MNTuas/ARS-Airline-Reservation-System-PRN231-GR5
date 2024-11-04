@@ -15,6 +15,7 @@ using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Ticket;
+using BusinessObjects.ResponseModels.Transaction;
 using BusinessObjects.ResponseModels.User;
 using Repository.Enums;
 using Service.Enums;
@@ -109,6 +110,10 @@ namespace Service.Mapper
             CreateMap<User, UserInfoResponseModel>()
                 .ForMember(dest => dest.RankName, otp => otp.MapFrom(src => src.Rank.Type));
             CreateMap<UserInfoUpdateModel, User>();
+            //Transaction
+            CreateMap<Transaction, TransactionResponseModel>()
+                .ForMember(dest => dest.Booking, otp => otp.MapFrom(src => src.Booking));
+            CreateMap<BookingInformation, BookingInformationResponseModel>();
         }
     }
 }
