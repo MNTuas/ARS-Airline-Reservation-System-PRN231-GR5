@@ -2,7 +2,7 @@
 @model ARS_FE.Pages.UserPage.RankManagement.IndexModel
 
 @{
-    Layout = "_LayoutManage";
+    Layout = "_LayoutAdmin";
     ViewData["Title"] = "Rank Management";
 
     var prevDisabled = !Model.Rank.HasPreviousPage ? "disabled" : "";
@@ -54,12 +54,12 @@
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm mr-2">Edit</a>
-                                <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm mr-2">Details</a>
+                                @* <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm mr-2">Details</a>
                                 <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Description">
                                     <button type="submit" class="btn btn-sm @(item.Description == "Active" ? "btn-danger" : "btn-success")">
                                         @(item.Description == "Active" ? "Deactivate" : "Activate")
                                     </button>
-                                </form>
+                                </form> *@
                             </div>
                         </td>
                     </tr>
