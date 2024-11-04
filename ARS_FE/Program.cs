@@ -23,6 +23,9 @@ using Service.Services.TransactionServices;
 using Repository.Repositories.BookingRepositories;
 using Service.Services.BookingServices;
 using Service.Services.VNPayServices;
+using Repository.Repositories.UserRepositories;
+using Service.Services.UserServices;
+using Service.Services.EmailServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -95,6 +98,12 @@ builder.Services.AddScoped<IAirplaneService, AirplaneService>();
 
 builder.Services.AddScoped<ISeatClassRepository, SeatClassRepository>();
 builder.Services.AddScoped<ISeatClassService , SeatClassService>(); 
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService , UserService>(); 
+
+builder.Services.AddScoped<IEmailService , EmailService>(); 
+
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
