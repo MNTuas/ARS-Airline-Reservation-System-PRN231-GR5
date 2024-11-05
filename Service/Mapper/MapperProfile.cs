@@ -14,16 +14,12 @@ using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Flight;
-using BusinessObjects.ResponseModels.Ticket;
 using BusinessObjects.ResponseModels.Passenger;
+using BusinessObjects.ResponseModels.Ticket;
+using BusinessObjects.ResponseModels.Transaction;
 using BusinessObjects.ResponseModels.User;
 using Repository.Enums;
 using Service.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Mapper
 {
@@ -90,7 +86,8 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<UpdateAirplaneRequest, Airplane>();
             CreateMap<Airplane, AirplaneResponseModel>()
-                .ForMember(dest => dest.AirplaneSeats, opt => opt.MapFrom(src => src.AirplaneSeats));
+                .ForMember(dest => dest.AirplaneSeats, opt => opt.MapFrom(src => src.AirplaneSeats))
+                .ForMember(dest => dest.Flights, opt => opt.MapFrom(src => src.Flights));
 
             //AirplaneSeat
             CreateMap<AirplaneSeatRequest, AirplaneSeat>()
@@ -104,6 +101,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<Airport, AirportResponseModel>();
+            CreateMap<UpdateAirportRequest, Airport>();
 
             //Booking
             CreateMap<CreateBookingRequest, BookingInformation>()
@@ -147,6 +145,10 @@ namespace Service.Mapper
             CreateMap<User, UserInfoResponseModel>()
                 .ForMember(dest => dest.RankName, otp => otp.MapFrom(src => src.Rank.Type));
             CreateMap<UserInfoUpdateModel, User>();
+            //Transaction
+            CreateMap<Transaction, TransactionResponseModel>()
+                .ForMember(dest => dest.Booking, otp => otp.MapFrom(src => src.Booking));
+            CreateMap<BookingInformation, BookingInformationResponseModel>();
         }
     }
 }

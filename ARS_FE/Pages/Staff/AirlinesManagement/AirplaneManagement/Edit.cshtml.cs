@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.RequestModels.Airplane;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.RequestModels.Airplane;
-using BusinessObjects.RequestModels.Rank;
 using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirplaneManagement
@@ -36,18 +27,18 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         //    var client = CreateAuthorizedClient();
 
 
-            //var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
-            //if (response != null)
-            //{
-            //    UpdateAirplane = new UpdateAirplaneRequest
-            //    {
-                    //Id = response.Id,
-                    //Type = response.Type,
-                    //AirlinesId = response.AirlinesId,
-                    //AvailableSeat = response.AvailableSeat,
-                    //Code = response.Code,
-                    //Status = response.Status,
-                    
+        //var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
+        //if (response != null)
+        //{
+        //    UpdateAirplane = new UpdateAirplaneRequest
+        //    {
+        //Id = response.Id,
+        //Type = response.Type,
+        //AirlinesId = response.AirlinesId,
+        //AvailableSeat = response.AvailableSeat,
+        //Code = response.Code,
+        //Status = response.Status,
+
         //        };
         //        return Page();
         //    }
@@ -82,7 +73,7 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
             }
         }
 
-       
+
         private bool RankExists(string id)
         {
             return true;

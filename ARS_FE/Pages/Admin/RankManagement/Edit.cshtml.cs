@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Rank;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 using System.Net.Http.Headers;
-using System.Net.Http;
-using BusinessObjects.RequestModels.Rank;
 
 namespace ARS_FE.Pages.UserPage.RankManagement
 {
@@ -35,12 +27,13 @@ namespace ARS_FE.Pages.UserPage.RankManagement
                 return NotFound();
             }
             var client = CreateAuthorizedClient();
-           
+
 
             var response = await APIHelper.GetAsJsonAsync<Rank>(client, $"rank/get-rank/{id}");
             if (response != null)
             {
-                updateRankRequest = new UpdateRankRequest {
+                updateRankRequest = new UpdateRankRequest
+                {
                     Id = response.Id,
                     Type = response.Type,
                     Discount = response.Discount,
@@ -65,7 +58,7 @@ namespace ARS_FE.Pages.UserPage.RankManagement
 
             var client = CreateAuthorizedClient();
 
-          
+
             var response = await APIHelper.PutAsJson(client, $"rank/update-rank/{Id}", updateRankRequest);
 
             if (response.IsSuccessStatusCode)

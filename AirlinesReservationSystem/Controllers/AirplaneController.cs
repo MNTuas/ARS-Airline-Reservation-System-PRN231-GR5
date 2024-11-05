@@ -1,6 +1,5 @@
 ﻿using BusinessObjects.RequestModels.Airplane;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using Service.Services.AirplaneServices;
 
 namespace AirlinesReservationSystem.Controllers

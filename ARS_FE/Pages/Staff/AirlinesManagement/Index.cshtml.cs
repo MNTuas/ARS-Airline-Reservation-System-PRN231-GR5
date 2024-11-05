@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObjects.ResponseModels.Airlines;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels.Airlines;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {

@@ -25,14 +25,15 @@ namespace AirlinesReservationSystem.Controllers
         public async Task<IActionResult> GetRank(string id)
         {
             var rank = await _rankService.GetRank(id);
-            if (rank == null) {
+            if (rank == null)
+            {
                 return BadRequest();
             }
             return Ok(rank);
         }
         [HttpPost]
         [Route("add-rank")]
-        public async Task<IActionResult> AddRank([FromBody]AddRankRequest addRankRequest)
+        public async Task<IActionResult> AddRank([FromBody] AddRankRequest addRankRequest)
         {
             var result = await _rankService.AddRank(addRankRequest);
             if (result)
@@ -43,7 +44,7 @@ namespace AirlinesReservationSystem.Controllers
         }
         [HttpPut]
         [Route("update-rank/{id}")]
-        public async Task<IActionResult> UpdateRank(string id,[FromBody] UpdateRankRequest updateRankRequest)
+        public async Task<IActionResult> UpdateRank(string id, [FromBody] UpdateRankRequest updateRankRequest)
         {
             var result = await _rankService.UpdateRank(id, updateRankRequest);
             if (result)
@@ -52,5 +53,6 @@ namespace AirlinesReservationSystem.Controllers
             }
             return BadRequest();
         }
+
     }
 }
