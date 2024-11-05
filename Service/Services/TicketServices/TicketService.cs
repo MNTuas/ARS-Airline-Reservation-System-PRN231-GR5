@@ -1,21 +1,13 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
-using BusinessObjects.RequestModels.Booking;
-using BusinessObjects.RequestModels.Passenger;
 using BusinessObjects.RequestModels.Ticket;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
-using Repository.Repositories.AirporRepositories;
 using Repository.Repositories.BookingRepositories;
 using Repository.Repositories.PassengerRepositories;
 using Repository.Repositories.TicketRepositories;
 using Service.Enums;
 using Service.Helper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.TicketServices
 {
@@ -37,8 +29,6 @@ namespace Service.Services.TicketServices
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
         }
-
-
 
         public async Task<Result<List<Ticket>>> addTicket(List<CreateTicketRequest> createTicketRequest)
         {

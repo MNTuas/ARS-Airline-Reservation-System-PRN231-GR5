@@ -1,11 +1,5 @@
-﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels.Airlines;
+﻿using BusinessObjects.RequestModels.Airlines;
 using BusinessObjects.ResponseModels.Airlines;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.AirlineServices
 {

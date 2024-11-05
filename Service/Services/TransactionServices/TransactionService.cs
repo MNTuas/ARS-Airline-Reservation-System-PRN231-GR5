@@ -3,6 +3,7 @@ using BusinessObjects.Models;
 using BusinessObjects.RequestModels.VnPay;
 using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Flight;
+using BusinessObjects.ResponseModels.Transaction;
 using Microsoft.AspNetCore.Http;
 using Repository.Repositories.BookingRepositories;
 using Repository.Repositories.FlightRepositories;
@@ -13,11 +14,6 @@ using Service.Helper;
 using Service.Services.EmailServices;
 using Service.Services.VNPayServices;
 using Service.Ultis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.TransactionServices
 {
@@ -47,7 +43,11 @@ namespace Service.Services.TransactionServices
             _httpContextAccessor = httpContextAccessor;
             _flightRepository = flightRepository;
         }
-
+        public async Task<List<TransactionResponseModel>> GetTransactionByUserId(string userId)
+        {
+            var tran = await _transactionRepository.GetTransactionByUserId(userId);
+            return _mapper.Map<List<TransactionResponseModel>>(tran);
+        }
         public async Task<string> CreateTransaction(string bookingId, string token, HttpContext httpContext)
         {
             var userId = JwtDecode.DecodeTokens(token, "UserId");

@@ -2,7 +2,6 @@ using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Passenger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.UserPage.PassengerPage

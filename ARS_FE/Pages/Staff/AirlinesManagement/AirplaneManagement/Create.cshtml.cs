@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Airplane;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.RequestModels.Airplane;
-using BusinessObjects.RequestModels.Rank;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels;
-using BusinessObjects.ResponseModels.Airlines;
-using BusinessObjects.ResponseModels.Airport;
 
 namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
@@ -27,7 +20,7 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         }
 
         public List<SelectListItem> AirlinesList { get; set; } = new List<SelectListItem>();
-        
+
         [BindProperty]
         public AddAirplaneRequest Airplane { get; set; } = default!;
 
@@ -37,7 +30,7 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
 
         public async Task<IActionResult> OnGetAsync()
         {
-           await LoadData();
+            await LoadData();
             // Initialize the AirplaneSeatRequest list
             Airplane = new AddAirplaneRequest
             {

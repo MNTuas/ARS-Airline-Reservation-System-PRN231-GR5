@@ -1,13 +1,5 @@
-﻿using BusinessObjects.Models;
-using DAO;
-using ExcelDataReader;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service.Services.FlightServices;
-using System.IO;
-using System.Text;
 
 namespace AirlinesReservationSystem.Controllers
 {
@@ -26,7 +18,7 @@ namespace AirlinesReservationSystem.Controllers
         [HttpPost("UploadExcelFile")]
         public async Task<IActionResult> UploadExcelFile([FromForm] IFormFile file)
         {
-            var results =  await _flightService.UploadFile(file);
+            var results = await _flightService.UploadFile(file);
             if (results.Success != false)
             {
                 return Ok(new

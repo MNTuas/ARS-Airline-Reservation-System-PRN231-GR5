@@ -1,17 +1,9 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Airplane;
-using BusinessObjects.RequestModels.Rank;
 using BusinessObjects.ResponseModels.Airplane;
 using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AirplaneRepositories;
-using Repository.Repositories.AirplaneSeatRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Org.BouncyCastle.Asn1.Cmp.Challenge;
 
 namespace Service.Services.AirplaneServices
 {

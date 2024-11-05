@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Booking;
+using BusinessObjects.ResponseModels.Flight;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.ResponseModels.Flight;
 using System.Net.Http.Headers;
-using BusinessObjects.RequestModels.Airport;
-using BusinessObjects.RequestModels.Booking;
-using System.Text.Json;
 
 namespace ARS_FE.Pages.UserPage.BookingManager
 {
@@ -83,10 +75,11 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             }
             // Lấy SeatClassId đã chọn từ form
             string seatClassId = SelectedTicketClass;
-           
+
 
             return RedirectToPage("/UserPage/TicketManagement/Index", new
-            { quantity = createBookingRequest.Quantity,
+            {
+                quantity = createBookingRequest.Quantity,
                 ticketClassId = seatClassId,
                 flightId = flightId,
             });
@@ -96,7 +89,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
         {
             var client = _httpClientFactory.CreateClient("ApiClient");
             var token = HttpContext.Session.GetString("JWToken");
-           
+
             if (!string.IsNullOrEmpty(token))
             {
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);

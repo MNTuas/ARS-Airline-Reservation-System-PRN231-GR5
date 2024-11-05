@@ -1,4 +1,4 @@
-﻿@* @page
+﻿@page
 @model ARS_FE.Pages.Staff.AirplaneManagement.EditModel
 
 @{
@@ -6,46 +6,48 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Airplane</h1>
 
-<h4>Airplane</h4>
+<h4>Airplane Information</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-      @*   <form method="post">
+        <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="UpdateAirplane.Id" />
-            <input asp-for="UpdateAirplane.Id" class="form-control" />
-            <span asp-validation-for="UpdateAirplane.Id" class="text-danger"></span>
+
+            <!-- CodeNumber -->
             <div class="form-group">
-                <label asp-for="UpdateAirplane.Code" class="control-label"></label>
-                <input asp-for="UpdateAirplane.Code" class="form-control" />
-                <span asp-validation-for="UpdateAirplane.Code" class="text-danger"></span>
+                <label asp-for="UpdateAirplane.CodeNumber" class="control-label"></label>
+                <input asp-for="UpdateAirplane.CodeNumber" class="form-control" />
+                <span asp-validation-for="UpdateAirplane.CodeNumber" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="UpdateAirplane.Type" class="control-label"></label>
-                <input asp-for="UpdateAirplane.Type" class="form-control" />
-                <span asp-validation-for="UpdateAirplane.Type" class="text-danger"></span>
+
+            <!-- Airplane Seats -->
+            <h4>Airplane Seats</h4>
+            <hr />
+            <div id="seat-list">
+                @for (int i = 0; i < Model.UpdateAirplane.AirplaneSeatRequest.Count; i++)
+                {
+                    <div class="form-group">
+                        <label asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatClassId" class="control-label">Seat Class</label>
+                        <select asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatClassId" class="form-control" asp-items="ViewBag.SeatClasses"></select>
+                        <span asp-validation-for="UpdateAirplane.AirplaneSeatRequest[i].SeatClassId" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatCount" class="control-label">Seat Count</label>
+                        <input asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatCount" class="form-control" />
+                        <span asp-validation-for="UpdateAirplane.AirplaneSeatRequest[i].SeatCount" class="text-danger"></span>
+                    </div>
+                    <hr />
+                }
             </div>
-            <div class="form-group">
-                <label asp-for="UpdateAirplane.AvailableSeat" class="control-label"></label>
-                <input asp-for="UpdateAirplane.AvailableSeat" class="form-control" />
-                <span asp-validation-for="UpdateAirplane.AvailableSeat" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdateAirplane.AirlinesId" class="control-label"></label>
-                <select asp-for="UpdateAirplane.AirlinesId" class="form-control" asp-items="ViewBag.AirlinesId"></select>
-                <span asp-validation-for="UpdateAirplane.AirlinesId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdateAirplane.Status" class="control-label"></label>
-                <input asp-for="UpdateAirplane.Status" class="form-control" />
-                <span asp-validation-for="UpdateAirplane.Status" class="text-danger"></span>
-            </div>
+
+            <!-- Submit Button -->
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
-        </form> *@
+        </form>
     </div>
 </div>
 
@@ -54,6 +56,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
- 

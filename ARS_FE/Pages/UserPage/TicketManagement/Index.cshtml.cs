@@ -1,24 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BusinessObjects.RequestModels.Booking;
+using BusinessObjects.RequestModels.Ticket;
+using BusinessObjects.ResponseModels.Passenger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.ResponseModels.Flight;
 using System.Net.Http.Headers;
-using BusinessObjects.RequestModels.Ticket;
-using BusinessObjects.RequestModels.Booking;
-using BusinessObjects.RequestModels.Airport;
 using System.Text.Json;
-using Azure;
-using FFilms.Application.Shared.Response;
-using BusinessObjects.ResponseModels.Airlines;
-using BusinessObjects.ResponseModels.Airport;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.ResponseModels.Passenger;
 
 namespace ARS_FE.Pages.UserPage.TicketManagement
 {
@@ -100,7 +86,6 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             }
             Tickets = ticketList;
             var response = await APIHelper.PostAsJson(client, "Ticket", ticketList);
-
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError(string.Empty, "Error occurred while creating the Ticket.");

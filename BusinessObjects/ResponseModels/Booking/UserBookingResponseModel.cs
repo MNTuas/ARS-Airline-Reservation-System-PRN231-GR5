@@ -1,10 +1,4 @@
-﻿using BusinessObjects.Models;
-using BusinessObjects.ResponseModels.Ticket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.Ticket;
 
 namespace BusinessObjects.ResponseModels.Booking
 {

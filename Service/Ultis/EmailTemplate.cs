@@ -1,11 +1,6 @@
-﻿using BusinessObjects.ResponseModels.Booking;
-using BusinessObjects.ResponseModels.Flight;
+﻿using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Ticket;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Ultis
 {

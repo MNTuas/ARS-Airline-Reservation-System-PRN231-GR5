@@ -2,9 +2,7 @@
 using BusinessObjects.RequestModels.Passenger;
 using BusinessObjects.RequestModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service.Services.BookingServices;
 using Service.Services.TicketServices;
 
 namespace AirlinesReservationSystem.Controllers

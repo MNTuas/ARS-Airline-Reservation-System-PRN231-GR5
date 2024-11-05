@@ -1,5 +1,4 @@
 ﻿using BusinessObjects.RequestModels.Flight;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.FlightServices;
 
@@ -29,7 +28,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             var flights = await _flightService.GetFlightByFilter(from, to, checkin, checkout);
 
-            if (flights == null )
+            if (flights == null)
             {
                 return NotFound("No flights found matching the criteria.");
             }
