@@ -38,41 +38,45 @@ namespace Service.Services.TicketServices
             _httpContextAccessor = httpContextAccessor;
         }
 
-        
 
-        public async Task<Result<Ticket>> addTicket(CreateTicketRequest createTicketRequest)
+
+        public async Task<Result<List<Ticket>>> addTicket(List<CreateTicketRequest> createTicketRequest)
         {
             try
             {
 
                 var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
                 var userid = idclaim.Value;
+                var ticketList = new List<Ticket>();
 
-
-                var newTicket = new Ticket
+                foreach (var ticket in createTicketRequest)
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Country = createTicketRequest.Country,
-                    Dob = createTicketRequest.Dob,
-                    FirstName = createTicketRequest.FirstName,
-                    LastName = createTicketRequest.LastName,
-                    Gender = createTicketRequest.Gender,
-                    Status = TicketStatusEnums.Pending.ToString(),
-                    BookingId = createTicketRequest.BookingId,
-                    TicketClassId = createTicketRequest.TicketClassId,
-                };
+                    var newTicket = new Ticket
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Country = ticket.Country,
+                        Dob = ticket.Dob,
+                        FirstName = ticket.FirstName,
+                        LastName = ticket.LastName,
+                        Gender = ticket.Gender,
+                        Status = TicketStatusEnums.Pending.ToString(),
+                        BookingId = ticket.BookingId,
+                        TicketClassId = ticket.TicketClassId,
+                    };
+                    ticketList.Add(newTicket);
+                }
 
-                await _ticketRepository.Insert(newTicket);
-                return new Result<Ticket>
+                await _ticketRepository.InsertRange(ticketList);
+                return new Result<List<Ticket>>
                 {
                     Success = true,
-                    Data = newTicket
+                    Data = ticketList
                 };
 
             }
             catch (Exception ex)
             {
-                return new Result<Ticket>
+                return new Result<List<Ticket>>
                 {
                     Success = false,
                     Message = ex.Message,
@@ -83,78 +87,78 @@ namespace Service.Services.TicketServices
 }
 
 
-    //    public async Task<Result<List<Ticket>>> AddTicket(CreateBookingRequest createBookingRequest,
-    //List<CreatePassengerRequest> createPassengerRequests, CreateTicketRequest createTicketRequest)
-    //    {
-    //        try
-    //        {
-    //            var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
-    //            var userid = idclaim.Value;
+//    public async Task<Result<List<Ticket>>> AddTicket(CreateBookingRequest createBookingRequest,
+//List<CreatePassengerRequest> createPassengerRequests, CreateTicketRequest createTicketRequest)
+//    {
+//        try
+//        {
+//            var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
+//            var userid = idclaim.Value;
 
-    //            // Create a new booking
-    //            var newBooking = new Ticket
-    //            {
-    //                Id = Guid.NewGuid().ToString(),
-    //                CreatedDate = DateTime.Now,
-    //                Status = BookingStatusEnums.Pending.ToString(),
-    //                Quantity = createBookingRequest.Quantity,
-    //                UserId = userid,
-    //            };
+//            // Create a new booking
+//            var newBooking = new Ticket
+//            {
+//                Id = Guid.NewGuid().ToString(),
+//                CreatedDate = DateTime.Now,
+//                Status = BookingStatusEnums.Pending.ToString(),
+//                Quantity = createBookingRequest.Quantity,
+//                UserId = userid,
+//            };
 
-    //            await _bookingRepository.Insert(newBooking); 
+//            await _bookingRepository.Insert(newBooking); 
 
-    //            var tickets = new List<Ticket>(); 
+//            var tickets = new List<Ticket>(); 
 
-              
-    //            foreach (var createPassengerRequest in createPassengerRequests)
-    //            {
-                   
-    //                var newPassenger = new Passenger
-    //                {
-    //                    Id = Guid.NewGuid().ToString(),
-    //                    UserId = userid,
-    //                    Country = createPassengerRequest.Country,
-    //                    Dob = createPassengerRequest.Dob,
-    //                    FirstName = createPassengerRequest.FirstName,
-    //                    LastName = createPassengerRequest.LastName,
-    //                    Gender = createPassengerRequest.Gender,
-    //                    Type = createPassengerRequest.Type,
-    //                };
 
-    //                await _passengerRepository.Insert(newPassenger);
+//            foreach (var createPassengerRequest in createPassengerRequests)
+//            {
 
-                   
-    //                var newTicket = new Ticket
-    //                {
-    //                    Id = Guid.NewGuid().ToString(),
-    //                    BookingId = newBooking.Id,
-    //                    PassengerId = newPassenger.Id,
-    //                    TicketClassId = createTicketRequest.TicketClassId,
-    //                    Status = false,
-    //                };
+//                var newPassenger = new Passenger
+//                {
+//                    Id = Guid.NewGuid().ToString(),
+//                    UserId = userid,
+//                    Country = createPassengerRequest.Country,
+//                    Dob = createPassengerRequest.Dob,
+//                    FirstName = createPassengerRequest.FirstName,
+//                    LastName = createPassengerRequest.LastName,
+//                    Gender = createPassengerRequest.Gender,
+//                    Type = createPassengerRequest.Type,
+//                };
 
-    //                await _ticketRepository.Insert(newTicket); 
+//                await _passengerRepository.Insert(newPassenger);
 
-    //                // Add ticket to the list
-    //                tickets.Add(newTicket);
-    //            }
 
-               
-    //            return new Result<List<Ticket>>
-    //            {
-    //                Success = true,
-    //                Message = "Create successfull!",
-    //                Data = tickets
-    //            };
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            return new Result<List<Ticket>>
-    //            {
-    //                Success = false,
-    //                Message = ex.Message,
-    //            };
-    //        }
-    //    }
+//                var newTicket = new Ticket
+//                {
+//                    Id = Guid.NewGuid().ToString(),
+//                    BookingId = newBooking.Id,
+//                    PassengerId = newPassenger.Id,
+//                    TicketClassId = createTicketRequest.TicketClassId,
+//                    Status = false,
+//                };
+
+//                await _ticketRepository.Insert(newTicket); 
+
+//                // Add ticket to the list
+//                tickets.Add(newTicket);
+//            }
+
+
+//            return new Result<List<Ticket>>
+//            {
+//                Success = true,
+//                Message = "Create successfull!",
+//                Data = tickets
+//            };
+//        }
+//        catch (Exception ex)
+//        {
+//            return new Result<List<Ticket>>
+//            {
+//                Success = false,
+//                Message = ex.Message,
+//            };
+//        }
+//    }
 
 

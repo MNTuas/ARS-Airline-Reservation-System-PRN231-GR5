@@ -15,6 +15,6 @@ namespace Service.Services.TicketServices
     {
         //    Task<Result<List<Ticket>>> AddTicket(CreateBookingRequest createBookingRequest,
         //List<CreatePassengerRequest> createPassengerRequests, CreateTicketRequest createTicketRequest);
-        Task<Result<Ticket>> addTicket(CreateTicketRequest createTicketRequest);
+        Task<Result<List<Ticket>>> addTicket(List<CreateTicketRequest> createTicketRequest);
     }
 }

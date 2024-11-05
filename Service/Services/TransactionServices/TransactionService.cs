@@ -51,12 +51,13 @@ namespace Service.Services.TransactionServices
         public async Task<string> CreateTransaction(string bookingId, string token, HttpContext httpContext)
         {
             var userId = JwtDecode.DecodeTokens(token, "UserId");
+            var user = await _userRepository.GetUserById(userId);
             var totalPrice = await _bookingRepository.GetTotalPriceOfBooking(bookingId);
             Transaction newTransaction = new Transaction
             {
                 Id = Guid.NewGuid().ToString(),
                 BookingId = bookingId,
-                FinalPrice = totalPrice,
+                FinalPrice = totalPrice * (100 - user.Rank.Discount) / 100,
                 CreatedDate = DateTime.Now,
                 UserId = userId,
                 Status = BookingStatusEnums.Pending.ToString()
@@ -65,7 +66,7 @@ namespace Service.Services.TransactionServices
             VnPaymentRequestModel vnPayment = new VnPaymentRequestModel
             {
                 OrderId = bookingId,
-                Amount = totalPrice,
+                Amount = totalPrice * (100 - user.Rank.Discount) / 100,
                 CreatedDate = DateTime.Now,
                 PaymentId = newTransaction.Id,
                 RedirectUrl = "https://localhost:7223/UserPage/BookingManager/TransactionResponse"
@@ -85,8 +86,12 @@ namespace Service.Services.TransactionServices
                 throw new Exception("Not found!");
             }
             transaction.Status = status;
+            if (status.Equals(BookingStatusEnums.Paid.ToString()))
+            {
+                transaction.PayDate = DateTime.Now;
+            }
             await _transactionRepository.Update(transaction);
-            
+
         }
 
         public async Task<bool> SendEmailWhenBuySucces(string bookingId, string flightId)

@@ -146,7 +146,9 @@ namespace Service.Mapper
 
             //User
             CreateMap<User, UserInfoResponseModel>()
-                .ForMember(dest => dest.RankName, otp => otp.MapFrom(src => src.Rank.Type));
+                .ForMember(dest => dest.RankName, otp => otp.MapFrom(src => src.Rank.Type))
+                .ForMember(dest => dest.Discount, otp => otp.MapFrom(src => src.Rank.Discount))
+                ;
             CreateMap<UserInfoUpdateModel, User>();
         }
     }

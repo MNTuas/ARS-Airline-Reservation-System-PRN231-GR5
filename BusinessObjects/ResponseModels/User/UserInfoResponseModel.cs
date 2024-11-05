@@ -25,6 +25,8 @@ namespace BusinessObjects.ResponseModels.User
 
         public string RankName { get; set; } = null!;
 
+        public decimal Discount { get; set; }
+
         public string Role { get; set; } = null!;
 
         public string Status { get; set; } = null!;

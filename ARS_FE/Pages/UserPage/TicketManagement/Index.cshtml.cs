@@ -35,7 +35,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         public int Quantity { get; set; } // Nhận số lượng vé từ URL
 
         [BindProperty(SupportsGet = true)]
-        public string TicketClassId { get; set; } 
+        public string TicketClassId { get; set; }
 
         [BindProperty(SupportsGet = true)]
         public string flightId { get; set; }
@@ -53,16 +53,9 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         public async Task OnGetAsync(int quantity)
         {
             Quantity = quantity;
-            await LoadData();
-            // Kiểm tra xem có dữ liệu vé trong session không
-            var ticketsFromSession = HttpContext.Session.GetString("Tickets");
-            if (!string.IsNullOrEmpty(ticketsFromSession))
+
+            if (!Tickets.Any())
             {
-                Tickets = JsonSerializer.Deserialize<List<CreateTicketRequest>>(ticketsFromSession);
-            }
-            else
-            {
-                // Khởi tạo danh sách vé mới nếu không có dữ liệu trong session
                 for (int i = 0; i < Quantity; i++)
                 {
                     Tickets.Add(new CreateTicketRequest
@@ -72,6 +65,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                 }
             }
 
+            await LoadData();
             await LoadCountriesAsync();
         }
 
@@ -80,7 +74,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             if (!ModelState.IsValid)
             {
                 // Lưu thông tin vé vào session khi có lỗi
-                HttpContext.Session.SetString("Tickets", JsonSerializer.Serialize(Tickets));
+                await LoadData();
                 await LoadCountriesAsync();
                 return Page();
             }
@@ -88,13 +82,13 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             var client = CreateAuthorizedClient();
 
             var bookingId = await CreateBooking();
-
+            var ticketList = new List<CreateTicketRequest>();
             //lặp cái list ticket lấy info 
             foreach (var ticket in Tickets)
             {
                 var n = new CreateTicketRequest
                 {
-                    BookingId = bookingId ,
+                    BookingId = bookingId,
                     TicketClassId = TicketClassId,
                     Country = ticket.Country,
                     FirstName = ticket.FirstName,
@@ -102,23 +96,26 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                     Gender = ticket.Gender,
                     Dob = ticket.Dob,
                 };
-
-                var response = await APIHelper.PostAsJson(client, "Ticket", n);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    ModelState.AddModelError(string.Empty, "Error occurred while creating the Ticket.");
-                    await LoadCountriesAsync();
-                    return Page();
-                }
-                
+                ticketList.Add(n);
             }
+            Tickets = ticketList;
+            var response = await APIHelper.PostAsJson(client, "Ticket", ticketList);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Ticket.");
+                await LoadCountriesAsync();
+                return Page();
+            }
+
             HttpContext.Session.Remove("Tickets");
             HttpContext.Session.SetString("BookingId", bookingId);
             HttpContext.Session.SetString("flightId", flightId);
-            var returnUrlResponse = await APIHelper.PostAsJson(client, $"Transaction", bookingId);
-            var returnUrl = await returnUrlResponse.Content.ReadFromJsonAsync<string>();
-            return Redirect(returnUrl);
+
+            return RedirectToPage("./DetailsTransaction", new
+            {
+                bookingId = bookingId,
+            });
         }
 
         private async Task LoadData()

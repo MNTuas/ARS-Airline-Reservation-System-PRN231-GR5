@@ -22,7 +22,7 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateBooking(CreateTicketRequest createTicketRequest)
+        public async Task<IActionResult> CreateBooking(List<CreateTicketRequest> createTicketRequest)
         {
 
             var result = await _ticketService.addTicket(createTicketRequest);
