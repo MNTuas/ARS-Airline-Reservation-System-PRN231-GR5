@@ -1,24 +1,12 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
-using BusinessObjects.RequestModels.Airlines;
 using BusinessObjects.RequestModels.Passenger;
-using BusinessObjects.ResponseModels.Airlines;
-using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Passenger;
-using BusinessObjects.ResponseModels.User;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Repository.Repositories.PassengerRepositories;
 using Repository.Repositories.UserRepositories;
-using Service.Enums;
 using Service.Helper;
-using Service.Ultis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.PassengerServices
 {
@@ -75,7 +63,7 @@ namespace Service.Services.PassengerServices
                 };
             }
         }
-        
+
         public async Task<List<PassengerResposeModel>> GetAllPassengers()
         {
             var result = await _PassengerRepository.GetAllPassenger();
@@ -102,14 +90,14 @@ namespace Service.Services.PassengerServices
             var passenger = await _PassengerRepository.GetById(id);
             return _mapper.Map<PassengerResposeModel>(passenger);
         }
-        
+
         public async Task UpdatePassenger(string id, UpdatePassengerRequest request)
         {
             var passenger = await _PassengerRepository.GetById(id);
             _mapper.Map(request, passenger);
             await _PassengerRepository.Update(passenger);
         }
-        
+
         public async Task DeletePassenger(string id)
         {
             var passenger = await _PassengerRepository.GetById(id);

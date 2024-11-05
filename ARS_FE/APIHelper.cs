@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json;
 
 namespace ARS_FE
 {
@@ -36,7 +35,7 @@ namespace ARS_FE
                     return JsonConvert.DeserializeObject<T>(content);
                 }
 
-                return default; 
+                return default;
             }
         }
         public static async Task<HttpResponseMessage> DeleteAsync(this HttpClient httpClient, string url)

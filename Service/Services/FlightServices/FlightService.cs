@@ -5,17 +5,12 @@ using BusinessObjects.ResponseModels.Flight;
 using ExcelDataReader;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Repository.Enums;
 using Repository.Repositories.AirplaneRepositories;
 using Repository.Repositories.AirporRepositories;
 using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.SeatClassRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.FlightServices
 {
@@ -208,7 +203,7 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
-                         
+
 
                                 var flight = new Flight
                                 {

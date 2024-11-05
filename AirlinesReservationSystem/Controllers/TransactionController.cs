@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.TransactionServices;
 using Service.Services.VNPayServices;
 
 namespace AirlinesReservationSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -17,6 +16,18 @@ namespace AirlinesReservationSystem.Controllers
         {
             _transactionService = transactionService;
             _vnPayService = vnPayService;
+            this._transactionService = transactionService;
+        }
+
+
+        [HttpGet]
+        [Route("transaction-of-user/{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetTranSactionOfUser([FromRoute] string userId)
+        {
+            var trans = await _transactionService.GetTransactionByUserId(userId);
+
+            return Ok(trans);
         }
 
         [HttpPut]
@@ -26,6 +37,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             await _transactionService.UpdateTransactionStatus(id, status);
             return Ok("Update successfully!");
+
         }
 
         [HttpGet]
@@ -47,11 +59,11 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpPost("SendEmailSuccess/{bookingId}")]
-        [Authorize]  
-        
+        [Authorize]
+
         public async Task<IActionResult> SendEmailWhenSuccess(string bookingId, string flightId)
         {
-            bool result =  await _transactionService.SendEmailWhenBuySucces(bookingId, flightId);
+            bool result = await _transactionService.SendEmailWhenBuySucces(bookingId, flightId);
             return Ok(result);
         }
     }

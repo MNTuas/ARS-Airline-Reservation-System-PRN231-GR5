@@ -1,10 +1,4 @@
-﻿using BusinessObjects.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.Flight;
 
 namespace BusinessObjects.ResponseModels.Airplane
 {
@@ -15,6 +9,7 @@ namespace BusinessObjects.ResponseModels.Airplane
         public string CodeNumber { get; set; } = null!;
 
         public bool Status { get; set; }
+        public List<FlightResponseModel> Flights { get; set; }
 
         //public virtual ICollection<AirplaneSeat> AirplaneSeats { get; set; } = new List<AirplaneSeat>();
 

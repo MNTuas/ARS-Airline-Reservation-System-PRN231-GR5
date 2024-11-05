@@ -1,9 +1,5 @@
-﻿using Azure;
-using BusinessObjects.RequestModels.Airlines;
-using BusinessObjects.RequestModels.Passenger;
-using FFilms.Application.Shared.Response;
+﻿using BusinessObjects.RequestModels.Passenger;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.PassengerServices;
 
@@ -43,7 +39,7 @@ namespace AirlinesReservationSystem.Controllers
                 });
             }
         }
-        
+
         [HttpGet]
         [Route("{id}")]
         [Authorize]

@@ -1,12 +1,5 @@
 ﻿using BusinessObjects.Models;
 using DAO;
-using Repository.Repositories.BookingRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Repositories.PassengerRepositories
 {
@@ -24,7 +17,7 @@ namespace Repository.Repositories.PassengerRepositories
         }
 
         public async Task<List<Passenger>> GetByLogin(string id)
-        {          
+        {
             var result = await Get(a => a.UserId.Equals(id));
             return result.ToList();
         }

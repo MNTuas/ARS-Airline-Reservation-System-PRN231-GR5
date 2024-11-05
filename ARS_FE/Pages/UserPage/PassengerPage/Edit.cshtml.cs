@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Passenger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.RequestModels.Airport;
-using BusinessObjects.RequestModels.Passenger;
 using System.Net.Http.Headers;
-using BusinessObjects.RequestModels.Airlines;
 
 namespace ARS_FE.Pages.UserPage.PassengerPage
 {
@@ -44,7 +36,7 @@ namespace ARS_FE.Pages.UserPage.PassengerPage
 
             if (response != null)
             {
-                PassengerId = id; 
+                PassengerId = id;
                 updatePassengerRequest = new UpdatePassengerRequest
                 {
                     FirstName = response.FirstName,

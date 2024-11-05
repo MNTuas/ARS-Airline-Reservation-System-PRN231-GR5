@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-
-namespace BusinessObjects.RequestModels.Ticket
+﻿namespace BusinessObjects.RequestModels.Ticket
 {
     using System.ComponentModel.DataAnnotations;
 
@@ -27,7 +19,7 @@ namespace BusinessObjects.RequestModels.Ticket
         public string? Gender { get; set; }
 
 
-        public DateOnly Dob { get; set; } 
+        public DateOnly Dob { get; set; }
 
 
         public string? Country { get; set; }

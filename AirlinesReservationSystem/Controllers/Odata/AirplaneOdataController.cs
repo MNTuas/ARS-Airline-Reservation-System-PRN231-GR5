@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
 using Service.Services.AirplaneServices;
@@ -15,14 +14,14 @@ namespace AirlinesReservationSystem.Controllers.Odata
         public AirplaneOdataController(IAirplaneService airplaneService)
         {
             _airplaneService = airplaneService;
-        } 
+        }
 
         [HttpGet]
         [EnableQuery]
         public async Task<IActionResult> GetAllAirplane()
         {
-            var result = await _airplaneService.GetAllAirplane();   
-            return Ok(result);  
+            var result = await _airplaneService.GetAllAirplane();
+            return Ok(result);
         }
     }
 }

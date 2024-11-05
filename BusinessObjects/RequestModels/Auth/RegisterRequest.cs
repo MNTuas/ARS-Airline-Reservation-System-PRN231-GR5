@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObjects.RequestModels.Auth
 {
@@ -12,12 +7,12 @@ namespace BusinessObjects.RequestModels.Auth
         [Required]
         [RegularExpression(@"^[\p{L}\s]+$", ErrorMessage = "Full name can only contain letters and spacssses.")]
         public string Name { get; set; }
-        
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-        
-        [Required]      
+
+        [Required]
         public string Password { get; set; }
 
         [Required, Compare("Password")]

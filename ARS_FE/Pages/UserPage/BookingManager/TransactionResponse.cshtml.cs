@@ -1,12 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BusinessObjects.ResponseModels.VnPay;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Service.Enums;
 using System.Net.Http.Headers;
-using System.Net.Http;
-using BusinessObjects.ResponseModels.VnPay;
-using BusinessObjects.Models;
-using BusinessObjects.RequestModels.Booking;
-using System.Text.Json;
 
 namespace ARS_FE.Pages.UserPage.BookingManager
 {
