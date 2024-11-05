@@ -21,7 +21,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> CreatePassenger(CreatePassengerRequest createPassengerRequest)
         {
 
@@ -43,15 +43,26 @@ namespace AirlinesReservationSystem.Controllers
                 });
             }
         }
+        
         [HttpGet]
         [Route("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetPassengerInfo(string id)
         {
             var response = await _PassengerService.GetDetailsPassengerInfo(id);
             return Ok(response);
         }
 
+        [HttpGet("GetPassengerByLogin")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetPassengerByLogin()
+        {
+            var response = await _PassengerService.GetPassengerByLogin();
+            return Ok(response);
+        }
+
         [HttpGet("get-all")]
+        [Authorize]
         public async Task<IActionResult> GetAllPassengers()
         {
             var response = await _PassengerService.GetAllPassengers();
@@ -60,6 +71,7 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpPut]
         [Route("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdatePassenger(string id, UpdatePassengerRequest request)
         {
             await _PassengerService.UpdatePassenger(id, request);
@@ -68,6 +80,7 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpDelete]
         [Route("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeletePassenger(string id)
         {
             await _PassengerService.DeletePassenger(id);

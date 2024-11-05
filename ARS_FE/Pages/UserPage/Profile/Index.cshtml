@@ -28,11 +28,16 @@
                 <span asp-validation-for="UserInfo.PhoneNumber" class="text-danger"></span>
             </div>
 
-            <!-- Email (Readonly, No Input) -->
             <div class="form-group">
                 <label class="control-label font-weight-bold">Email:</label>
                 <p class="form-control-plaintext">@Model.UserInfo.Email</p>
+
+                <!-- Trường ẩn để gửi giá trị Email -->
+                <input type="hidden" asp-for="UserInfo.Email" />
+
+                <span asp-validation-for="UserInfo.Email" class="text-danger"></span>
             </div>
+
 
             <!-- Address Field -->
             <div class="form-group">

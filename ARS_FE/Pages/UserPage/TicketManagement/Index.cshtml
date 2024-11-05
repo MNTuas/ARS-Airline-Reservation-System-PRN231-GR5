@@ -1,4 +1,5 @@
 ﻿@page
+@using BusinessObjects.ResponseModels.Passenger
 @model ARS_FE.Pages.UserPage.TicketManagement.IndexModel
 
 @{
@@ -36,13 +37,25 @@
 
                 <div class="form-group">
                     <label asp-for="Tickets[@i].FirstName" class="control-label">First Name:</label>
-                    <input name="Tickets[@i].FirstName" class="form-control" type="text" placeholder="Enter First Name" required />
+                    <input name="Tickets[@i].FirstName" class="form-control" type="text" list="firstNameList" placeholder="Enter First Name" required />
+                    <datalist id="firstNameList">
+                        @foreach (var passenger in ViewData["PassengerList"] as List<PassengerResposeModel>)
+                        {
+                            <option value="@passenger.FirstName">@passenger.FirstName</option>
+                        }
+                    </datalist>
                     <span asp-validation-for="Tickets[@i].FirstName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Tickets[@i].LastName" class="control-label">Last Name:</label>
-                    <input name="Tickets[@i].LastName" class="form-control" type="text" placeholder="Enter Last Name" required />
+                    <input name="Tickets[@i].LastName" class="form-control" type="text" list="lastNameList" placeholder="Enter Last Name" required />
+                    <datalist id="lastNameList">
+                        @foreach (var passenger in ViewData["PassengerList"] as List<PassengerResposeModel>)
+                        {
+                            <option value="@passenger.LastName">@passenger.LastName</option>
+                        }
+                    </datalist>
                     <span asp-validation-for="Tickets[@i].LastName" class="text-danger"></span>
                 </div>
 
@@ -78,9 +91,10 @@
     }
 
     <div class="form-group text-center">
-        <input type="submit" value="Create Ticket" class="btn btn-warning btn-lg" /> <!-- Giữ màu cam với lớp btn-warning -->
+        <input type="submit" value="Create Ticket" class="btn btn-warning btn-lg" />
     </div>
 </form>
+
 
 @section Scripts {
     @{

@@ -1,10 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service.Enums;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using BusinessObjects.ResponseModels.VnPay;
 using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Booking;
+using System.Text.Json;
 
 namespace ARS_FE.Pages.UserPage.BookingManager
 {
@@ -19,6 +21,14 @@ namespace ARS_FE.Pages.UserPage.BookingManager
 
         public async Task<IActionResult> OnGetAsync()
         {
+            var bookingId = HttpContext.Session.GetString("BookingId");
+            var flightId = HttpContext.Session.GetString("flightId");
+            if (string.IsNullOrEmpty(bookingId))
+            {
+                TempData["Error"] = "Không tìm thấy Booking ID. Vui lòng thử lại.";
+                return Page();
+            }
+
             if (Request.Query.Count == 0)
             {
                 TempData["Error"] = "Error making payment, please try again later!";
@@ -63,11 +73,16 @@ namespace ARS_FE.Pages.UserPage.BookingManager
                 {
                     throw new Exception("Error in update booking status");
                 }
+                return RedirectToPage("./BookingList");
 
             }
 
+            var sendEmail = await APIHelper.PostSendEmail(client, $"Transaction/SendEmailSuccess/{bookingId}?flightId={flightId}");
+
+
             return RedirectToPage("./BookingList");
         }
+
 
         private HttpClient CreateAuthorizedClient()
         {

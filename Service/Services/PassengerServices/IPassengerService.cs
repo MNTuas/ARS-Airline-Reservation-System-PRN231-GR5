@@ -17,5 +17,6 @@ namespace Service.Services.PassengerServices
         Task<Result<Passenger>> addPassenger(CreatePassengerRequest createPassengerRequest);
         Task UpdatePassenger(string id, UpdatePassengerRequest request);
         Task DeletePassenger(string id);
+        Task<List<PassengerResposeModel>> GetPassengerByLogin();
     }
 }

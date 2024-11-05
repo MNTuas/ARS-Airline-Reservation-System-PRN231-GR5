@@ -71,6 +71,9 @@ namespace ARS_FE.Pages.UserPage.BookingManager
         [BindProperty]
         public string SelectedTicketClass { get; set; }
 
+        [BindProperty]
+        public string flightId { get; set; }
+
         public async Task<IActionResult> OnPostAsync()
         {
             var client = CreateAuthorizedClient();
@@ -80,11 +83,12 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             }
             // Lấy SeatClassId đã chọn từ form
             string seatClassId = SelectedTicketClass;
+           
 
             return RedirectToPage("/UserPage/TicketManagement/Index", new
             { quantity = createBookingRequest.Quantity,
                 ticketClassId = seatClassId,
-
+                flightId = flightId,
             });
         }
 
