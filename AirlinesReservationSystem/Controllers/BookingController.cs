@@ -1,6 +1,5 @@
 ﻿using BusinessObjects.RequestModels.Booking;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.BookingServices;
 

@@ -1,13 +1,8 @@
-﻿using BusinessObjects.Models;
-using BusinessObjects.RequestModels;
-using BusinessObjects.RequestModels.Auth;
+﻿using BusinessObjects.RequestModels.Auth;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json;
 using Repository.Enums;
-using Service.Services.AuthService;
-using System.Net.Http;
 using System.Security.Claims;
 
 namespace ARS_FE.Pages

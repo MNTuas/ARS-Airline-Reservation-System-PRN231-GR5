@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 
 namespace ARS_FE.Pages.Admin.BookingManagement
 {
@@ -30,13 +25,13 @@ namespace ARS_FE.Pages.Admin.BookingManagement
                 return NotFound();
             }
 
-            var bookinginformation =  await _context.BookingInformations.FirstOrDefaultAsync(m => m.Id == id);
+            var bookinginformation = await _context.BookingInformations.FirstOrDefaultAsync(m => m.Id == id);
             if (bookinginformation == null)
             {
                 return NotFound();
             }
             BookingInformation = bookinginformation;
-           ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
+            ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id");
             return Page();
         }
 

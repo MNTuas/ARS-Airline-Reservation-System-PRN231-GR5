@@ -14,17 +14,12 @@ using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Flight;
-using BusinessObjects.ResponseModels.Ticket;
 using BusinessObjects.ResponseModels.Passenger;
+using BusinessObjects.ResponseModels.Ticket;
 using BusinessObjects.ResponseModels.Transaction;
 using BusinessObjects.ResponseModels.User;
 using Repository.Enums;
 using Service.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Mapper
 {
@@ -106,6 +101,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => true));
             CreateMap<Airport, AirportResponseModel>();
+            CreateMap<UpdateAirportRequest, Airport>();
 
             //Booking
             CreateMap<CreateBookingRequest, BookingInformation>()

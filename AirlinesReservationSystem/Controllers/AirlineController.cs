@@ -1,8 +1,6 @@
 ﻿using BusinessObjects.RequestModels.Airlines;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Query;
 using Service.Services.AirlineServices;
 
 namespace AirlinesReservationSystem.Controllers

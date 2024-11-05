@@ -1,6 +1,4 @@
-﻿using BusinessObjects.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Service.Services.SeatClassServices;
 
 namespace AirlinesReservationSystem.Controllers

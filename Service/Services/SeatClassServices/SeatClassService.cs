@@ -1,10 +1,5 @@
 ﻿using BusinessObjects.Models;
 using Repository.Repositories.SeatClassRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.SeatClassServices
 {

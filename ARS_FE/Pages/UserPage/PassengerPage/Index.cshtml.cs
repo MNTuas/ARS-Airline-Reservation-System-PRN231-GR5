@@ -1,17 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.Passenger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 using System.Net.Http.Headers;
-using System.Net.Http;
-using BusinessObjects.ResponseModels.Airport;
-using Service;
-using BusinessObjects.ResponseModels.Passenger;
 
 namespace ARS_FE.Pages.UserPage.PassengerPage
 {
@@ -30,14 +20,14 @@ namespace ARS_FE.Pages.UserPage.PassengerPage
         public async Task<IActionResult> OnGetAsync()
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<PassengerResposeModel>>(client, "Passenger/get-all");
+            var response = await APIHelper.GetAsJsonAsync<List<PassengerResposeModel>>(client, "Passenger/GetPassengerByLogin");
             if (response != null)
             {
                 PassengerRespose = response;
             }
             else
             {
-                PassengerRespose = new List<PassengerResposeModel>();
+                return RedirectToPage("/403Page");
             }
             return Page();
         }

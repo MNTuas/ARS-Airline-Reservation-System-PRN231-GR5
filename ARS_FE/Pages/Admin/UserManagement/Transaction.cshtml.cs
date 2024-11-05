@@ -1,9 +1,7 @@
+using BusinessObjects.ResponseModels.Transaction;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Collections.Generic;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using BusinessObjects.ResponseModels.Transaction;
 
 namespace ARS_FE.Pages.Admin.UserManagement
 {
@@ -33,16 +31,18 @@ namespace ARS_FE.Pages.Admin.UserManagement
             var client = CreateAuthorizedClient();
             var response = await APIHelper.GetAsJsonAsync<List<TransactionResponseModel>>(client, $"transaction/transaction-of-user/{userId}");
 
-            if (response == null || response.Count == 0)
+            if (response == null)
             {
-                StatusMessage = "No transactions found for this user.";
+                StatusMessage = "Error retrieving transactions.";
+                return BadRequest();
             }
             else
             {
                 Transactions = response;
+                return Page();
+
             }
 
-            return Page();
         }
 
         private HttpClient CreateAuthorizedClient()

@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.User;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 using Service;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels.User;
 
 namespace ARS_FE.Pages.Admin.UserManagement
 {

@@ -1,4 +1,4 @@
-﻿@* @page
+﻿@page
 @model ARS_FE.Pages.Staff.AirplaneManagement.CreateModel
 
 @{
@@ -16,32 +16,41 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="form-group">
-                <label asp-for="Airplane.Code" class="control-label"></label>
-                <input asp-for="Airplane.Code" class="form-control" />
-                <span asp-validation-for="Airplane.Code" class="text-danger"></span>
+                <label asp-for="Airplane.CodeNumber" class="control-label"></label>
+                <input asp-for="Airplane.CodeNumber" class="form-control" />
+                <span asp-validation-for="Airplane.CodeNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Airplane.Type" class="control-label"></label>
-                <input asp-for="Airplane.Type" class="form-control" />
-                <span asp-validation-for="Airplane.Type" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Airplane.AvailableSeat" class="control-label"></label>
-                <input asp-for="Airplane.AvailableSeat" class="form-control" />
-                <span asp-validation-for="Airplane.AvailableSeat" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Airplane.AirlinesId" class="control-label"></label>
-                <select asp-for="Airplane.AirlinesId" class="form-control" asp-items="Model.AirlinesList">
-                    <option value="">-- Select Airline --</option>
-                </select>
+                <label asp-for="Airplane.AirlinesId" class="control-label">Airlines</label>
+                <select asp-for="Airplane.AirlinesId" class="form-control" asp-items="ViewBag.AirlinesId"></select>
                 <span asp-validation-for="Airplane.AirlinesId" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Airplane.Status" class="control-label"></label>
-                <input asp-for="Airplane.Status" class="form-control" />
-                <span asp-validation-for="Airplane.Status" class="text-danger"></span>
+
+
+            <div id="seats-list">
+                @for (var i = 0; i < Model.Airplane.AirplaneSeatRequest.Count; i++)
+                {
+                    <div class="seat-row mb-3">
+                        <div class="form-group">
+                            <label asp-for="Airplane.AirplaneSeatRequest[i].SeatClassId" class="control-label"></label>
+                            <select asp-for="Airplane.AirplaneSeatRequest[i].SeatClassId" class="form-control" asp-items="ViewBag.SeatclassId">
+                                <option value="">Chọn Hạng Ghế</option> <!-- Tùy chọn mặc định -->
+                            </select>
+                            <span asp-validation-for="Airplane.AirplaneSeatRequest[i].SeatClassId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Airplane.AirplaneSeatRequest[i].SeatCount" class="control-label"></label>
+                            <input asp-for="Airplane.AirplaneSeatRequest[i].SeatCount" class="form-control" min="1" required type="number" />
+                            <span asp-validation-for="Airplane.AirplaneSeatRequest[i].SeatCount" class="text-danger"></span>
+                        </div>
+                    </div>
+                }
             </div>
+
+
+            <!-- Button to add more seat inputs -->
+            <button type="button" class="btn btn-secondary" id="add-seat">Add Seat</button>
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -57,5 +66,46 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+
+    <script>
+        document.getElementById("add-seat").addEventListener("click", function () {
+            var seatsList = document.getElementById("seats-list");
+            var index = seatsList.children.length;
+
+            // Kiểm tra xem đã thêm tối đa 3 ghế chưa
+            if (index >= 3) {
+                alert("Bạn chỉ có thể thêm tối đa 3 ghế.");
+                return; // Thoát khỏi hàm nếu đã đạt giới hạn
+            }
+
+            // Lấy các tùy chọn hạng ghế từ ViewBag
+            var seatClassOptions = `
+        @foreach (var seatClass in ViewBag.SeatclassId)
+        {
+                            <option value="@seatClass.Value">@seatClass.Text</option>
+        }
+                `;
+
+            // Tạo dòng mới cho ghế
+            var newSeatRow = `
+                    <div class="seat-row mb-3">
+                        <div class="form-group">
+                            <label>Hạng Ghế:</label>
+                            <select name="Airplane.AirplaneSeatRequest[${index}].SeatClassId" class="form-control" required>
+                                <option value="">Chọn Hạng Ghế</option>
+                                ${seatClassOptions}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Số Lượng Ghế:</label>
+                            <input type="number" name="Airplane.AirplaneSeatRequest[${index}].SeatCount" class="form-control" min="1" required />
+                        </div>
+                    </div>
+                `;
+            seatsList.insertAdjacentHTML('beforeend', newSeatRow);
+        });
+    </script>
+
+
 }
- *@

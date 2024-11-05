@@ -2,20 +2,18 @@
 using BusinessObjects.Models;
 using BusinessObjects.RequestModels.VnPay;
 using BusinessObjects.ResponseModels.Booking;
+using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Transaction;
 using Microsoft.AspNetCore.Http;
 using Repository.Repositories.BookingRepositories;
+using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.TransactionRepositories;
 using Repository.Repositories.UserRepositories;
 using Service.Enums;
+using Service.Helper;
 using Service.Services.EmailServices;
 using Service.Services.VNPayServices;
 using Service.Ultis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.TransactionServices
 {
@@ -27,10 +25,14 @@ namespace Service.Services.TransactionServices
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
         private readonly IMapper _mapper;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IFlightRepository _flightRepository;
+
 
         public TransactionService(ITransactionRepository transactionRepository, IBookingRepository bookingRepository,
                                   IVnPayService vnPayService, IUserRepository userRepository,
-                                  IEmailService emailService, IMapper mapper)
+                                  IEmailService emailService, IMapper mapper,
+                                  IHttpContextAccessor httpContextAccessor, IFlightRepository flightRepository)
         {
             _transactionRepository = transactionRepository;
             _bookingRepository = bookingRepository;
@@ -38,6 +40,8 @@ namespace Service.Services.TransactionServices
             _userRepository = userRepository;
             _emailService = emailService;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
+            _flightRepository = flightRepository;
         }
         public async Task<List<TransactionResponseModel>> GetTransactionByUserId(string userId)
         {
@@ -69,9 +73,6 @@ namespace Service.Services.TransactionServices
 
             await _transactionRepository.Insert(newTransaction);
 
-            // Gửi email thông báo
-            await SendEmailWhenBuySucces(userId, bookingId); // Thêm hàm gửi email tại đây
-
             string checkOutUrl = _vnPayService.CreatePaymentUrl(httpContext, vnPayment);
             return checkOutUrl;
         }
@@ -85,33 +86,39 @@ namespace Service.Services.TransactionServices
             }
             transaction.Status = status;
             await _transactionRepository.Update(transaction);
-            
+
         }
 
-        public async Task SendEmailWhenBuySucces(string userId, string bookingId)
+        public async Task<bool> SendEmailWhenBuySucces(string bookingId, string flightId)
         {
-           
-            var user = await _userRepository.GetUserById(userId);
+            var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
+            var userid = idclaim?.Value;
+
+            var user = await _userRepository.GetUserById(userid);
             if (user == null)
             {
                 throw new Exception("User not found!");
             }
 
-          
             var booking = await _bookingRepository.GetById(bookingId);
             if (booking == null)
             {
                 throw new Exception("Booking not found!");
             }
 
+            var flight = await _flightRepository.GetFlightById(flightId);
+            if (flight == null)
+            {
+                throw new Exception("Flight not found!");
+            }
+
+
             // Ánh xạ booking sang UserBookingResponseModel
             var userBookingResponse = _mapper.Map<UserBookingResponseModel>(booking);
-
-            
+            var flightResponse = _mapper.Map<FlightResponseModel>(flight);
             var tickets = userBookingResponse.Tickets;
 
-            
-            var htmlBody = EmailTemplate.ListTicket(user.Name, user.Email, tickets);
+            var htmlBody = EmailTemplate.ListTicket(user.Name, user.Email, tickets, flightResponse);
 
             // Gửi email
             bool sendEmailSuccess = await _emailService.SendEmail(user.Email, "Your Booking Confirmation", htmlBody);
@@ -120,7 +127,10 @@ namespace Service.Services.TransactionServices
             {
                 throw new Exception("Error in sending email");
             }
+
+            return true; // Trả về true nếu email gửi thành công
         }
+
 
 
     }

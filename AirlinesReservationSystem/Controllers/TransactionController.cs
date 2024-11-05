@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.TransactionServices;
 using Service.Services.VNPayServices;
@@ -20,21 +19,14 @@ namespace AirlinesReservationSystem.Controllers
             this._transactionService = transactionService;
         }
 
-        [HttpPost]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateTransactionForBooking([FromBody] string bookingId)
-        {
-            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var result = await _transactionService.CreateTransaction(bookingId, token, HttpContext);
-            return Ok(result);
-        }
+
         [HttpGet]
         [Route("transaction-of-user/{userId}")]
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetTranSactionOfUser([FromRoute] string userId)
         {
             var trans = await _transactionService.GetTransactionByUserId(userId);
-           
+
             return Ok(trans);
         }
 
@@ -45,7 +37,7 @@ namespace AirlinesReservationSystem.Controllers
         {
             await _transactionService.UpdateTransactionStatus(id, status);
             return Ok("Update successfully!");
-          
+
         }
 
         [HttpGet]
@@ -55,6 +47,24 @@ namespace AirlinesReservationSystem.Controllers
         {
             var response = _vnPayService.PaymentResponse(keyValuePairs);
             return Ok(response);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> CreateTransactionForBooking([FromBody] string bookingId)
+        {
+            string token = Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var result = await _transactionService.CreateTransaction(bookingId, token, HttpContext);
+            return Ok(result);
+        }
+
+        [HttpPost("SendEmailSuccess/{bookingId}")]
+        [Authorize]
+
+        public async Task<IActionResult> SendEmailWhenSuccess(string bookingId, string flightId)
+        {
+            bool result = await _transactionService.SendEmailWhenBuySucces(bookingId, flightId);
+            return Ok(result);
         }
     }
 }

@@ -1,8 +1,5 @@
-﻿using BusinessObjects.RequestModels;
-using BusinessObjects.RequestModels.Auth;
+﻿using BusinessObjects.RequestModels.Auth;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.AuthService;
 using Service.Services.UserServices;
@@ -65,7 +62,7 @@ namespace AirlinesReservationSystem.Controllers
                 Message = results.Message
             });
         }
-      
+
         [HttpPut]
         [Route("change-password")]
         [Authorize]

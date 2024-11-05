@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.Booking;
+using BusinessObjects.ResponseModels.Ticket;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels.Ticket;
-using BusinessObjects.ResponseModels.Booking;
 
 namespace ARS_FE.Pages.UserPage.BookingManager
 {

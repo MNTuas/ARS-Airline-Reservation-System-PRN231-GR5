@@ -1,10 +1,7 @@
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
+using BusinessObjects.RequestModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using BusinessObjects.RequestModels;
-using DAO;
-using BusinessObjects.RequestModels.Auth;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.UserPage.Profile
 {

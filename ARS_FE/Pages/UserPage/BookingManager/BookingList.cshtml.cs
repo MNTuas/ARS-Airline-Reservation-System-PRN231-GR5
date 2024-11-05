@@ -1,12 +1,7 @@
-using BusinessObjects.Models;
-using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Booking;
-using BusinessObjects.ResponseModels.Flight;
-using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service;
-using System.Net;
 using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.UserPage.BookingManager

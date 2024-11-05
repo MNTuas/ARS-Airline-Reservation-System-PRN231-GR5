@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.Airplane;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
+using Service;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
     public class DetailsModel : PageModel
     {
-        private readonly DAO.AirlinesReservationSystemContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public DetailsModel(DAO.AirlinesReservationSystemContext context)
+        public DetailsModel(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
-        public Airplane Airplane { get; set; } = default!;
+        public AirplaneResponseModel Airplane { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -28,16 +25,33 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
                 return NotFound();
             }
 
-            var airplane = await _context.Airplanes.FirstOrDefaultAsync(m => m.Id == id);
-            if (airplane == null)
+            var client = CreateAuthorizedClient();
+
+            // Sử dụng APIHelper để gọi API lấy thông tin Airplane
+            var response = await APIHelper.GetAsJsonAsync<AirplaneResponseModel>(client, $"airplane/get-airplane/{id}");
+
+            if (response != null)
             {
-                return NotFound();
+                Airplane = response;
+                return Page();
             }
             else
             {
-                Airplane = airplane;
+                return NotFound();
             }
-            return Page();
+        }
+
+        private HttpClient CreateAuthorizedClient()
+        {
+            var client = _httpClientFactory.CreateClient("ApiClient");
+            var token = HttpContext.Session.GetString("JWToken");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            return client;
         }
     }
 }
