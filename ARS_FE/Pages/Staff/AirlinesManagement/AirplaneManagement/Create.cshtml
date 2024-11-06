@@ -75,7 +75,7 @@
 
             // Kiểm tra xem đã thêm tối đa 3 ghế chưa
             if (index >= 3) {
-                alert("Bạn chỉ có thể thêm tối đa 3 ghế.");
+                alert("You can choose max 3 seats okeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.");
                 return; // Thoát khỏi hàm nếu đã đạt giới hạn
             }
 
@@ -91,14 +91,14 @@
             var newSeatRow = `
                     <div class="seat-row mb-3">
                         <div class="form-group">
-                            <label>Hạng Ghế:</label>
+                            <label>Seat class:</label>
                             <select name="Airplane.AirplaneSeatRequest[${index}].SeatClassId" class="form-control" required>
-                                <option value="">Chọn Hạng Ghế</option>
+                                <option value="">Choose seat class</option>
                                 ${seatClassOptions}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Số Lượng Ghế:</label>
+                            <label>Quantity:</label>
                             <input type="number" name="Airplane.AirplaneSeatRequest[${index}].SeatCount" class="form-control" min="1" required />
                         </div>
                     </div>

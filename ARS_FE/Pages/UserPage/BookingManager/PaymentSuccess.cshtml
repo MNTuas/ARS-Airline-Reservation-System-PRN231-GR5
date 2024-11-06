@@ -1,0 +1,74 @@
+﻿@page
+@model ARS_FE.Pages.UserPage.BookingManager.PaymentSuccessModel
+@{
+    Layout = "_LayoutUser";
+    var redirectUrl = "./BookingList"; // URL chuyển hướng đến danh sách booking
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5">WAIT FOR US TO CHECK YOUR PAYMENT</h2>
+</div>
+<style>
+    /* Lớp khóa trang khi hiển thị SweetAlert */
+    .locked {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+    }
+
+    /* Ẩn lớp khóa khi không sử dụng */
+    #lockScreen {
+        display: none;
+    }
+</style>
+
+<!-- Lớp khóa trang -->
+<div id="lockScreen" class="locked"></div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    let timerInterval;
+                // Hiển thị SweetAlert
+                Swal.fire({
+                    title: "@TempData["SuccessMessage"]",
+                    html: "Redirecting in <b></b> milliseconds.",
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading();
+                        const timer = Swal.getPopup().querySelector("b");
+                        timerInterval = setInterval(() => {
+                            timer.textContent = `${Swal.getTimerLeft()}`;
+                        }, 100);
+
+                        // Khi SweetAlert mở, khóa trang
+                        document.getElementById('lockScreen').style.display = 'block';
+                    },
+                    willClose: () => {
+                        clearInterval(timerInterval);
+                        window.location.href = "@redirectUrl"; // Chuyển hướng
+                        // Sau khi SweetAlert đóng, bỏ khóa trang
+                        document.getElementById('lockScreen').style.display = 'none';
+                    }
+                });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire("Error", "@TempData["ErrorMessage"]", "error");
+            </text>
+        }
+                });
+    </script>
+}
