@@ -39,5 +39,44 @@
         <input type="hidden" asp-for="Airplane.AirplaneSeatRequest[2].SeatClassId" />
     </div>
 
+<<<<<<< HEAD
     <button type="submit" class="btn btn-primary">Create</button>
 </form>
+=======
+            // Kiểm tra xem đã thêm tối đa 3 ghế chưa
+            if (index >= 3) {
+                alert("You can choose max 3 seats okeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.");
+                return; // Thoát khỏi hàm nếu đã đạt giới hạn
+            }
+
+            // Lấy các tùy chọn hạng ghế từ ViewBag
+            var seatClassOptions = `
+        @foreach (var seatClass in ViewBag.SeatclassId)
+        {
+                            <option value="@seatClass.Value">@seatClass.Text</option>
+        }
+                `;
+
+            // Tạo dòng mới cho ghế
+            var newSeatRow = `
+                    <div class="seat-row mb-3">
+                        <div class="form-group">
+                            <label>Seat class:</label>
+                            <select name="Airplane.AirplaneSeatRequest[${index}].SeatClassId" class="form-control" required>
+                                <option value="">Choose seat class</option>
+                                ${seatClassOptions}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity:</label>
+                            <input type="number" name="Airplane.AirplaneSeatRequest[${index}].SeatCount" class="form-control" min="1" required />
+                        </div>
+                    </div>
+                `;
+            seatsList.insertAdjacentHTML('beforeend', newSeatRow);
+        });
+    </script>
+
+
+}
+>>>>>>> 3bd0c96e48dbb6fb3342a97b736bb4b1bdd35842
