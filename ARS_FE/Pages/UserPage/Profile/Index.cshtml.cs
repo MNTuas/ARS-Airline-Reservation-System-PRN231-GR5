@@ -18,6 +18,9 @@ namespace ARS_FE.Pages.UserPage.Profile
         [BindProperty]
         public UserInfoUpdateModel UserInfo { get; set; } = default!;
 
+        [TempData]
+        public string SuccessMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var client = CreateAuthorizedClient();
@@ -56,11 +59,12 @@ namespace ARS_FE.Pages.UserPage.Profile
 
             if (response.IsSuccessStatusCode)
             {
-                return Page();
+                SuccessMessage = "Updated profile successfully";
+                return RedirectToPage();
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Error occurred while update the account info.");
+                ModelState.AddModelError(string.Empty, "Error occurred while updating the account info.");
                 return Page();
             }
         }
