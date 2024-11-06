@@ -73,9 +73,18 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             }
 
             var sendEmail = await APIHelper.PostSendEmail(client, $"Transaction/SendEmailSuccess/{bookingId}?flightId={flightId}");
-
-
-            return RedirectToPage("./BookingList");
+            if (sendEmail.IsSuccessStatusCode)
+            {
+                // Sau khi gửi email thành công, lưu thông báo vào TempData và chuyển hướng đến trang thanh toán thành công
+                TempData["SuccessMessage"] = "Payment Successful! Redirecting...";
+                return RedirectToPage("./PaymentSuccess", new { bookingId = bookingId });
+            }
+            else
+            {
+                // Nếu gửi email không thành công, hiển thị thông báo lỗi
+                TempData["ErrorMessage"] = "Payment Failed!";
+                return RedirectToPage("./BookingList");
+            }
         }
 
 

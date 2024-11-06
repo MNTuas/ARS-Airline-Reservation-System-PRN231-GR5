@@ -143,8 +143,11 @@ namespace Service.Services.FlightServices
                                 var flightNumber = reader.GetValue(0).ToString();
                                 var departureTime = DateTime.Parse(reader.GetValue(2).ToString());
                                 var AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString());
+                             
+                                
+                                DateTime departureTimeUtc = TimeZoneInfo.ConvertTimeToUtc(departureTime);
 
-                                if (departureTime < DateTime.UtcNow)
+                                if (departureTimeUtc < DateTime.UtcNow)
                                 {
                                     return new Result<Flight>
                                     {
@@ -162,6 +165,7 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
+                                // Kiểm tra nếu airplane đã vượt quá 2
                                 var dateKey = $"{AirplaneId}|{departureTime.Date}";
 
                                 if (flightsPerDay.ContainsKey(dateKey))
@@ -173,7 +177,7 @@ namespace Service.Services.FlightServices
                                     flightsPerDay[dateKey] = 1;
                                 }
 
-                                // Kiểm tra nếu số chuyến bay đã vượt quá 2
+                                
                                 if (flightsPerDay[dateKey] > 2)
                                 {
                                     return new Result<Flight>
@@ -193,6 +197,7 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
+                                // Kiểm tra nếu airplane đã vượt quá 2
                                 var flightInDay = await _flightRepository.CountFlightsForAirplaneOnDate(AirplaneId, departureTime);
                                 if (flightInDay > 2)
                                 {
@@ -261,6 +266,14 @@ namespace Service.Services.FlightServices
                 if (flights.Count > 0)
                 {
                     await _flightRepository.InsertRange(flights);
+                }
+                else
+                {
+                    return new Result<Flight>
+                    {
+                        Success = false,
+                        Message = "Upload Fail"
+                    };
                 }
 
                 return new Result<Flight>
