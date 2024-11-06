@@ -6,6 +6,7 @@ using ExcelDataReader;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
 using Repository.Enums;
+using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AirplaneRepositories;
 using Repository.Repositories.AirporRepositories;
 using Repository.Repositories.FlightRepositories;
@@ -21,27 +22,32 @@ namespace Service.Services.FlightServices
         private readonly IAirportRepository _airportRepository;
         private readonly ISeatClassRepository _seatClassRepository;
         private readonly IAirplaneRepository _airplaneRepository;
+        private readonly IAirlineRepository _airlineRepository;
 
         public FlightService(IFlightRepository flightRepository, IMapper mapper,
                              IAirportRepository airportRepository, ISeatClassRepository seatClassRepository,
-                             IAirplaneRepository airplaneRepository)
+                             IAirplaneRepository airplaneRepository, IAirlineRepository airlineRepository)
         {
             _flightRepository = flightRepository;
             _mapper = mapper;
             _airportRepository = airportRepository;
             _seatClassRepository = seatClassRepository;
             _airplaneRepository = airplaneRepository;
+            _airlineRepository = airlineRepository;
         }
 
         public async Task CreateFlight(CreateFlightRequest request)
         {
+            var airline = await _airplaneRepository.GetAirplane(request.AirplaneId);
+            var code = await _airlineRepository.GetById(airline.AirlinesId);
             Flight newFlight = _mapper.Map<Flight>(request);
+            newFlight.FlightNumber = code.Code + request.FlightNumber;
             await _flightRepository.Insert(newFlight);
         }
 
-        public async Task<List<FlightResponseModel>> GetAllFlights()
+        public async Task<List<FlightResponseModel>> GetAllFlights(string? flightNumber = null)
         {
-            var list = await _flightRepository.GetAllFlights();
+            var list = await _flightRepository.GetAllFlights( flightNumber );
             return _mapper.Map<List<FlightResponseModel>>(list);
         }
 
@@ -143,8 +149,11 @@ namespace Service.Services.FlightServices
                                 var flightNumber = reader.GetValue(0).ToString();
                                 var departureTime = DateTime.Parse(reader.GetValue(2).ToString());
                                 var AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString());
+                             
+                                
+                                DateTime departureTimeUtc = TimeZoneInfo.ConvertTimeToUtc(departureTime);
 
-                                if (departureTime < DateTime.UtcNow)
+                                if (departureTimeUtc < DateTime.UtcNow)
                                 {
                                     return new Result<Flight>
                                     {
@@ -162,6 +171,7 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
+                                // Kiểm tra nếu airplane đã vượt quá 2
                                 var dateKey = $"{AirplaneId}|{departureTime.Date}";
 
                                 if (flightsPerDay.ContainsKey(dateKey))
@@ -173,7 +183,7 @@ namespace Service.Services.FlightServices
                                     flightsPerDay[dateKey] = 1;
                                 }
 
-                                // Kiểm tra nếu số chuyến bay đã vượt quá 2
+                                
                                 if (flightsPerDay[dateKey] > 2)
                                 {
                                     return new Result<Flight>
@@ -193,6 +203,7 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
+                                // Kiểm tra nếu airplane đã vượt quá 2
                                 var flightInDay = await _flightRepository.CountFlightsForAirplaneOnDate(AirplaneId, departureTime);
                                 if (flightInDay > 2)
                                 {
@@ -261,6 +272,14 @@ namespace Service.Services.FlightServices
                 if (flights.Count > 0)
                 {
                     await _flightRepository.InsertRange(flights);
+                }
+                else
+                {
+                    return new Result<Flight>
+                    {
+                        Success = false,
+                        Message = "Upload Fail"
+                    };
                 }
 
                 return new Result<Flight>

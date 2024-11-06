@@ -30,41 +30,43 @@ namespace Service.Services.TicketServices
             _httpContextAccessor = httpContextAccessor;
         }
 
-
-
-        public async Task<Result<Ticket>> addTicket(CreateTicketRequest createTicketRequest)
+        public async Task<Result<List<Ticket>>> addTicket(List<CreateTicketRequest> createTicketRequest)
         {
             try
             {
 
                 var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
                 var userid = idclaim.Value;
+                var ticketList = new List<Ticket>();
 
-
-                var newTicket = new Ticket
+                foreach (var ticket in createTicketRequest)
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Country = createTicketRequest.Country,
-                    Dob = createTicketRequest.Dob,
-                    FirstName = createTicketRequest.FirstName,
-                    LastName = createTicketRequest.LastName,
-                    Gender = createTicketRequest.Gender,
-                    Status = TicketStatusEnums.Pending.ToString(),
-                    BookingId = createTicketRequest.BookingId,
-                    TicketClassId = createTicketRequest.TicketClassId,
-                };
+                    var newTicket = new Ticket
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Country = ticket.Country,
+                        Dob = ticket.Dob,
+                        FirstName = ticket.FirstName,
+                        LastName = ticket.LastName,
+                        Gender = ticket.Gender,
+                        Status = TicketStatusEnums.Pending.ToString(),
+                        BookingId = ticket.BookingId,
+                        TicketClassId = ticket.TicketClassId,
+                    };
+                    ticketList.Add(newTicket);
+                }
 
-                await _ticketRepository.Insert(newTicket);
-                return new Result<Ticket>
+                await _ticketRepository.InsertRange(ticketList);
+                return new Result<List<Ticket>>
                 {
                     Success = true,
-                    Data = newTicket
+                    Data = ticketList
                 };
 
             }
             catch (Exception ex)
             {
-                return new Result<Ticket>
+                return new Result<List<Ticket>>
                 {
                     Success = false,
                     Message = ex.Message,

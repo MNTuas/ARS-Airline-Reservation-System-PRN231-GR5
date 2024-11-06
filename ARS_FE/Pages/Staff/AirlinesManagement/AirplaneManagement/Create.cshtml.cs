@@ -13,7 +13,6 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-
         public CreateModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -22,52 +21,47 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         public List<SelectListItem> AirlinesList { get; set; } = new List<SelectListItem>();
 
         [BindProperty]
-        public AddAirplaneRequest Airplane { get; set; } = default!;
-
-        [BindProperty]
-        public SeatClass SeatClass { get; set; } = default!;
-
+        public AddAirplaneRequest Airplane { get; set; } = new AddAirplaneRequest();
 
         public async Task<IActionResult> OnGetAsync()
         {
             await LoadData();
-            // Initialize the AirplaneSeatRequest list
-            Airplane = new AddAirplaneRequest
+
+            Airplane.AirplaneSeatRequest = new List<AirplaneSeatRequest>
             {
-                AirplaneSeatRequest = new List<AirplaneSeatRequest>()
+                new AirplaneSeatRequest { SeatClassId = "79562C9B-6B09-4CBF-B5A1-9903F2F15B67" }, 
+                new AirplaneSeatRequest { SeatClassId = "96A5D3DF-DE7B-4572-B8BD-AFE91DB378E9" }, 
+                new AirplaneSeatRequest { SeatClassId = "977A3036-5375-44EB-9A62-411F3861F767" }  
             };
+
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-
             var client = CreateAuthorizedClient();
-
-            //var n = new AddAirplaneRequest
-            //{
-            //    CodeNumber = Airplane.CodeNumber,
-            //    AirlinesId = Airplane.AirlinesId,
-            //    AirplaneSeatRequest = Airplane.AirplaneSeatRequest,
-
-            //};
 
             var response = await APIHelper.PostAsJson(client, "airplane/add-airplane", Airplane);
 
             if (response.IsSuccessStatusCode)
             {
-
                 return RedirectToPage("./Index");
             }
             else
             {
                 await LoadData();
-                // Initialize the AirplaneSeatRequest list
-                Airplane = new AddAirplaneRequest
+
+                if (Airplane.AirplaneSeatRequest == null || Airplane.AirplaneSeatRequest.Count == 0)
                 {
-                    AirplaneSeatRequest = new List<AirplaneSeatRequest>()
-                };
-                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
+                    Airplane.AirplaneSeatRequest = new List<AirplaneSeatRequest>
+                    {
+                        new AirplaneSeatRequest { SeatClassId = "79562C9B-6B09-4CBF-B5A1-9903F2F15B67" },
+                        new AirplaneSeatRequest { SeatClassId = "96A5D3DF-DE7B-4572-B8BD-AFE91DB378E9" },
+                        new AirplaneSeatRequest { SeatClassId = "977A3036-5375-44EB-9A62-411F3861F767" }
+                    };
+                }
+
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airplane.");
                 return Page();
             }
         }
@@ -76,23 +70,24 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         {
             var client = CreateAuthorizedClient();
             var airlineList = new List<AllAirlinesResponseModel>();
-            var airportList = new List<AirportResponseModel>();
-            var seatClass = new List<SeatClass>();
+            var seatClassList = new List<SeatClass>();
 
+            // Lấy danh sách Airlines
             var responseAirline = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline/Get_AllAirline");
             if (responseAirline != null)
             {
                 airlineList = responseAirline;
             }
 
+            // Lấy danh sách Seat Classes
             var responseSeatClass = await APIHelper.GetAsJsonAsync<List<SeatClass>>(client, "seat-class");
             if (responseSeatClass != null)
             {
-                seatClass = responseSeatClass;
+                seatClassList = responseSeatClass;
             }
 
             ViewData["AirlinesId"] = new SelectList(airlineList, "Id", "Name");
-            ViewData["SeatclassId"] = new SelectList(seatClass, "Id", "Name");
+            ViewData["SeatclassId"] = new SelectList(seatClassList, "Id", "Name");
         }
 
         private HttpClient CreateAuthorizedClient()
