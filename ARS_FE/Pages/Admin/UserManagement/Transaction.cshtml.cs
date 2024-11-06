@@ -17,19 +17,18 @@ namespace ARS_FE.Pages.Admin.UserManagement
         public List<TransactionResponseModel> Transactions { get; set; } = new List<TransactionResponseModel>();
 
         [TempData]
-        public string StatusMessage { get; set; }
+        public string StatusMessage { get; set; } = default!;
 
-        public async Task<IActionResult> OnGetAsync(string userId)
+        public async Task<IActionResult> OnGetAsync(string id)
         {
-            Console.WriteLine("OnGetAsync called with userId: " + userId);
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(id))
             {
                 StatusMessage = "User ID is required.";
                 return Page();
             }
 
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<TransactionResponseModel>>(client, $"transaction/transaction-of-user/{userId}");
+            var response = await APIHelper.GetAsJsonAsync<List<TransactionResponseModel>>(client, $"transaction/transaction-of-user/{id}");
 
             if (response == null)
             {
