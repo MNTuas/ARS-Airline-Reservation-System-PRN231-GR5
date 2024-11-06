@@ -34,7 +34,6 @@ namespace ARS_FE.Pages.UserPage.RankManagement
             {
                 updateRankRequest = new UpdateRankRequest
                 {
-                    Id = response.Id,
                     Type = response.Type,
                     Discount = response.Discount,
                     Description = response.Description,
