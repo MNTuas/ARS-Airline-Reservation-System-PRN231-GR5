@@ -39,15 +39,15 @@ namespace Service.Services.FlightServices
         public async Task CreateFlight(CreateFlightRequest request)
         {
             var airline = await _airplaneRepository.GetAirplane(request.AirplaneId);
-            var code = _airlineRepository.GetById(airline.AirlinesId);
+            var code = await _airlineRepository.GetById(airline.AirlinesId);
             Flight newFlight = _mapper.Map<Flight>(request);
-            newFlight.FlightNumber = code + request.FlightNumber;
+            newFlight.FlightNumber = code.Code + request.FlightNumber;
             await _flightRepository.Insert(newFlight);
         }
 
-        public async Task<List<FlightResponseModel>> GetAllFlights()
+        public async Task<List<FlightResponseModel>> GetAllFlights(string? flightNumber = null)
         {
-            var list = await _flightRepository.GetAllFlights();
+            var list = await _flightRepository.GetAllFlights( flightNumber );
             return _mapper.Map<List<FlightResponseModel>>(list);
         }
 
