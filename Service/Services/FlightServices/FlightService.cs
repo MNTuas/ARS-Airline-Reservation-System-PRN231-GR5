@@ -6,6 +6,7 @@ using ExcelDataReader;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
 using Repository.Enums;
+using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AirplaneRepositories;
 using Repository.Repositories.AirporRepositories;
 using Repository.Repositories.FlightRepositories;
@@ -21,21 +22,26 @@ namespace Service.Services.FlightServices
         private readonly IAirportRepository _airportRepository;
         private readonly ISeatClassRepository _seatClassRepository;
         private readonly IAirplaneRepository _airplaneRepository;
+        private readonly IAirlineRepository _airlineRepository;
 
         public FlightService(IFlightRepository flightRepository, IMapper mapper,
                              IAirportRepository airportRepository, ISeatClassRepository seatClassRepository,
-                             IAirplaneRepository airplaneRepository)
+                             IAirplaneRepository airplaneRepository, IAirlineRepository airlineRepository)
         {
             _flightRepository = flightRepository;
             _mapper = mapper;
             _airportRepository = airportRepository;
             _seatClassRepository = seatClassRepository;
             _airplaneRepository = airplaneRepository;
+            _airlineRepository = airlineRepository;
         }
 
         public async Task CreateFlight(CreateFlightRequest request)
         {
+            var airline = await _airplaneRepository.GetAirplane(request.AirplaneId);
+            var code = _airlineRepository.GetById(airline.AirlinesId);
             Flight newFlight = _mapper.Map<Flight>(request);
+            newFlight.FlightNumber = code + request.FlightNumber;
             await _flightRepository.Insert(newFlight);
         }
 
