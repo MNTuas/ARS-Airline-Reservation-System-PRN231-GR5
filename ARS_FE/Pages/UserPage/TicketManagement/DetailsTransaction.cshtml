@@ -1,8 +1,8 @@
 ﻿@page
-@model ARS_FE.Pages.UserPage.BookingManager.DetailsModel
+@model ARS_FE.Pages.UserPage.TicketManagement.DetailsTransactionModel
 @{
     ViewData["Title"] = "Ticket Details";
-    Layout = "_LayoutUser";
+    Layout = "_LayoutAdmin";
 }
 
 <div class="container mt-5">
@@ -66,5 +66,12 @@
             <h5>Discount: @discountAmount%</h5>
             <h5>Price After Discount: @String.Format("{0:#,##0} VND", priceAfterDiscount)</h5>
         </div>
+
+        <form method="post">
+            <input type="hidden" name="bookingId" value="@Model.BookingId" />
+            <button type="submit" class="btn btn-primary mt-3" asp-page-handler="Checkout">
+                Checkout Payment
+            </button>
+        </form>
     }
 </div>
