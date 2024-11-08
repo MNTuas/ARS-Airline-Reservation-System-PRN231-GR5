@@ -20,9 +20,9 @@ namespace AirlinesReservationSystem.Controllers.Odata
         [HttpGet]
         [Authorize(Roles = "Staff")]
         [EnableQuery]
-        public async Task<IActionResult> GetAllFlightsDetails()
+        public async Task<IActionResult> GetAllFlightsDetails([FromQuery] string? flightNumber)
         {
-            var result = await _flightService.GetAllFlights();
+            var result = await _flightService.GetAllFlights(flightNumber);
             return Ok(result);
         }
     }

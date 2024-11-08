@@ -50,13 +50,13 @@
             {
                 <tr>
                     <td>@flight.FlightNumber</td>
-                    <td>@flight.Airlines ?? "Unknown"</td>
+                    <td>@flight.AirlinesId</td>
                     <td>@flight.DepartureTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@flight.ArrivalTime.ToString("yyyy-MM-dd HH:mm")</td>
                     <td>@flight.Duration</td>
                     <td>@flight.Status</td>
-                    <td>@flight.FromName ?? flight.From</td>
-                    <td>@flight.ToName ?? flight.To</td>
+                    <td>@flight.From </td>
+                    <td>@flight.To </td>
                 </tr>
             }
         }
@@ -64,6 +64,35 @@
         {
             <tr>
                 <td colspan="8">No flight information available.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Airplane Seats Information</h4>
+<hr />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Seat Class Name</th>
+            <th>Seat Count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Airplane.AirplaneSeats != null && Model.Airplane.AirplaneSeats.Any())
+        {
+            foreach (var seat in Model.Airplane.AirplaneSeats)
+            {
+                <tr>
+                    <td>@seat.SeatClassName</td>
+                    <td>@seat.SeatCount</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">No seat information available.</td>
             </tr>
         }
     </tbody>

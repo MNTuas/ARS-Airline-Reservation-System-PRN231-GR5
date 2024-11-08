@@ -1,15 +1,23 @@
 ﻿using BusinessObjects.Models;
 using DAO;
 using Repository.Enums;
+using System.Linq.Expressions;
 
 namespace Repository.Repositories.FlightRepositories
 {
     public class FlightRepository : GenericDAO<Flight>, IFlightRepository
     {
 
-        public async Task<List<Flight>> GetAllFlights()
+        public async Task<List<Flight>> GetAllFlights(string? flightNumber = null)
         {
-            var list = await Get(includeProperties: "FromNavigation,ToNavigation,Airplane.Airlines");
+            Expression<Func<Flight, bool>> filter = f => true; 
+
+            if (!string.IsNullOrEmpty(flightNumber))
+            {
+                filter = f => f.FlightNumber.Contains(flightNumber);
+            }
+
+            var list = await Get(filter, includeProperties: "FromNavigation,ToNavigation,Airplane.Airlines,TicketClasses");
             return list.ToList();
         }
 
@@ -21,6 +29,7 @@ namespace Repository.Repositories.FlightRepositories
         public async Task<List<Flight>> GetFlightsByFilter(string from, string to, DateTime checkin, DateTime? checkout)
         {
             var allFlights = await GetAllFlights();
+            allFlights = allFlights.Where(f => f.TicketClasses.Any(t => t.RemainSeat > 0)).ToList();
 
             var filteredFlights = allFlights.Where(f => f.From.Equals(from)
                                                       && f.To.Equals(to)
