@@ -147,6 +147,12 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Discount, otp => otp.MapFrom(src => src.Rank.Discount))
                 ;
             CreateMap<UserInfoUpdateModel, User>();
+            CreateMap<StaffCreateModel, User>()
+                .ForMember(dest => dest.Id, otp => otp.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Role, otp => otp.MapFrom(src => UserRolesEnums.Staff.ToString()))
+                .ForMember(dest => dest.Password, otp => otp.MapFrom(src => BCrypt.Net.BCrypt.HashPassword(src.Password)))
+                .ForMember(dest => dest.Status, otp => otp.MapFrom(src => UserStatusEnums.Active.ToString()))
+                ;
             //Transaction
             CreateMap<Transaction, TransactionResponseModel>()
                 .ForMember(dest => dest.Booking, otp => otp.MapFrom(src => src.Booking));
