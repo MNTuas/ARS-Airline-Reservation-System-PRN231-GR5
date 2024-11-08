@@ -10,6 +10,7 @@ namespace Service.Services.UserServices
 {
     public interface IUserService
     {
+        Task CreateStaffAccount(StaffCreateModel model);
         Task<List<UserInfoResponseModel>> GetAllUserExceptAdmin();
         Task<UserInfoResponseModel> GetUserInfoById(string id);
         Task<UserInfoResponseModel> GetOwnUserInfo(string token);

@@ -21,9 +21,11 @@ namespace BusinessObjects.ResponseModels.User
 
         public string? Address { get; set; }
 
-        public int Point { get; set; }
+        public int? Point { get; set; }
 
-        public string RankName { get; set; } = null!;
+        public string? RankName { get; set; } = null!;
+
+        public decimal? Discount { get; set; }
 
         public string Role { get; set; } = null!;
 

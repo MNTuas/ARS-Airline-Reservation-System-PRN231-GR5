@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BusinessObjects.Models;
 using BusinessObjects.RequestModels.User;
 using BusinessObjects.ResponseModels.User;
 using Repository.Repositories.UserRepositories;
@@ -23,6 +24,17 @@ namespace Service.Services.UserServices
             _userRepository = userRepository;
             _mapper = mapper;
             _emailService = emailService;
+        }
+
+        public async Task CreateStaffAccount(StaffCreateModel model)
+        {
+            var listUser = await _userRepository.GetAllUserExceptAdmin();
+            if (listUser.Where(l => l.Email.ToLower().Equals(model.Email.ToLower())).Any())
+            {
+                throw new Exception("This email is already existed!");
+            }
+            User newStaff = _mapper.Map<User>(model);
+            await _userRepository.Insert(newStaff);
         }
 
         public async Task<List<UserInfoResponseModel>> GetAllUserExceptAdmin()
