@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BusinessObjects.ResponseModels.Booking;
+using BusinessObjects.ResponseModels.Ticket;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels.Ticket;
-using BusinessObjects.ResponseModels.Booking;
+using BusinessObjects.ResponseModels.User;
+
 
 namespace ARS_FE.Pages.UserPage.BookingManager
 {
@@ -23,8 +18,10 @@ namespace ARS_FE.Pages.UserPage.BookingManager
         }
 
         public List<TicketResponseModel> Tickets { get; set; } = default!;
+        public decimal Discount { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string id, int? pageIndex)
+
+        public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
@@ -32,8 +29,10 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             }
             var client = CreateAuthorizedClient();
 
-
             var response = await APIHelper.GetAsJsonAsync<UserBookingResponseModel>(client, $"Booking/{id}");
+            var userInfo = await APIHelper.GetAsJsonAsync<UserInfoResponseModel>(client, "users/own");
+
+            Discount = userInfo.Discount;
 
             if (response != null)
             {

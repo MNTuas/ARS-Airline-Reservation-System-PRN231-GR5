@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.Flight;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using Service.Services.FlightServices;
 using Service;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels.Flight;
+using System.Text.Json;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {
@@ -60,12 +53,11 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             if (UploadedFile == null || UploadedFile.Length == 0)
             {
                 ModelState.AddModelError(string.Empty, "Please upload a valid file.");
-                return await OnGetAsync(null); 
+                return await OnGetAsync(null);
             }
 
             var client = CreateAuthorizedClient();
             using var content = new MultipartFormDataContent();
-
             using var fileContent = new StreamContent(UploadedFile.OpenReadStream());
             fileContent.Headers.ContentType = new MediaTypeHeaderValue(UploadedFile.ContentType);
             content.Add(fileContent, "file", UploadedFile.FileName);
@@ -74,15 +66,40 @@ namespace ARS_FE.Pages.Staff.FlightManagement
 
             if (response.IsSuccessStatusCode)
             {
-                ModelState.AddModelError(string.Empty, "Upload successfull");
-                return RedirectToPage("./Index");
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                using var jsonDocument = JsonDocument.Parse(responseStream);
+                var root = jsonDocument.RootElement;
+
+                bool success = root.GetProperty("success").GetBoolean();
+                string message = root.GetProperty("message").GetString();
+
+                if (success)
+                {
+                    TempData["SuccessMessage"] = message;
+                    return RedirectToPage("./Index");
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, message);
+                    return await OnGetAsync(null);
+                }
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Error occurred while uploading the file.");
-                return await OnGetAsync(null); // Gọi lại OnGetAsync với null
+                using var responseStream = await response.Content.ReadAsStreamAsync();
+                using var jsonDocument = JsonDocument.Parse(responseStream);
+                var root = jsonDocument.RootElement;
+
+                string errorMessage = root.TryGetProperty("message", out var messageProperty)
+                    ? messageProperty.GetString()
+                    : "Error occurred while uploading the file.";
+
+                ModelState.AddModelError(string.Empty, errorMessage);
+                return await OnGetAsync(null);
             }
         }
+
+
 
         private HttpClient CreateAuthorizedClient()
         {

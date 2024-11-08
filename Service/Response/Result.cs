@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FFilms.Application.Shared.Response
+﻿namespace FFilms.Application.Shared.Response
 {
     public class Result<T>
     {

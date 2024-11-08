@@ -2,22 +2,30 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Repository.Repositories.AirlineRepositories;
-using Repository.Repositories.AuthRepositories;
-using Service.Services.AuthService;
-using System.Net.Http.Headers;
-using System.Text;
-using Repository.Repositories.FlightRepositories;
-using Service.Services.FlightServices;
-using Repository.Repositories.RankRepositories;
-using Service.Services.RankServices;
 using Repository.Repositories.AirplaneRepositories;
+using Repository.Repositories.AirporRepositories;
+using Repository.Repositories.AuthRepositories;
+using Repository.Repositories.BookingRepositories;
+using Repository.Repositories.FlightRepositories;
+using Repository.Repositories.RankRepositories;
+using Repository.Repositories.SeatClassRepositories;
+using Repository.Repositories.TransactionRepositories;
+using Repository.Repositories.UserRepositories;
+using Service.Mapper;
+using Service.Services.AirlineServices;
 using Service.Services.AirplaneServices;
 using Service.Services.AirportService;
-using Service.Mapper;
-using Repository.Repositories.AirporRepositories;
-using Service.Services.AirlineServices;
-using Repository.Repositories.SeatClassRepositories;
+using Service.Services.AuthService;
+using Service.Services.BookingServices;
+using Service.Services.EmailServices;
+using Service.Services.FlightServices;
+using Service.Services.RankServices;
 using Service.Services.SeatClassServices;
+using Service.Services.TransactionServices;
+using Service.Services.UserServices;
+using Service.Services.VNPayServices;
+using System.Net.Http.Headers;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -65,8 +73,16 @@ builder.Services.AddHttpClient("OdataClient", client =>
 builder.Services.AddScoped<IFlightRepository, FlightRepository>();
 builder.Services.AddScoped<IFlightService, FlightService>();
 
+builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+builder.Services.AddScoped<ITransactionService, TransactionService>();
+
 builder.Services.AddScoped<IAirlineRepository, AirlineRepository>();
 builder.Services.AddScoped<IAirlineService, AirlineService>();
+
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+
+builder.Services.AddScoped<IVnPayService, VnPayService>();
 
 builder.Services.AddScoped<IAirportRepository, AirportRepository>();
 builder.Services.AddScoped<IAirportService, AirportService>();
@@ -81,7 +97,13 @@ builder.Services.AddScoped<IAirplaneRepository, AirplaneRepository>();
 builder.Services.AddScoped<IAirplaneService, AirplaneService>();
 
 builder.Services.AddScoped<ISeatClassRepository, SeatClassRepository>();
-builder.Services.AddScoped<ISeatClassService , SeatClassService>(); 
+builder.Services.AddScoped<ISeatClassService, SeatClassService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IEmailService, EmailService>();
+
 
 builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 

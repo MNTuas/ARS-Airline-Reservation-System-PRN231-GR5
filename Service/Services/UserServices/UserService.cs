@@ -4,11 +4,6 @@ using BusinessObjects.ResponseModels.User;
 using Repository.Repositories.UserRepositories;
 using Service.Services.EmailServices;
 using Service.Ultis;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.UserServices
 {

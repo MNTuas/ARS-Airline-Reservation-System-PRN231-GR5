@@ -1,15 +1,12 @@
+using BusinessObjects.ResponseModels.Flight;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Net.Http.Headers;
-using System.Net.Http;
-using Microsoft.AspNetCore.Authorization;
-using BusinessObjects.Models;
-using BusinessObjects.ResponseModels.Flight;
 using Service;
+using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff
 {
-    
+
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;

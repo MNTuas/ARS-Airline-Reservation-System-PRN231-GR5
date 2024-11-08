@@ -2,9 +2,7 @@
 using BusinessObjects.RequestModels.Passenger;
 using BusinessObjects.RequestModels.Ticket;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Service.Services.BookingServices;
 using Service.Services.TicketServices;
 
 namespace AirlinesReservationSystem.Controllers
@@ -22,7 +20,7 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> CreateBooking(CreateTicketRequest createTicketRequest)
+        public async Task<IActionResult> CreateBooking(List<CreateTicketRequest> createTicketRequest)
         {
 
             var result = await _ticketService.addTicket(createTicketRequest);

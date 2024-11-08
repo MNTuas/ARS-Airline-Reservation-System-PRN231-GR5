@@ -36,13 +36,11 @@
                         <td class="text-center">
                             @String.Format("{0:#,##0} VND", Convert.ToDecimal(ticket.ClassPrice))
                         </td>
-
                         <td>@ticket.FirstName @ticket.LastName</td>
                         <td>@ticket.Gender</td>
                         <td>@ticket.Dob.ToString("yyyy-MM-dd")</td>
                         <td>@ticket.Country</td>
                         <td>
-                            @* Thêm màu cho từng trạng thái *@
                             @{
                                 string statusClass = ticket.Status switch
                                 {
@@ -58,5 +56,15 @@
                 }
             </tbody>
         </table>
+
+        decimal totalAmount = Model.Tickets.Sum(t => Convert.ToDecimal(t.ClassPrice));
+        decimal discountAmount = Model.Discount;
+        decimal priceAfterDiscount = totalAmount * (100 - discountAmount) / 100;
+
+        <div class="mt-4">
+            <h5>Total Amount: @String.Format("{0:#,##0} VND", totalAmount)</h5>
+            <h5>Discount: @discountAmount%</h5>
+            <h5>Price After Discount: @String.Format("{0:#,##0} VND", priceAfterDiscount)</h5>
+        </div>
     }
 </div>

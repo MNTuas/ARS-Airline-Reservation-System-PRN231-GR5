@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Airplane;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.RequestModels.Airplane;
-using BusinessObjects.RequestModels.Rank;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels;
 
 namespace ARS_FE.Pages.Staff.AirplaneManagement
 {
     public class CreateModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
-
 
         public CreateModel(IHttpClientFactory httpClientFactory)
         {
@@ -26,69 +20,76 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
 
         public List<SelectListItem> AirlinesList { get; set; } = new List<SelectListItem>();
 
+        [BindProperty]
+        public AddAirplaneRequest Airplane { get; set; } = new AddAirplaneRequest();
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var client = CreateAuthorizedClient();
+            await LoadData();
 
-            // Gọi API để lấy danh sách Airlines
-            var response = await APIHelper.GetAsJsonAsync<List<Airline>>(client, "airline");
-
-            if (response != null)
+            Airplane.AirplaneSeatRequest = new List<AirplaneSeatRequest>
             {
-                //var airlines = await response.Content.ReadAsAsync<List<Airline>>();
-
-                // Chuyển đổi danh sách airlines thành SelectList
-                AirlinesList = response.Select(a => new SelectListItem
-                {
-                    Value = a.Id.ToString(),
-                    Text = a.Name
-                }).ToList();
-
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Error occurred while fetching the airlines.");
-            }
+                new AirplaneSeatRequest { SeatClassId = "79562C9B-6B09-4CBF-B5A1-9903F2F15B67" }, 
+                new AirplaneSeatRequest { SeatClassId = "96A5D3DF-DE7B-4572-B8BD-AFE91DB378E9" }, 
+                new AirplaneSeatRequest { SeatClassId = "977A3036-5375-44EB-9A62-411F3861F767" }  
+            };
 
             return Page();
         }
 
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var client = CreateAuthorizedClient();
 
-        [BindProperty]
-        public AddAirplaneRequest Airplane { get; set; } = default!;
+            var response = await APIHelper.PostAsJson(client, "airplane/add-airplane", Airplane);
 
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        //public async Task<IActionResult> OnPostAsync()
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return Page();
-        //    }
-        //    var client = CreateAuthorizedClient();
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                await LoadData();
 
-            //var n = new AddAirplaneRequest
-            //{
-                //Code = Airplane.Code,
-                //AirlinesId = Airplane.AirlinesId,
-                //AvailableSeat = Airplane.AvailableSeat,
-                //Status = Airplane.Status,
-                //Type = Airplane.Type
+                if (Airplane.AirplaneSeatRequest == null || Airplane.AirplaneSeatRequest.Count == 0)
+                {
+                    Airplane.AirplaneSeatRequest = new List<AirplaneSeatRequest>
+                    {
+                        new AirplaneSeatRequest { SeatClassId = "79562C9B-6B09-4CBF-B5A1-9903F2F15B67" },
+                        new AirplaneSeatRequest { SeatClassId = "96A5D3DF-DE7B-4572-B8BD-AFE91DB378E9" },
+                        new AirplaneSeatRequest { SeatClassId = "977A3036-5375-44EB-9A62-411F3861F767" }
+                    };
+                }
 
-        //    };
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Airplane.");
+                return Page();
+            }
+        }
 
-        //    var response = await APIHelper.PostAsJson(client, "airplane/add-airplane", n);
+        private async Task LoadData()
+        {
+            var client = CreateAuthorizedClient();
+            var airlineList = new List<AllAirlinesResponseModel>();
+            var seatClassList = new List<SeatClass>();
 
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        return RedirectToPage("./Index");
-        //    }
-        //    else
-        //    {
-        //        ModelState.AddModelError(string.Empty, "Error occurred while creating the Airport.");
-        //        return Page();
-        //    }
-        //}
+            // Lấy danh sách Airlines
+            var responseAirline = await APIHelper.GetAsJsonAsync<List<AllAirlinesResponseModel>>(client, "airline/Get_AllAirline");
+            if (responseAirline != null)
+            {
+                airlineList = responseAirline;
+            }
+
+            // Lấy danh sách Seat Classes
+            var responseSeatClass = await APIHelper.GetAsJsonAsync<List<SeatClass>>(client, "seat-class");
+            if (responseSeatClass != null)
+            {
+                seatClassList = responseSeatClass;
+            }
+
+            ViewData["AirlinesId"] = new SelectList(airlineList, "Id", "Name");
+            ViewData["SeatclassId"] = new SelectList(seatClassList, "Id", "Name");
+        }
+
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("ApiClient");

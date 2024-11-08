@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Airport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.RequestModels.Airport;
 using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.Staff.AirportManagement
@@ -49,10 +42,6 @@ namespace ARS_FE.Pages.Staff.AirportManagement
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
 
             var client = CreateAuthorizedClient();
 
@@ -64,7 +53,7 @@ namespace ARS_FE.Pages.Staff.AirportManagement
             };
 
             var response = await APIHelper.PutAsJson(client, $"Airport/Update_Airport/{airport.Id}", n);
-           
+
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage("./Index");

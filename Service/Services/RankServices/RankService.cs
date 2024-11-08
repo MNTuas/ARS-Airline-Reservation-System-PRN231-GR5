@@ -1,11 +1,6 @@
 ﻿using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Rank;
 using Repository.Repositories.RankRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.RankServices
 {
@@ -39,6 +34,8 @@ namespace Service.Services.RankServices
             var rankExist = await _rankRepository.GetRank(id);
             return rankExist;
         }
+
+
 
         public Task<bool> RemoveRank(Guid id)
         {

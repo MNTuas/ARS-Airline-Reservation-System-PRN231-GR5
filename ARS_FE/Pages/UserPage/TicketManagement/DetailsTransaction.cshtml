@@ -1,0 +1,77 @@
+﻿@page
+@model ARS_FE.Pages.UserPage.TicketManagement.DetailsTransactionModel
+@{
+    ViewData["Title"] = "Ticket Details";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-5">Ticket Details</h2>
+
+    @if (Model.Tickets == null || !Model.Tickets.Any())
+    {
+        <div class="alert alert-info text-center">
+            No tickets found for this booking.
+        </div>
+    }
+    else
+    {
+        <table class="table table-bordered table-hover text-center">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Class</th>
+                    <th>Price</th>
+                    <th>Passenger Name</th>
+                    <th>Gender</th>
+                    <th>Date of Birth</th>
+                    <th>Country</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ticket in Model.Tickets)
+                {
+                    <tr>
+                        <td>@ticket.ClassName</td>
+                        <td class="text-center">
+                            @String.Format("{0:#,##0} VND", Convert.ToDecimal(ticket.ClassPrice))
+                        </td>
+                        <td>@ticket.FirstName @ticket.LastName</td>
+                        <td>@ticket.Gender</td>
+                        <td>@ticket.Dob.ToString("yyyy-MM-dd")</td>
+                        <td>@ticket.Country</td>
+                        <td>
+                            @{
+                                string statusClass = ticket.Status switch
+                                {
+                                    "Pending" => "badge bg-warning text-dark",
+                                    "Paid" => "badge bg-success text-white",
+                                    "Cancelled" => "badge bg-danger",
+                                    _ => ""
+                                };
+                            }
+                            <span class="@statusClass">@ticket.Status</span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        decimal totalAmount = Model.Tickets.Sum(t => Convert.ToDecimal(t.ClassPrice));
+        decimal discountAmount = Model.Discount;
+        decimal priceAfterDiscount = totalAmount * (100 - discountAmount) / 100;
+
+        <div class="mt-4">
+            <h5>Total Amount: @String.Format("{0:#,##0} VND", totalAmount)</h5>
+            <h5>Discount: @discountAmount%</h5>
+            <h5>Price After Discount: @String.Format("{0:#,##0} VND", priceAfterDiscount)</h5>
+        </div>
+
+        <form method="post">
+            <input type="hidden" name="bookingId" value="@Model.BookingId" />
+            <button type="submit" class="btn btn-primary mt-3" asp-page-handler="Checkout">
+                Checkout Payment
+            </button>
+        </form>
+    }
+</div>

@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.RequestModels.Rank;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.RequestModels.Airport;
-using BusinessObjects.RequestModels.Rank;
 using System.Net.Http.Headers;
 
 namespace ARS_FE.Pages.UserPage.RankManagement

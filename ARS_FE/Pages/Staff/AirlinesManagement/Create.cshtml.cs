@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.RequestModels.Airlines;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.Models;
-using DAO;
-using System.Text;
-using System.Text.Json;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using BusinessObjects.RequestModels.Airport;
-using BusinessObjects.RequestModels.Airlines;
+using System.Text;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement
 {

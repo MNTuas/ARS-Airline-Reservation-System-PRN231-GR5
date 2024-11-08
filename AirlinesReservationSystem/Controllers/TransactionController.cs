@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Service.Services.TransactionServices;
 using Service.Services.VNPayServices;
 
 namespace AirlinesReservationSystem.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/transaction")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -17,6 +16,37 @@ namespace AirlinesReservationSystem.Controllers
         {
             _transactionService = transactionService;
             _vnPayService = vnPayService;
+            this._transactionService = transactionService;
+        }
+
+
+        [HttpGet]
+        [Route("transaction-of-user/{userId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetTranSactionOfUser([FromRoute] string userId)
+        {
+            var trans = await _transactionService.GetTransactionByUserId(userId);
+
+            return Ok(trans);
+        }
+
+        [HttpPut]
+        [Route("{id}")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateTransactionStatus(string id, [FromBody] string status)
+        {
+            await _transactionService.UpdateTransactionStatus(id, status);
+            return Ok("Update successfully!");
+
+        }
+
+        [HttpGet]
+        [Route("payment-response")]
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> GetPaymentResponse([FromQuery] IQueryCollection keyValuePairs)
+        {
+            var response = _vnPayService.PaymentResponse(keyValuePairs);
+            return Ok(response);
         }
 
         [HttpPost]
@@ -28,22 +58,13 @@ namespace AirlinesReservationSystem.Controllers
             return Ok(result);
         }
 
-        [HttpPut]
-        [Route("{id}")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateTransactionStatus(string id, [FromBody] string status)
-        {
-            await _transactionService.UpdateTransactionStatus(id, status);
-            return Ok("Update successfully!");
-        }
+        [HttpPost("SendEmailSuccess/{bookingId}")]
+        [Authorize]
 
-        [HttpGet]
-        [Route("payment-response")]
-        [Authorize(Roles = "User")]
-        public async Task<IActionResult> GetPaymentResponse([FromQuery] IQueryCollection keyValuePairs)
+        public async Task<IActionResult> SendEmailWhenSuccess(string bookingId, string flightId)
         {
-            var response = _vnPayService.PaymentResponse(keyValuePairs);
-            return Ok(response);
+            bool result = await _transactionService.SendEmailWhenBuySucces(bookingId, flightId);
+            return Ok(result);
         }
     }
 }
