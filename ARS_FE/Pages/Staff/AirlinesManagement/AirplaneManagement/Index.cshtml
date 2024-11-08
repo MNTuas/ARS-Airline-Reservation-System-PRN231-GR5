@@ -18,7 +18,7 @@
     <h1 class="text-center mb-4">Airplane Management</h1>
 
     <div class="text-right mb-3">
-        <a asp-page="Create" class="btn btn-primary">Create Airplane</a>
+        <a asp-page="./Create" class="btn btn-primary">Create Airplane</a>
     </div>
 
     <table class="table table-hover table-striped table-bordered">
@@ -47,19 +47,13 @@
 
                         <td class="text-center">
                             @item.Status
-                            @* <span class="badge @(item.Status == "Active" ? "badge-success" : "badge-danger")">
-                                @item.Status
-                            </span> *@
+                           
                         </td>
                         <td class="text-center">
                             <div class="btn-group" role="group">
                                 <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm mr-2">Edit</a>
                                 <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm mr-2">Details</a>
-                         @*        <form method="post" class="d-inline" asp-page-handler="ChangeStatus" asp-route-id="@item.Id" asp-route-pageIndex="@currentPageIndex" asp-route-currentStatus="@item.Status">
-                                    <button type="submit" class="btn btn-sm @(item.Status == "Active" ? "btn-danger" : "btn-success")">
-                                        @(item.Status == "Active" ? "Deactivate" : "Activate")
-                                    </button>
-                                </form> *@
+                        
                             </div>
                         </td>
                     </tr>

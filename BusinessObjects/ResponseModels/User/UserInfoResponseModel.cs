@@ -1,11 +1,4 @@
-﻿using BusinessObjects.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BusinessObjects.ResponseModels.User
+﻿namespace BusinessObjects.ResponseModels.User
 {
     public class UserInfoResponseModel
     {
@@ -26,6 +19,8 @@ namespace BusinessObjects.ResponseModels.User
         public string? RankName { get; set; } = null!;
 
         public decimal? Discount { get; set; }
+
+        public decimal Discount { get; set; }
 
         public string Role { get; set; } = null!;
 

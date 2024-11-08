@@ -8,6 +8,6 @@ namespace Service.Services.AuthService
     {
         Task<Result<User>> RegisterAsync(RegisterRequest request);
         Task<Result<string>> LoginAsync(LoginRequest request);
-        Task<Result<string>> ChangePassword(string userId,ChangePasswordRequest  newPassword);
+        Task<Result<string>> ChangePassword(string userId, ChangePasswordRequest newPassword);
     }
 }

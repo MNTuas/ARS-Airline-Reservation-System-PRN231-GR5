@@ -1,21 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.RequestModels.Flight;
+using BusinessObjects.ResponseModels.Airlines;
+using BusinessObjects.ResponseModels.Airplane;
+using BusinessObjects.ResponseModels.Airport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.RequestModels.Flight;
-using Repository.Repositories.AirporRepositories;
-using Service.Services.AirportService;
-using Service.Services.FlightServices;
 using System.Net.Http.Headers;
-using Service;
-using BusinessObjects.ResponseModels.Airlines;
-using BusinessObjects.ResponseModels.Airport;
-using BusinessObjects.ResponseModels.Airplane;
 
 namespace ARS_FE.Pages.Staff.FlightManagement
 {

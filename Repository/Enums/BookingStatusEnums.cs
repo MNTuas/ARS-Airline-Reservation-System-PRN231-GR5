@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Service.Enums
+﻿namespace Service.Enums
 {
     public enum BookingStatusEnums
     {
         Pending,
-        Paid, 
+        Paid,
         Cancelled
     }
 }

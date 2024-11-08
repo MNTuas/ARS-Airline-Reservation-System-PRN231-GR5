@@ -1,23 +1,23 @@
 ﻿using BusinessObjects.Models;
-using BusinessObjects.ResponseModels.Flight;
 using DAO;
-using Microsoft.EntityFrameworkCore;
 using Repository.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Repository.Repositories.FlightRepositories
 {
     public class FlightRepository : GenericDAO<Flight>, IFlightRepository
     {
 
-        public async Task<List<Flight>> GetAllFlights()
+        public async Task<List<Flight>> GetAllFlights(string? flightNumber = null)
         {
-            var list = await Get(includeProperties: "FromNavigation,ToNavigation,Airplane.Airlines");
+            Expression<Func<Flight, bool>> filter = f => true; 
+
+            if (!string.IsNullOrEmpty(flightNumber))
+            {
+                filter = f => f.FlightNumber.Contains(flightNumber);
+            }
+
+            var list = await Get(filter, includeProperties: "FromNavigation,ToNavigation,Airplane.Airlines");
             return list.ToList();
         }
 
@@ -47,6 +47,14 @@ namespace Repository.Repositories.FlightRepositories
             var flight = await GetSingle(r => r.FlightNumber.Equals(flightNumber) && r.DepartureTime.Date == departureTime.Date);
             return flight;
         }
+
+        public async Task<int> CountFlightsForAirplaneOnDate(string airplaneId, DateTime departureTime)
+        {
+            // Truy vấn số chuyến bay cho máy bay với ngày khởi hành trong ngày đó
+            var flight = await Get(f => f.AirplaneId == airplaneId && f.DepartureTime.Date == departureTime);
+            return flight.Count();
+        }
+
 
         public async Task<List<Flight>> GetAllScheduledFlight()
         {

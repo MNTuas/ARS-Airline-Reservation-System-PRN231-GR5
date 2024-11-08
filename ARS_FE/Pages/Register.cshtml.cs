@@ -1,8 +1,6 @@
-using BusinessObjects.RequestModels;
 using BusinessObjects.RequestModels.Auth;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Service.Services.AuthService;
 
 namespace ARS_FE.Pages
 {

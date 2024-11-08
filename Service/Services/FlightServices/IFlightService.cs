@@ -8,7 +8,7 @@ namespace Service.Services.FlightServices
 {
     public interface IFlightService
     {
-        Task<List<FlightResponseModel>> GetAllFlights();
+        Task<List<FlightResponseModel>> GetAllFlights(string? flightNumber);
         Task<FlightResponseModel> GetFlightById(string id);
         Task CreateFlight(CreateFlightRequest request);
         Task UpdateFlight(string flightId, UpdateFlightRequest request);

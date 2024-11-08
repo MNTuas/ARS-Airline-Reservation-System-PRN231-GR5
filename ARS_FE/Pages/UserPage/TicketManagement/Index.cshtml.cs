@@ -1,20 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using BusinessObjects.RequestModels.Booking;
+using BusinessObjects.RequestModels.Ticket;
+using BusinessObjects.ResponseModels.Passenger;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
-using BusinessObjects.ResponseModels.Flight;
 using System.Net.Http.Headers;
-using BusinessObjects.RequestModels.Ticket;
-using BusinessObjects.RequestModels.Booking;
-using BusinessObjects.RequestModels.Airport;
 using System.Text.Json;
-using Azure;
-using FFilms.Application.Shared.Response;
 
 namespace ARS_FE.Pages.UserPage.TicketManagement
 {
@@ -31,8 +21,10 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         public int Quantity { get; set; } // Nhận số lượng vé từ URL
 
         [BindProperty(SupportsGet = true)]
-        public string TicketClassId { get; set; } // Nhận TicketClassId từ URL
+        public string TicketClassId { get; set; }
 
+        [BindProperty(SupportsGet = true)]
+        public string flightId { get; set; }
 
         [BindProperty]
         public CreateTicketRequest CreateTicketRequest { get; set; } = default!;
@@ -40,20 +32,26 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         [BindProperty]
         public List<CreateTicketRequest> Tickets { get; set; } = new List<CreateTicketRequest>();
 
+        private List<PassengerResposeModel> _passengerList = new List<PassengerResposeModel>();
+
         public List<Country> Countries { get; set; } = new List<Country>();
 
         public async Task OnGetAsync(int quantity)
         {
-            //lấy quantity để tạo form 
             Quantity = quantity;
 
-            for (int i = 0; i < Quantity; i++)
+            if (!Tickets.Any())
             {
-                Tickets.Add(new CreateTicketRequest
+                for (int i = 0; i < Quantity; i++)
                 {
-                    TicketClassId = TicketClassId,
-                });
+                    Tickets.Add(new CreateTicketRequest
+                    {
+                        TicketClassId = TicketClassId,
+                    });
+                }
             }
+
+            await LoadData();
             await LoadCountriesAsync();
         }
 
@@ -61,6 +59,8 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
         {
             if (!ModelState.IsValid)
             {
+                // Lưu thông tin vé vào session khi có lỗi
+                await LoadData();
                 await LoadCountriesAsync();
                 return Page();
             }
@@ -68,13 +68,13 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             var client = CreateAuthorizedClient();
 
             var bookingId = await CreateBooking();
-
+            var ticketList = new List<CreateTicketRequest>();
             //lặp cái list ticket lấy info 
             foreach (var ticket in Tickets)
             {
                 var n = new CreateTicketRequest
                 {
-                    BookingId = bookingId ,
+                    BookingId = bookingId,
                     TicketClassId = TicketClassId,
                     Country = ticket.Country,
                     FirstName = ticket.FirstName,
@@ -82,20 +82,38 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                     Gender = ticket.Gender,
                     Dob = ticket.Dob,
                 };
-
-                var response = await APIHelper.PostAsJson(client, "Ticket", n);
-
-                if (!response.IsSuccessStatusCode)
-                {
-                    ModelState.AddModelError(string.Empty, "Error occurred while creating the Ticket.");
-                    await LoadCountriesAsync();
-                    return Page();
-                }
-
+                ticketList.Add(n);
             }
-            var returnUrlResponse = await APIHelper.PostAsJson(client, $"Transaction", bookingId);
-            var returnUrl = await returnUrlResponse.Content.ReadFromJsonAsync<string>();
-            return Redirect(returnUrl);
+            Tickets = ticketList;
+            var response = await APIHelper.PostAsJson(client, "Ticket", ticketList);
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "Error occurred while creating the Ticket.");
+                await LoadCountriesAsync();
+                return Page();
+            }
+
+            HttpContext.Session.Remove("Tickets");
+            HttpContext.Session.SetString("BookingId", bookingId);
+            HttpContext.Session.SetString("flightId", flightId);
+
+            return RedirectToPage("./DetailsTransaction", new
+            {
+                bookingId = bookingId,
+            });
+        }
+
+        private async Task LoadData()
+        {
+            var client = CreateAuthorizedClient();
+
+            var responsePassenger = await APIHelper.GetAsJsonAsync<List<PassengerResposeModel>>(client, "Passenger/GetPassengerByLogin");
+            if (responsePassenger != null)
+            {
+                _passengerList = responsePassenger;
+            }
+
+            ViewData["PassengerList"] = _passengerList;
         }
 
         public async Task<string> CreateBooking()
@@ -125,7 +143,6 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             ModelState.AddModelError(string.Empty, "Error occurred while creating the booking.");
             return null;
         }
-
 
         private HttpClient CreateAuthorizedClient()
         {

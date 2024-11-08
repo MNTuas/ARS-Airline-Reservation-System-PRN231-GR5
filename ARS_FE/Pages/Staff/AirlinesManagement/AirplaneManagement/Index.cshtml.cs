@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.ResponseModels.Airplane;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 using Service;
 using System.Net.Http.Headers;
-using BusinessObjects.ResponseModels.Airplane;
-using BusinessObjects.ResponseModels.Airport;
 
 namespace ARS_FE.Pages.Staff.AirlinesManagement.AirplaneManagement
 {
@@ -22,12 +14,12 @@ namespace ARS_FE.Pages.Staff.AirlinesManagement.AirplaneManagement
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<AirplaneResponseModel> Airplane { get;set; } = default!;
+        public PaginatedList<AirplaneResponseModel> Airplane { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
-           
+
             var response = await APIHelper.GetAsJsonAsync<List<AirplaneResponseModel>>(client, "airplane/get-all-airplane");
             if (response != null)
             {

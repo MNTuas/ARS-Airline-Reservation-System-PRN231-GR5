@@ -5,17 +5,13 @@ using BusinessObjects.ResponseModels.Flight;
 using ExcelDataReader;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Repository.Enums;
+using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AirplaneRepositories;
 using Repository.Repositories.AirporRepositories;
 using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.SeatClassRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.FlightServices
 {
@@ -26,27 +22,32 @@ namespace Service.Services.FlightServices
         private readonly IAirportRepository _airportRepository;
         private readonly ISeatClassRepository _seatClassRepository;
         private readonly IAirplaneRepository _airplaneRepository;
+        private readonly IAirlineRepository _airlineRepository;
 
         public FlightService(IFlightRepository flightRepository, IMapper mapper,
                              IAirportRepository airportRepository, ISeatClassRepository seatClassRepository,
-                             IAirplaneRepository airplaneRepository)
+                             IAirplaneRepository airplaneRepository, IAirlineRepository airlineRepository)
         {
             _flightRepository = flightRepository;
             _mapper = mapper;
             _airportRepository = airportRepository;
             _seatClassRepository = seatClassRepository;
             _airplaneRepository = airplaneRepository;
+            _airlineRepository = airlineRepository;
         }
 
         public async Task CreateFlight(CreateFlightRequest request)
         {
+            var airline = await _airplaneRepository.GetAirplane(request.AirplaneId);
+            var code = await _airlineRepository.GetById(airline.AirlinesId);
             Flight newFlight = _mapper.Map<Flight>(request);
+            newFlight.FlightNumber = code.Code + request.FlightNumber;
             await _flightRepository.Insert(newFlight);
         }
 
-        public async Task<List<FlightResponseModel>> GetAllFlights()
+        public async Task<List<FlightResponseModel>> GetAllFlights(string? flightNumber = null)
         {
-            var list = await _flightRepository.GetAllFlights();
+            var list = await _flightRepository.GetAllFlights( flightNumber );
             return _mapper.Map<List<FlightResponseModel>>(list);
         }
 
@@ -121,6 +122,8 @@ namespace Service.Services.FlightServices
 
                 var flights = new List<Flight>();
                 var existingFlightNumbers = new HashSet<string>(); // Để lưu trữ các chuyến bay đã kiểm tra
+                var existingAirplane = new HashSet<string>();
+                var flightsPerDay = new Dictionary<string, int>();
 
                 using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
                 {
@@ -145,6 +148,19 @@ namespace Service.Services.FlightServices
 
                                 var flightNumber = reader.GetValue(0).ToString();
                                 var departureTime = DateTime.Parse(reader.GetValue(2).ToString());
+                                var AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString());
+                             
+                                
+                                DateTime departureTimeUtc = TimeZoneInfo.ConvertTimeToUtc(departureTime);
+
+                                if (departureTimeUtc < DateTime.UtcNow)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Departure time is pass over"
+                                    };
+                                }
 
                                 if (existingFlightNumbers.Contains($"{flightNumber}|{departureTime}"))
                                 {
@@ -152,6 +168,28 @@ namespace Service.Services.FlightServices
                                     {
                                         Success = false,
                                         Message = $"Flight Number '{flightNumber}' already exists for the given departure time."
+                                    };
+                                }
+
+                                // Kiểm tra nếu airplane đã vượt quá 2
+                                var dateKey = $"{AirplaneId}|{departureTime.Date}";
+
+                                if (flightsPerDay.ContainsKey(dateKey))
+                                {
+                                    flightsPerDay[dateKey]++;
+                                }
+                                else
+                                {
+                                    flightsPerDay[dateKey] = 1;
+                                }
+
+                                
+                                if (flightsPerDay[dateKey] > 2)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Airplane already have 2 flight per day"
                                     };
                                 }
 
@@ -165,11 +203,24 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
+                                // Kiểm tra nếu airplane đã vượt quá 2
+                                var flightInDay = await _flightRepository.CountFlightsForAirplaneOnDate(AirplaneId, departureTime);
+                                if (flightInDay > 2)
+                                {
+                                    return new Result<Flight>
+                                    {
+                                        Success = false,
+                                        Message = "Airplane already have 2 flight per day "
+                                    };
+                                }
+
+
+
                                 var flight = new Flight
                                 {
                                     Id = Guid.NewGuid().ToString(),
                                     FlightNumber = flightNumber,
-                                    AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString()),
+                                    AirplaneId = AirplaneId,
                                     DepartureTime = departureTime,
                                     Duration = ParsePositiveDuration(reader.GetValue(3).ToString()),
                                     ArrivalTime = departureTime.AddMinutes(int.Parse(reader.GetValue(3).ToString())),
@@ -211,6 +262,7 @@ namespace Service.Services.FlightServices
 
                                 // Thêm chuyến bay vào bộ nhớ để kiểm tra cho các chuyến bay tiếp theo
                                 existingFlightNumbers.Add($"{flightNumber}|{departureTime}");
+                                existingAirplane.Add($"{AirplaneId}|{departureTime}");
                             }
 
                         } while (reader.NextResult());
@@ -220,6 +272,14 @@ namespace Service.Services.FlightServices
                 if (flights.Count > 0)
                 {
                     await _flightRepository.InsertRange(flights);
+                }
+                else
+                {
+                    return new Result<Flight>
+                    {
+                        Success = false,
+                        Message = "Upload Fail"
+                    };
                 }
 
                 return new Result<Flight>

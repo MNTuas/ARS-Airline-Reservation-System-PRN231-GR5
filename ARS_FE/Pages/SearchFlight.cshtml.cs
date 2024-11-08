@@ -1,7 +1,4 @@
-﻿using Azure;
-using BusinessObjects.Models;
-using BusinessObjects.RequestModels.Flight;
-using BusinessObjects.ResponseModels.Airlines;
+﻿using BusinessObjects.RequestModels.Flight;
 using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Flight;
 using Microsoft.AspNetCore.Mvc;
@@ -22,7 +19,7 @@ namespace ARS_FE.Pages
         }
 
         public PaginatedList<FlightResponseModel> Flight { get; set; } = default!;
-       
+
         [BindProperty]
         public CreateFlightRequest Flights { get; set; } = default!;
 
@@ -62,7 +59,7 @@ namespace ARS_FE.Pages
             }
             else
             {
-                return BadRequest();
+                return RedirectToPage("/Index");
             }
         }
 
@@ -70,7 +67,7 @@ namespace ARS_FE.Pages
         {
             var client = CreateAuthorizedClient();
             var airportList = new List<AirportResponseModel>();
-            
+
             var responseAirport = await APIHelper.GetAsJsonAsync<List<AirportResponseModel>>(client, "Airport/GetAll_Airport");
             if (responseAirport != null)
             {

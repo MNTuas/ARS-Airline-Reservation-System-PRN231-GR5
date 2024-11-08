@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
-using System.Text.Json;
 
 namespace ARS_FE
 {
@@ -12,7 +11,13 @@ namespace ARS_FE
             var content = new StringContent(dataAsString, Encoding.UTF8, "application/json");
             return await httpClient.PostAsync(url, content);
         }
-        
+
+        public static async Task<HttpResponseMessage> PostSendEmail(this HttpClient httpClient, string url)
+        {
+            return await httpClient.PostAsync(url, null);
+        }
+
+
         public static async Task<HttpResponseMessage> PutAsJson<T>(this HttpClient httpClient, string url, T data)
         {
             var dataAsString = System.Text.Json.JsonSerializer.Serialize(data);
@@ -30,7 +35,7 @@ namespace ARS_FE
                     return JsonConvert.DeserializeObject<T>(content);
                 }
 
-                return default; 
+                return default;
             }
         }
         public static async Task<HttpResponseMessage> DeleteAsync(this HttpClient httpClient, string url)

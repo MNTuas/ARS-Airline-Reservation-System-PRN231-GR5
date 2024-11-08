@@ -1,0 +1,44 @@
+﻿@page 
+@model ARS_FE.Pages.Admin.UserManagement.TransactionsModel
+@{
+    ViewData["Title"] = "Transaction Details for User ";
+    Layout = "_LayoutAdmin";
+}
+<h1>Transaction Details</h1>
+
+@if (Model.Transactions != null && Model.Transactions.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Final Price</th>
+                <th>Pay Date</th>
+                <th>Status</th>
+                <th>Booking ID</th>
+                <th>Quantity</th>
+                <th>Booking Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var transaction in Model.Transactions)
+            {
+                <tr>
+                    <td>@transaction.FinalPrice.ToString("C")</td>
+                    <td>@transaction.PayDate?.ToString("dd/MM/yyyy")</td>
+                    <td>@transaction.Status</td>
+                    <td>@transaction.Booking?.Id</td>  
+                    <td>@transaction.Booking?.Quantity</td> 
+                    <td>@transaction.Booking?.Status</td>  
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No transactions found for this user.</p>
+}
+
+<div>
+    <a asp-page="./Index">Back to User Management</a>
+</div>

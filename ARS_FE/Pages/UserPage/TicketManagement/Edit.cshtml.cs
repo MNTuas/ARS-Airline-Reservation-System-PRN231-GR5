@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DAO;
 
 namespace ARS_FE.Pages.UserPage.TicketManagement
 {
@@ -30,14 +25,14 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
                 return NotFound();
             }
 
-            var ticket =  await _context.Tickets.FirstOrDefaultAsync(m => m.Id == id);
+            var ticket = await _context.Tickets.FirstOrDefaultAsync(m => m.Id == id);
             if (ticket == null)
             {
                 return NotFound();
             }
             Ticket = ticket;
-           ViewData["BookingId"] = new SelectList(_context.BookingInformations, "Id", "Id");
-           ViewData["TicketClassId"] = new SelectList(_context.TicketClasses, "Id", "Id");
+            ViewData["BookingId"] = new SelectList(_context.BookingInformations, "Id", "Id");
+            ViewData["TicketClassId"] = new SelectList(_context.TicketClasses, "Id", "Id");
             return Page();
         }
 

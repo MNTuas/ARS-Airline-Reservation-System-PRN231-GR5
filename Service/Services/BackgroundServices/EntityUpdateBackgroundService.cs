@@ -2,11 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Service.Services.BookingServices;
 using Service.Services.FlightServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Service.Services.BackgroundServices
 {
