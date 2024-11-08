@@ -20,8 +20,6 @@
 
         public decimal? Discount { get; set; }
 
-        public decimal Discount { get; set; }
-
         public string Role { get; set; } = null!;
 
         public string Status { get; set; } = null!;
