@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BusinessObjects.Models;
 
@@ -10,12 +11,13 @@ public partial class TicketClass
 
     public string SeatClassId { get; set; } = null!;
 
-
-    [Range(0, double.MaxValue, ErrorMessage = "Price must be a positive value.")]
     public decimal Price { get; set; }
 
-
     public string Status { get; set; } = null!;
+
+    public int TotalSeat { get; set; }
+
+    public int RemainSeat { get; set; }
 
     public virtual Flight Flight { get; set; } = null!;
 

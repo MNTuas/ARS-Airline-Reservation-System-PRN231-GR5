@@ -1,4 +1,4 @@
-using BusinessObjects.ResponseModels.Booking;
+﻿using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Ticket;
 using BusinessObjects.ResponseModels.User;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +32,7 @@ namespace ARS_FE.Pages.UserPage.TicketManagement
             var response = await APIHelper.GetAsJsonAsync<UserBookingResponseModel>(client, $"Booking/{bookingId}");
             var userInfo = await APIHelper.GetAsJsonAsync<UserInfoResponseModel>(client, "users/own");
 
-            Discount = userInfo.Discount;
+            Discount = userInfo.Discount.Value;
 
             if (response != null)
             {

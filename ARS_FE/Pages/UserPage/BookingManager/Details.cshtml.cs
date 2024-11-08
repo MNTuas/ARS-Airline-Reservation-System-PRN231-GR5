@@ -32,7 +32,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             var response = await APIHelper.GetAsJsonAsync<UserBookingResponseModel>(client, $"Booking/{id}");
             var userInfo = await APIHelper.GetAsJsonAsync<UserInfoResponseModel>(client, "users/own");
 
-            Discount = userInfo.Discount;
+            Discount = userInfo.Discount.Value;
 
             if (response != null)
             {

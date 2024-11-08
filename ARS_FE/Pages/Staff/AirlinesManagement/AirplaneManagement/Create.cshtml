@@ -1,81 +1,51 @@
 ﻿@page
 @model ARS_FE.Pages.Staff.AirplaneManagement.CreateModel
-
 @{
     Layout = "_LayoutManage";
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Create Airplane";
 }
 
-<h1>Create</h1>
+<h2>Create Airplane</h2>
 
-<h4>Airplane</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-            <div class="form-group">
-                <label asp-for="Airplane.CodeNumber" class="control-label"></label>
-                <input asp-for="Airplane.CodeNumber" class="form-control" />
-                <span asp-validation-for="Airplane.CodeNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Airplane.AirlinesId" class="control-label">Airlines</label>
-                <select asp-for="Airplane.AirlinesId" class="form-control" asp-items="ViewBag.AirlinesId"></select>
-                <span asp-validation-for="Airplane.AirlinesId" class="text-danger"></span>
-            </div>
-
-
-            <div id="seats-list">
-                @for (var i = 0; i < Model.Airplane.AirplaneSeatRequest.Count; i++)
-                {
-                    <div class="seat-row mb-3">
-                        <div class="form-group">
-                            <label asp-for="Airplane.AirplaneSeatRequest[i].SeatClassId" class="control-label"></label>
-                            <select asp-for="Airplane.AirplaneSeatRequest[i].SeatClassId" class="form-control" asp-items="ViewBag.SeatclassId">
-                                <option value="">Chọn Hạng Ghế</option> <!-- Tùy chọn mặc định -->
-                            </select>
-                            <span asp-validation-for="Airplane.AirplaneSeatRequest[i].SeatClassId" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Airplane.AirplaneSeatRequest[i].SeatCount" class="control-label"></label>
-                            <input asp-for="Airplane.AirplaneSeatRequest[i].SeatCount" class="form-control" min="1" required type="number" />
-                            <span asp-validation-for="Airplane.AirplaneSeatRequest[i].SeatCount" class="text-danger"></span>
-                        </div>
-                    </div>
-                }
-            </div>
-
-
-            <!-- Button to add more seat inputs -->
-            <button type="button" class="btn btn-secondary" id="add-seat">Add Seat</button>
-
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Airplane.CodeNumber" class="control-label"></label>
+        <input asp-for="Airplane.CodeNumber" class="form-control" />
+        <span asp-validation-for="Airplane.CodeNumber" class="text-danger"></span>
     </div>
-</div>
 
-<div>
-    <a asp-page="Index">Back to List</a>
-</div>
+    <div class="form-group">
+        <label asp-for="Airplane.AirlinesId" class="control-label">Airline</label>
+        <select asp-for="Airplane.AirlinesId" class="form-control" asp-items="@(ViewData["AirlinesId"] as IEnumerable<SelectListItem>)"></select>
+        <span asp-validation-for="Airplane.AirlinesId" class="text-danger"></span>
+    </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <!-- Trường nhập số lượng ghế cho từng loại ghế -->
+    <div class="form-group">
+        <label>Business</label>
+        <input asp-for="Airplane.AirplaneSeatRequest[0].SeatCount" class="form-control" type="number" min="1" required />
+        <input type="hidden" asp-for="Airplane.AirplaneSeatRequest[0].SeatClassId" />
+    </div>
 
+    <div class="form-group">
+        <label>Economy</label>
+        <input asp-for="Airplane.AirplaneSeatRequest[1].SeatCount" class="form-control" type="number" min="1" required />
+        <input type="hidden" asp-for="Airplane.AirplaneSeatRequest[1].SeatClassId" />
+    </div>
 
-    <script>
-        document.getElementById("add-seat").addEventListener("click", function () {
-            var seatsList = document.getElementById("seats-list");
-            var index = seatsList.children.length;
+    <div class="form-group">
+        <label>FirstClass</label>
+        <input asp-for="Airplane.AirplaneSeatRequest[2].SeatCount" class="form-control" type="number" min="1" required />
+        <input type="hidden" asp-for="Airplane.AirplaneSeatRequest[2].SeatClassId" />
+    </div>
 
+<<<<<<< HEAD
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
+=======
             // Kiểm tra xem đã thêm tối đa 3 ghế chưa
             if (index >= 3) {
-                alert("Bạn chỉ có thể thêm tối đa 3 ghế.");
+                alert("You can choose max 3 seats okeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee.");
                 return; // Thoát khỏi hàm nếu đã đạt giới hạn
             }
 
@@ -91,14 +61,14 @@
             var newSeatRow = `
                     <div class="seat-row mb-3">
                         <div class="form-group">
-                            <label>Hạng Ghế:</label>
+                            <label>Seat class:</label>
                             <select name="Airplane.AirplaneSeatRequest[${index}].SeatClassId" class="form-control" required>
-                                <option value="">Chọn Hạng Ghế</option>
+                                <option value="">Choose seat class</option>
                                 ${seatClassOptions}
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Số Lượng Ghế:</label>
+                            <label>Quantity:</label>
                             <input type="number" name="Airplane.AirplaneSeatRequest[${index}].SeatCount" class="form-control" min="1" required />
                         </div>
                     </div>
@@ -109,3 +79,4 @@
 
 
 }
+>>>>>>> 3bd0c96e48dbb6fb3342a97b736bb4b1bdd35842
