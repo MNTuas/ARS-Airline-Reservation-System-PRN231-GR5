@@ -43,26 +43,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.FromName, opt => opt.MapFrom(src => src.FromNavigation.Name))
                 .ForMember(dest => dest.ToName, opt => opt.MapFrom(src => src.ToNavigation.Name))
                 .ForMember(dest => dest.TicketClassPrices, opt => opt.MapFrom(src => src.TicketClasses))
-                .AfterMap((src, dest) =>
-                {
-                    var airplaneSeats = src.Airplane.AirplaneSeats.ToList();
-                    var ticketClasses = src.TicketClasses.ToList();
-
-                    for (int i = 0; i < ticketClasses.Count; i++)
-                    {
-                        if (i < airplaneSeats.Count)
-                        {
-                            dest.TicketClassPrices[i].TotalSeat = airplaneSeats[i].SeatCount;
-                        }
-
-                        int paidTicketsCount = ticketClasses[i].Tickets
-                            .Count(ticket => ticket.Status == BookingStatusEnums.Paid.ToString());
-                        dest.TicketClassPrices[i].RemainSeat = airplaneSeats[i].SeatCount - paidTicketsCount;
-                    }
-                });
-
-
-
+                ;
 
             //TicketClass
             CreateMap<TicketClassPrice, TicketClass>()

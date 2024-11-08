@@ -31,6 +31,10 @@ namespace BusinessObjects.RequestModels.Flight
 
         public string SeatClassName { get; set; } = null!;
 
+        public int TotalSeat { get; set; }
+
+        public int RemainSeat { get; set; }
+
         [Required(ErrorMessage = "Please enter ticket class price")]
         public decimal Price { get; set; }
     }

@@ -66,7 +66,7 @@
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
-         
+
     </div>
 </div>
 
@@ -151,7 +151,7 @@
                                 input.placeholder = 'Enter price';
                                 input.required = true;
 
-                                // Hidden input for SeatClassId
+                                // Hidden input
                                 const seatClassIdInput = document.createElement('input');
                                 seatClassIdInput.type = 'hidden';
                                 seatClassIdInput.name = `Flight.TicketClassPrices[${index}].SeatClassId`; // Correctly bind SeatClassId
@@ -162,12 +162,24 @@
                                 seatClassNameInput.name = `Flight.TicketClassPrices[${index}].SeatClassName`; // Bind SeatClassName
                                 seatClassNameInput.value = ticketClass.seatClassName
 
+                                const totalSeat = document.createElement('input');
+                                totalSeat.type = 'hidden';
+                                totalSeat.name = `Flight.TicketClassPrices[${index}].TotalSeat`; // Bind TotalSeat
+                                totalSeat.value = ticketClass.totalSeat
+
+                                const remainSeat = document.createElement('input');
+                                remainSeat.type = 'hidden';
+                                remainSeat.name = `Flight.TicketClassPrices[${index}].RemainSeat`; // Bind RemainSeat
+                                remainSeat.value = ticketClass.remainSeat
+
                                 // Append elements to the div
                                 inputDiv.appendChild(input);
                                 div.appendChild(labelDiv);
                                 div.appendChild(inputDiv);
                                 div.appendChild(seatClassIdInput); // Add hidden input for SeatClassId
                                 div.appendChild(seatClassNameInput);
+                                div.appendChild(totalSeat);
+                                div.appendChild(remainSeat);
 
                                 // Add the div to the ticket class prices container
                                 ticketClassPricesDiv.appendChild(div);
