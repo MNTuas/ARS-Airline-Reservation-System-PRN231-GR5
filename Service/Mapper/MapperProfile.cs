@@ -7,6 +7,7 @@ using BusinessObjects.RequestModels.Airport;
 using BusinessObjects.RequestModels.Booking;
 using BusinessObjects.RequestModels.Flight;
 using BusinessObjects.RequestModels.Passenger;
+using BusinessObjects.RequestModels.RefundBankAccount;
 using BusinessObjects.RequestModels.Ticket;
 using BusinessObjects.RequestModels.User;
 using BusinessObjects.ResponseModels.Airlines;
@@ -15,6 +16,7 @@ using BusinessObjects.ResponseModels.Airport;
 using BusinessObjects.ResponseModels.Booking;
 using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.Passenger;
+using BusinessObjects.ResponseModels.RefundBankAccount;
 using BusinessObjects.ResponseModels.Ticket;
 using BusinessObjects.ResponseModels.Transaction;
 using BusinessObjects.ResponseModels.User;
@@ -90,6 +92,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => BookingStatusEnums.Pending.ToString()));
             CreateMap<BookingInformation, UserBookingResponseModel>()
                 .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets))
+                .ForMember(dest => dest.FlightId, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.FlightId))
                 .ForMember(dest => dest.FlightStatus, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Flight.Status))
                 .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Price * src.Quantity))
                 ;
@@ -97,7 +100,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Name))
                 .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets))
                 .ForMember(dest => dest.FlightStatus, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Flight.Status))
-                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Price * src.Quantity))
+                .ForMember(dest => dest.TotalAmount, opt => opt.MapFrom(src => (src.Tickets.FirstOrDefault().TicketClass.Price * src.Quantity) * (100 - src.User.Rank.Discount) / 100))
                 ;
 
             //Passenger
@@ -138,6 +141,12 @@ namespace Service.Mapper
             CreateMap<Transaction, TransactionResponseModel>()
                 .ForMember(dest => dest.Booking, otp => otp.MapFrom(src => src.Booking));
             CreateMap<BookingInformation, BookingInformationResponseModel>();
+
+            //RefundBankAccount
+            CreateMap<RefundBankAccountCreateModel, RefundBankAccount>()
+                .ForMember(dest => dest.Id, otp => otp.MapFrom(src => Guid.NewGuid().ToString()));
+            CreateMap<RefundBankAccountUpdateModel, RefundBankAccount>();
+            CreateMap<RefundBankAccount, RefundBankAccountResponseModel>();
         }
     }
 }
