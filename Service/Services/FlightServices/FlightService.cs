@@ -174,6 +174,8 @@ namespace Service.Services.FlightServices
                                 }
 
                                 // Kiểm tra nếu airplane đã vượt quá 2
+                                //55e6f0cc-f601-4bbd-96cc-810e16b9af1a|11/21/2024 12:00:00 AM
+                                //55e6f0cc-f601-4bbd-96cc-810e16b9af1a|11/12/2024 12:00:00 AM
                                 var dateKey = $"{AirplaneId}|{departureTime.Date}";
 
                                 if (flightsPerDay.ContainsKey(dateKey))
@@ -186,12 +188,12 @@ namespace Service.Services.FlightServices
                                 }
 
                                 
-                                if (flightsPerDay[dateKey] > 2)
+                                if (flightsPerDay[dateKey] > 1)
                                 {
                                     return new Result<Flight>
                                     {
                                         Success = false,
-                                        Message = "Airplane already have 2 flight per day"
+                                        Message = "Airplane just have 1 flight per day"
                                     };
                                 }
 
@@ -205,14 +207,14 @@ namespace Service.Services.FlightServices
                                     };
                                 }
 
-                                // Kiểm tra nếu airplane đã vượt quá 2
+                                // Kiểm tra nếu airplane đã vượt quá 1
                                 var flightInDay = await _flightRepository.CountFlightsForAirplaneOnDate(AirplaneId, departureTime);
-                                if (flightInDay > 2)
+                                if (flightInDay > 1)
                                 {
                                     return new Result<Flight>
                                     {
                                         Success = false,
-                                        Message = "Airplane already have 2 flight per day "
+                                        Message = "Airplane just have 1 flight per day "
                                     };
                                 }
 

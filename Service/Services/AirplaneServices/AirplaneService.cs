@@ -51,8 +51,10 @@ namespace Service.Services.AirplaneServices
             {
                 throw new Exception("Airplane not found.");
             }
-
+            //var codeAirline = await _airlineRepository.GetById(airplane.AirlinesId); 
+            //string updateCodeNumber = codeAirline.Code  ;
             _mapper.Map(requestModel, airplane);
+            //airplane.CodeNumber = updateCodeNumber + airplane.CodeNumber;
 
             if (requestModel.AirplaneSeatRequest != null)
             {
