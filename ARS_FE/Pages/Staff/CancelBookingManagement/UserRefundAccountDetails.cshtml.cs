@@ -23,7 +23,6 @@ namespace ARS_FE.Pages.Staff.CancelBookingManagement
                 return NotFound();
             }
             var client = CreateAuthorizedClient();
-
             var response = await APIHelper.GetAsJsonAsync<RefundBankAccountResponseModel>(client, $"refund-bank-account/{id}");
 
             if (response != null)
@@ -35,8 +34,28 @@ namespace ARS_FE.Pages.Staff.CancelBookingManagement
             {
                 return BadRequest();
             }
-
         }
+
+        public async Task<IActionResult> OnPostCancelAsync(string id)
+        {
+            if (id == null)
+            {
+                return BadRequest();
+            }
+
+            var client = CreateAuthorizedClient();
+            var response = await APIHelper.PutAsJson(client, $"Booking/refund", id);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToPage("./Index");
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
 
         private HttpClient CreateAuthorizedClient()
         {
