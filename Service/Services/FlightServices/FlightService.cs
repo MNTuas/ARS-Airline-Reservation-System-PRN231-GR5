@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Flight;
+using BusinessObjects.ResponseModels.Airplane;
 using BusinessObjects.ResponseModels.Flight;
 using ExcelDataReader;
 using FFilms.Application.Shared.Response;
@@ -149,7 +150,8 @@ namespace Service.Services.FlightServices
                                 var flightNumber = reader.GetValue(0).ToString();
                                 var departureTime = DateTime.Parse(reader.GetValue(2).ToString());
                                 var AirplaneId = await GetAirplaneIdByCodeAsync(reader.GetValue(1).ToString());
-                             
+                                
+
                                 
                                 DateTime departureTimeUtc = TimeZoneInfo.ConvertTimeToUtc(departureTime);
 
@@ -237,7 +239,10 @@ namespace Service.Services.FlightServices
                                         Id = Guid.NewGuid().ToString(),
                                         SeatClassId = await GetSeatClassIdByName("Economy"),
                                         Price = ParsePositivePrice(reader.GetValue(6).ToString()),
-                                        Status = "Available"
+                                        Status = "Available",
+                                        TotalSeat = await GetAirplaneSeatById(AirplaneId, "Economy"),
+                                        RemainSeat = await GetAirplaneSeatById(AirplaneId, "Economy"),
+
                                     },
                                     new TicketClass
                                     {
@@ -245,7 +250,9 @@ namespace Service.Services.FlightServices
                                         Id = Guid.NewGuid().ToString(),
                                         SeatClassId = await GetSeatClassIdByName("Business"),
                                         Price = ParsePositivePrice(reader.GetValue(7).ToString()),
-                                        Status = "Available"
+                                        Status = "Available",
+                                        TotalSeat = await GetAirplaneSeatById(AirplaneId, "Business"),
+                                        RemainSeat = await GetAirplaneSeatById(AirplaneId, "Business"),
                                     },
                                     new TicketClass
                                     {
@@ -253,7 +260,9 @@ namespace Service.Services.FlightServices
                                         Id = Guid.NewGuid().ToString(),
                                         SeatClassId = await GetSeatClassIdByName("FirstClass"),
                                         Price = ParsePositivePrice(reader.GetValue(8).ToString()),
-                                        Status = "Available"
+                                        Status = "Available",
+                                        TotalSeat = await GetAirplaneSeatById(AirplaneId, "FirstClass"),
+                                        RemainSeat = await GetAirplaneSeatById(AirplaneId, "FirstClass"),
                                     }
                                 };
 
@@ -298,6 +307,8 @@ namespace Service.Services.FlightServices
             }
         }
 
+
+
         private async Task<string> GetAirplaneIdByCodeAsync(string airplaneCode)
         {
             var airplane = await _airplaneRepository.GetAirplaneByCodeAsync(airplaneCode);
@@ -309,6 +320,32 @@ namespace Service.Services.FlightServices
 
             return airplane.Id.ToString();
         }
+
+        private async Task<int> GetAirplaneSeatById(string airplaneId, string seatClassName)
+        {
+            // Retrieve the airplane by ID
+            var airplane = await _airplaneRepository.GetAirplane(airplaneId);
+
+            if (airplane == null)
+            {
+                throw new Exception($"Airplane with ID '{airplaneId}' not found");
+            }
+
+            
+            var airplaneResponse = _mapper.Map<AirplaneResponseModel>(airplane);
+
+            
+            var seat = airplaneResponse.AirplaneSeats.FirstOrDefault(s => s.SeatClassName == seatClassName);
+
+
+            if (seat == null)
+            {
+                throw new Exception($"Seat class '{seatClassName}' not found for airplane with ID '{airplaneId}'");
+            }
+
+            return seat.SeatCount;
+        }
+
 
         private async Task<string> GetAirportIdByName(string airportName)
         {
