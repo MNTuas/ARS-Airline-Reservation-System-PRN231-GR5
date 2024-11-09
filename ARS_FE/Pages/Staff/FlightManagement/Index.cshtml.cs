@@ -21,9 +21,10 @@ namespace ARS_FE.Pages.Staff.FlightManagement
         [BindProperty(SupportsGet = true)]
         public DateTime? FromDate { get; set; }
 
+        public string FlightNumberSearch { get; set; }
+
         [BindProperty]
         public IFormFile UploadedFile { get; set; }
-
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
@@ -34,6 +35,18 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             if (FromDate.HasValue)
             {
                 query += $"?$filter=DepartureTime ge {FromDate.Value.ToString("yyyy-MM-ddTHH:mm:ssZ")}";
+            }
+
+            if (!string.IsNullOrEmpty(FlightNumberSearch))
+            {
+                if (query.Contains("?"))
+                {
+                    query += $"&$filter=contains(FlightNumber, '{FlightNumberSearch}')";
+                }
+                else
+                {
+                    query += $"?$filter=contains(FlightNumber, '{FlightNumberSearch}')";
+                }
             }
 
             var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<FlightResponseModel>>>(client, query);
@@ -53,7 +66,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             if (UploadedFile == null || UploadedFile.Length == 0)
             {
                 ModelState.AddModelError(string.Empty, "Please upload a valid file.");
-                return await OnGetAsync(null);
+                return await OnGetAsync(null); 
             }
 
             var client = CreateAuthorizedClient();
@@ -76,12 +89,12 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 if (success)
                 {
                     TempData["SuccessMessage"] = message;
-                    return RedirectToPage("./Index");
+                    return RedirectToPage("./Index"); 
                 }
                 else
                 {
                     ModelState.AddModelError(string.Empty, message);
-                    return await OnGetAsync(null);
+                    return await OnGetAsync(null); 
                 }
             }
             else
@@ -95,12 +108,11 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                     : "Error occurred while uploading the file.";
 
                 ModelState.AddModelError(string.Empty, errorMessage);
-                return await OnGetAsync(null);
+                return await OnGetAsync(null); 
             }
         }
 
-
-
+       
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("OdataClient");
