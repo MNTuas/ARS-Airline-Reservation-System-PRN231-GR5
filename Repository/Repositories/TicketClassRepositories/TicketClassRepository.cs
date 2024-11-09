@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DAO;
+using Repository.Repositories.SeatClassRepositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,14 @@ namespace Repository.Repositories.TicketClassRepositories
     {
         public async Task<TicketClass> GetTicketClassById(string id)
         {
-            return await GetSingle(t => t.Id.Equals(id));
+            return await GetSingle(s => s.Id.Equals(id));
         }
+
+        public async Task<List<TicketClass>> GetAll()
+        {
+            var list = await Get();
+            return list.ToList();
+        }
+
     }
 }

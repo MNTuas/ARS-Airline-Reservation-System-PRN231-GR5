@@ -21,6 +21,8 @@ namespace ARS_FE.Pages.Staff.FlightManagement
         [BindProperty(SupportsGet = true)]
         public DateTime? FromDate { get; set; }
 
+        public string FlightNumberSearch { get; set; }
+
         [BindProperty]
         public IFormFile UploadedFile { get; set; }
 
@@ -39,6 +41,18 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             if (FromDate.HasValue)
             {
                 query += $"?$filter=DepartureTime ge {FromDate.Value.ToString("yyyy-MM-dd")}";
+            }
+
+            if (!string.IsNullOrEmpty(FlightNumberSearch))
+            {
+                if (query.Contains("?"))
+                {
+                    query += $"&$filter=contains(FlightNumber, '{FlightNumberSearch}')";
+                }
+                else
+                {
+                    query += $"?$filter=contains(FlightNumber, '{FlightNumberSearch}')";
+                }
             }
 
             var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<FlightResponseModel>>>(client, query);
@@ -81,7 +95,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 if (success)
                 {
                     TempData["SuccessMessage"] = message;
-                    return RedirectToPage("./Index");
+                    return RedirectToPage("./Index"); 
                 }
                 else
                 {
@@ -104,8 +118,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             }
         }
 
-
-
+       
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("OdataClient");

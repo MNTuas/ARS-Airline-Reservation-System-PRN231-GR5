@@ -16,8 +16,8 @@ namespace ARS_FE.Pages.UserPage.PassengerPage
         }
 
         [BindProperty]
-        public UpdatePassengerRequest updatePassengerRequest { get; set; } = default!;
-        [BindProperty]
+        public Passenger Passenger { get; set; } = default!;
+        [BindProperty(SupportsGet = true)]
         public string PassengerId { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -26,45 +26,32 @@ namespace ARS_FE.Pages.UserPage.PassengerPage
             {
                 return NotFound();
             }
-
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<Passenger>(client, $"Passenger/{id}");
 
+            var response = await APIHelper.GetAsJsonAsync<Passenger>(client, $"Passenger/{id}");
             if (response != null)
             {
+                Passenger = response;
                 PassengerId = id;
-                updatePassengerRequest = new UpdatePassengerRequest
-                {
-                    FirstName = response.FirstName,
-                    LastName = response.LastName,
-                    Gender = response.Gender,
-                    Country = response.Country,
-                    Dob = response.Dob,
-                    Type = response.Type
-                };
                 return Page();
             }
-            return BadRequest();
+            else
+            {
+                return BadRequest();
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             var client = CreateAuthorizedClient();
-
             var response = await APIHelper.DeleteAsync(client, $"Passenger/{PassengerId}");
-
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage("./Index");
             }
             else
             {
-                ModelState.AddModelError(string.Empty, "Error occurred while delete the system account");
+                ModelState.AddModelError(string.Empty, "Error occurred while deleting the passenger");
                 return Page();
             }
         }

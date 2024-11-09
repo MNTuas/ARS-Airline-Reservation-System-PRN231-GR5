@@ -36,6 +36,7 @@ using Service.Services.PassengerServices;
 using Service.Services.RankServices;
 using Service.Services.RefundBankAccountServices;
 using Service.Services.SeatClassServices;
+using Service.Services.TicketClassServices;
 using Service.Services.TicketServices;
 using Service.Services.TransactionServices;
 using Service.Services.UserServices;
@@ -153,6 +154,7 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<ITicketClassService, TicketClassService>();
 
 //=========================================== CORS ================================================
 builder.Services.AddCors(options =>

@@ -11,5 +11,7 @@ namespace Repository.Repositories.TicketClassRepositories
     public interface ITicketClassRepository : IGenericRepository<TicketClass>
     {
         Task<TicketClass> GetTicketClassById(string id);
+
+        Task<List<TicketClass>> GetAll();
     }
 }

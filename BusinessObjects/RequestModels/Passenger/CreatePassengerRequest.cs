@@ -4,18 +4,17 @@ namespace BusinessObjects.RequestModels.Passenger
 {
     public class CreatePassengerRequest
     {
-        [Required(ErrorMessage = "Vui lòng nhập họ")]
+        [Required(ErrorMessage = "First name is required")]
+        [RegularExpression("^[a-zA-Z ]+$", ErrorMessage = "First name cannot contain numbers or special characters")]
         public string FirstName { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng nhập tên")]
+        [Required(ErrorMessage = "Last name is required")]
+        [RegularExpression("^[a-zA-Z ]+$", ErrorMessage = "First name cannot contain numbers or special characters")]
         public string LastName { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng chọn giới tính")]
+        [Required(ErrorMessage = "Gender is required")]
         public string Gender { get; set; } = null!;
-        [Required(ErrorMessage = "Vui lòng nhập ngày sinh")]
+        [Required(ErrorMessage = "Date of birth is required")]
         public DateOnly Dob { get; set; }
-        [Required(ErrorMessage = "Vui lòng chọn quốc tịch")]
+        [Required(ErrorMessage = "Country is required")]
         public string Country { get; set; } = null!;
-
-        public string Type { get; set; } = null!;
-
     }
 }

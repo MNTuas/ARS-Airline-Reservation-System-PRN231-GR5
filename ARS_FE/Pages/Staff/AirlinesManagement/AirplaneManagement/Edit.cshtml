@@ -9,36 +9,18 @@
 <hr />
 <form method="post">
     <div class="form-group">
-        <label asp-for="UpdateAirplane.CodeNumber" class="control-label">Airplane Code Number</label>
-        <input asp-for="UpdateAirplane.CodeNumber" class="form-control" />
-        <span asp-validation-for="UpdateAirplane.CodeNumber" class="text-danger"></span>
+        <label>Code Number</label>
+        <input class="form-control" value="@Model.AirplaneCodeNumber" readonly />
     </div>
 
-    <h5>Airplane Seats</h5>
-    <div id="seat-list">
-        @for (int i = 0; i < Model.UpdateAirplane.AirplaneSeatRequest.Count; i++)
-        {
-            <div class="form-group">
-                <label class="control-label">Seat Class</label>
-                <!-- Text field hiển thị tên của SeatClass từ ViewData -->
-                <input type="text" class="form-control"
-                       value="@(ViewData["SeatClassesNames"] is Dictionary<string, string> seatClassesNames
-                                && seatClassesNames.ContainsKey(Model.UpdateAirplane.AirplaneSeatRequest[i].SeatClassId)
-                                ? seatClassesNames[Model.UpdateAirplane.AirplaneSeatRequest[i].SeatClassId]
-                                : "Unknown")"
-                       readonly />
-                <!-- Hidden field để giữ SeatClassId cho POST -->
-                <input type="hidden" asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatClassId" />
-            </div>
-
-            <div class="form-group">
-                <label asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatCount" class="control-label">Seat Count</label>
-                <input asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatCount" class="form-control" />
-                <span asp-validation-for="UpdateAirplane.AirplaneSeatRequest[i].SeatCount" class="text-danger"></span>
-            </div>
-            <hr />
-        }
-    </div>
+    @for (var i = 0; i < Model.UpdateAirplane.AirplaneSeatRequest.Count; i++)
+    {
+        <div class="form-group">
+            <label>@Model.SeatClassesList.FirstOrDefault(sc => sc.Value == Model.UpdateAirplane.AirplaneSeatRequest[i].SeatClassId)?.Text</label>
+            <input asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatCount" class="form-control" type="number" min="0" required />
+            <input type="hidden" asp-for="UpdateAirplane.AirplaneSeatRequest[i].SeatClassId" />
+        </div>
+    }
 
     <button type="submit" class="btn btn-primary">Save</button>
     <a asp-page="./Index" class="btn btn-secondary">Cancel</a>
