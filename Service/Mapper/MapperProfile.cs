@@ -53,7 +53,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<TicketClass, TicketClassPriceResponse>()
                 .ForMember(dest => dest.SeatClassName, opt => opt.MapFrom(src => src.SeatClass.Name));
-
+            
             //Airlines
             CreateMap<AirlinesCreateModel, Airline>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))

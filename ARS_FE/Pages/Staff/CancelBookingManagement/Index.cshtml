@@ -1,8 +1,8 @@
 ﻿@page
-@model ARS_FE.Pages.UserPage.BookingManager.BookingListModel
+@model ARS_FE.Pages.Staff.CancelBookingManagement.IndexModel
 @{
     Layout = "_LayoutUser";
-    ViewData["Title"] = "Airports";
+    ViewData["Title"] = "Booking List";
 
     var prevDisabled = !Model.Bookings.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.Bookings.HasNextPage ? "disabled" : "";
@@ -30,11 +30,12 @@
             <table class="table table-hover table-striped table-bordered">
                 <thead class="thead-dark">
                     <tr>
+                        <th class="text-center">User Name</th>
                         <th class="text-center">Quantity</th>
                         <th class="text-center">Created Date</th>
+                        <th class="text-center">Total Amount</th>
+                        <th class="text-center">Flight Status</th>
                         <th class="text-center">Status</th>
-                        <th class="text-center">IsRefund</th>
-                        <th class="text-center">CancelDate</th>
                         <th class="text-center">Actions</th>
                     </tr>
                 </thead>
@@ -42,7 +43,7 @@
                     @if (Model.Bookings.Count == 0)
                     {
                         <tr>
-                            <td colspan="4" class="text-center">No bookings found.</td>
+                            <td colspan="7" class="text-center">No bookings found.</td>
                         </tr>
                     }
                     else
@@ -50,51 +51,23 @@
                         @foreach (var item in Model.Bookings)
                         {
                             <tr>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.UserName)</td>
                                 <td class="text-center">@Html.DisplayFor(modelItem => item.Quantity)</td>
                                 <td class="text-center">@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.TotalAmount)</td>
+                                <td class="text-center">@Html.DisplayFor(modelItem => item.FlightStatus)</td>
                                 <td class="text-center">
                                     @{
                                         string statusClass = item.Status switch
                                         {
-                                            "Pending" => "text-warning",
-                                            "Paid" => "text-success",
                                             "Cancelled" => "text-danger",
                                             _ => ""
                                         };
                                     }
                                     <span class="@statusClass">@item.Status</span>
                                 </td>
-                                <td class="text-center">@Html.DisplayFor(modelItem => item.IsRefund)</td>
-                                <td class="text-center">@Html.DisplayFor(modelItem => item.CancelDate)</td>
                                 <td class="text-center">
-                                    <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
-
-                                    @if ((item.Status == "Pending" || item.Status == "Paid") && !item.FlightStatus.Equals("Arrived"))
-                                    {
-                                        <form method="post" asp-page-handler="Cancel" asp-route-id="@item.Id" class="d-inline">
-                                            <button type="submit" class="btn btn-danger btn-sm">Cancel</button>
-                                        </form>
-                                    }
-                                    @if (item.Status == "Pending")
-                                    {
-                                        <form method="post">
-                                            <input type="hidden" name="bookingId" value="@item.Id" />
-                                            <button type="submit" class="btn btn-primary mt-3" asp-page-handler="Checkout">
-                                                Checkout
-                                            </button>
-                                        </form>
-                                    }
-                                    @if (item.Status == "Cancelled" && item.CancelDate != null)
-                                    {
-                                        if (item.IsRefund == true)
-                                        {
-                                            <a asp-page="./RefundBankAccountDetails" asp-route-id="@item.Id" class="btn btn-info btn-sm">Refund Account</a>
-                                        }
-                                        else
-                                        {
-                                            <a asp-page="./RefundBankAccountEdit" asp-route-id="@item.Id" class="btn btn-info btn-sm">Refund Account</a>
-                                        }
-                                    }
+                                    <a asp-page="./UserRefundAccountDetails" asp-route-id="@item.Id" class="btn btn-info btn-sm">Details</a>
                                 </td>
                             </tr>
                         }

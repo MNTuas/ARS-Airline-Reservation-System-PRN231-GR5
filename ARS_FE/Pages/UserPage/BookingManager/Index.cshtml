@@ -57,15 +57,18 @@
                 </thead>
                 <tbody>
                     @foreach (var price in Model.Flight.TicketClassPrices)
-                    {
-                        <tr>
-                            <td>
-                                <!-- Radio button để chọn SeatClassId -->
-                                <input type="radio" name="selectedTicketClass" value="@price.Id" /> @price.SeatClassName
-                            </td>
-                            <td>@price.Price.ToString("#,##0 VND")</td>
-                        </tr>
-                    }
+                        if (price.RemainSeat > 0)
+                        {
+                            {
+                                <tr>
+                                    <td>
+                                        <!-- Radio button để chọn SeatClassId -->
+                                        <input type="radio" name="selectedTicketClass" value="@price.Id" /> @price.SeatClassName
+                                    </td>
+                                    <td>@price.Price.ToString("#,##0 VND")</td>
+                                </tr>
+                            }
+                        }
                 </tbody>
             </table>
 
@@ -85,5 +88,5 @@
         </form>
 
 
-</div>
+    </div>
 

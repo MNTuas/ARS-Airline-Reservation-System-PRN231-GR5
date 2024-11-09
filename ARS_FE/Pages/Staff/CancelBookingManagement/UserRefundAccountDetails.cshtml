@@ -1,0 +1,36 @@
+﻿@page
+@model ARS_FE.Pages.Staff.CancelBookingManagement.UserRefundAccountDetailsModel
+@{
+    ViewData["Title"] = "RefundBankAccountDetails";
+    Layout = "_LayoutManage";
+}
+
+<h1>RefundBankAccountDetails</h1>
+
+<div>
+    <h4>RefundBankAccount</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RefundBankAccount.AccountName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RefundBankAccount.AccountName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RefundBankAccount.AccountNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RefundBankAccount.AccountNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.RefundBankAccount.BankName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.RefundBankAccount.BankName)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
