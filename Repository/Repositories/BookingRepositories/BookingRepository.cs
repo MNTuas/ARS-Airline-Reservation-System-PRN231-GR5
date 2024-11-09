@@ -8,7 +8,7 @@ namespace Repository.Repositories.BookingRepositories
     {
         public async Task<List<BookingInformation>> GetAllBooking()
         {
-            var list = await Get(orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User");
+            var list = await Get(orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User.Rank");
             return list.ToList();
         }
 
@@ -35,6 +35,12 @@ namespace Repository.Repositories.BookingRepositories
         {
             var list = await Get(b => b.Status.Equals(BookingStatusEnums.Pending.ToString())
                                     , includeProperties: "Tickets.TicketClass.SeatClass,Transactions");
+            return list.ToList();
+        }
+
+        public async Task<List<BookingInformation>> GetAllRefundBooking()
+        {
+            var list = await Get(b => b.IsRefund != null, orderBy: b => b.OrderBy(b => b.CancelDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User.Rank");
             return list.ToList();
         }
     }

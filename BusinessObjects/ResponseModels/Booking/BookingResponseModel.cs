@@ -18,6 +18,10 @@ namespace BusinessObjects.ResponseModels.Booking
 
         public decimal TotalAmount { get; set; }
 
+        public bool? IsRefund { get; set; }
+
+        public DateTime? CancelDate { get; set; }
+
         public virtual List<TicketResponseModel> Tickets { get; set; } = new List<TicketResponseModel>();
     }
 }

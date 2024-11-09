@@ -4,46 +4,32 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Service;
 using System.Net.Http.Headers;
 
-namespace ARS_FE.Pages.UserPage.BookingManager
+namespace ARS_FE.Pages.Staff.CancelBookingManagement
 {
-    public class BookingListModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public BookingListModel(IHttpClientFactory httpClientFactory)
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
         }
 
-        public PaginatedList<UserBookingResponseModel> Bookings { get; set; } = default!;
+        public PaginatedList<BookingResponseModel> Bookings { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<List<UserBookingResponseModel>>(client, "Booking/own");
+            var response = await APIHelper.GetAsJsonAsync<List<BookingResponseModel>>(client, "Booking/refund");
             if (response != null)
             {
-                Bookings = PaginatedList<UserBookingResponseModel>.Create(response, pageIndex ?? 1, 10);
+                Bookings = PaginatedList<BookingResponseModel>.Create(response, pageIndex ?? 1, 10);
                 return Page();
             }
             else
             {
                 return RedirectToPage("/403Page");
             }
-        }
-
-        public async Task<IActionResult> OnPostCancelAsync(string id)
-        {
-            return RedirectToPage("./CreateRefundBankAccount", new { bookingId = id });
-        }
-
-        public async Task<IActionResult> OnPostCheckoutAsync(string bookingId)
-        {
-            var client = CreateAuthorizedClient();
-
-            var returnUrlResponse = await APIHelper.PostAsJson(client, $"Transaction", bookingId);
-            var returnUrl = await returnUrlResponse.Content.ReadFromJsonAsync<string>();
-            return Redirect(returnUrl);
         }
 
         private HttpClient CreateAuthorizedClient()

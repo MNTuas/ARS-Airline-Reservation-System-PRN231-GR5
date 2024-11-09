@@ -36,6 +36,7 @@
 
   <ItemGroup>
     <None Include="Pages\Admin\UserManagement\Transaction.cshtml" />
+    <None Include="Pages\UserPage\BookingManager\RefundBankAccountEdit.cshtml" />
     <None Include="wwwroot\css\.DS_Store" />
     <None Include="wwwroot\css\bootstrap\.DS_Store" />
     <None Include="wwwroot\css\css\.DS_Store" />
