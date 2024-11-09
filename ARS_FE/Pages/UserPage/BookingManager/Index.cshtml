@@ -56,23 +56,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var price in Model.Flight.TicketClassPrices)
+                    @foreach (var price in Model.Flight.TicketClassPrices.Where(p => p.RemainSeat > 0).Select((value, index) => new { value, index }))
+
+
                     {
                         <tr>
                             <td>
                                 <!-- Radio button để chọn SeatClassId -->
-                                <input type="radio" name="selectedTicketClass" value="@price.Id" /> @price.SeatClassName
+                                <input type="radio" name="selectedTicketClass" value="@price.value.Id"
+                                @(price.index == 0 ? "checked" : "") /> @price.value.SeatClassName
                             </td>
-                            <td>@price.Price.ToString("#,##0 VND")</td>
+                            <td>@price.value.Price.ToString("#,##0 VND")</td>
                         </tr>
                     }
+
                 </tbody>
             </table>
+
 
             <div class="form-group">
                 <label asp-for="createBookingRequest.Quantity" class="control-label"></label>
                 <select asp-for="createBookingRequest.Quantity" class="form-control">
-                    <option value="">-- Ticket Quantity --</option>
+                    <option value="1">-- Ticket Quantity --</option>
                     @for (int i = 1; i <= 5; i++)
                     {
                         <option value="@i">@i</option>
@@ -85,5 +90,5 @@
         </form>
 
 
-</div>
+    </div>
 

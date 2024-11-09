@@ -14,5 +14,7 @@ namespace Service.Services.BookingServices
         Task<UserBookingResponseModel> GetBookingById(string id);
         Task<string> AutoUpdateBookingStatus();
         Task CancelBooking(string id);
+        Task<List<BookingResponseModel>> GetAllRefundBooking();
+        Task UpdateRefundBooking(string id);
     }
 }
