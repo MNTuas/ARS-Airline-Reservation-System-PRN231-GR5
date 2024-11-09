@@ -113,7 +113,7 @@ namespace Service.Mapper
             .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
             .ForMember(dest => dest.Dob, opt => opt.MapFrom(src => src.Dob))
             .ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.Country))
-            .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type)).ReverseMap();
+            .ReverseMap();
             //Ticket
             CreateMap<CreateTicketRequest, Ticket>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))

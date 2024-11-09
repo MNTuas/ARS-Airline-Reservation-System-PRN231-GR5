@@ -22,6 +22,10 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
         [BindProperty]
         public UpdateAirplaneRequest UpdateAirplane { get; set; } = new UpdateAirplaneRequest();
 
+        public List<SelectListItem> SeatClassesList { get; set; } = new List<SelectListItem>();
+
+        public string AirplaneCodeNumber { get; set; } = string.Empty;
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -30,31 +34,35 @@ namespace ARS_FE.Pages.Staff.AirplaneManagement
             }
 
             var client = CreateAuthorizedClient();
-            var response = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
+            var airplaneResponse = await APIHelper.GetAsJsonAsync<Airplane>(client, $"airplane/get-airplane/{id}");
+            var seatClasses = await APIHelper.GetAsJsonAsync<List<SeatClass>>(client, "seat-class");
 
-            if (response != null)
+            if (airplaneResponse != null && seatClasses != null)
             {
-                UpdateAirplane = new UpdateAirplaneRequest
-                {
-                    CodeNumber = response.CodeNumber,
-                    AirplaneSeatRequest = response.AirplaneSeats.Select(seat => new AirplaneSeatUpdateRequest
+                UpdateAirplane.AirplaneSeatRequest = seatClasses.Select(sc =>
+                    new AirplaneSeatUpdateRequest
                     {
-                        SeatClassId = seat.SeatClassId,
-                        SeatCount = seat.SeatCount
-                    }).ToList()
-                };
+                        SeatClassId = sc.Id.ToString(),
+                        SeatCount = airplaneResponse.AirplaneSeats
+                                    .FirstOrDefault(seat => seat.SeatClassId == sc.Id)?.SeatCount ?? 0
+                    }).ToList();
 
-                var seatClasses = await APIHelper.GetAsJsonAsync<List<SeatClass>>(client, "seat-class");
-                var seatClassesNames = seatClasses?.ToDictionary(sc => sc.Id.ToString(), sc => sc.Name);
-                ViewData["SeatClassesNames"] = seatClassesNames;
+                AirplaneCodeNumber = airplaneResponse.CodeNumber;
+
+                SeatClassesList = seatClasses.Select(sc => new SelectListItem
+                {
+                    Value = sc.Id.ToString(),
+                    Text = sc.Name
+                }).ToList();
 
                 return Page();
             }
             else
             {
-                return BadRequest("Airplane not found.");
+                return BadRequest("Error loading airplane or seat class data.");
             }
         }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
