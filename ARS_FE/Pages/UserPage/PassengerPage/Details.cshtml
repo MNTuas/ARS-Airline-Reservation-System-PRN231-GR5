@@ -8,30 +8,30 @@
 
 
 <div class="container mt-4">
-    <h1 class="text-center">Flight Details</h1>
+    <h1 class="text-center">Passenger Details</h1>
 
     <div class="card mb-4">
         <div class="card-header">
-            <h4>Flight Information</h4>
+            <h4>Passenger Information</h4>
         </div>
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-3">Airline</dt>
+                <dt class="col-sm-3">First Name</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.FirstName)</dd>
 
-                <dt class="col-sm-3">Airplane Code</dt>
+                <dt class="col-sm-3">Last Name</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.LastName)</dd>
 
-                <dt class="col-sm-3">Scheduled Departure Time</dt>
+                <dt class="col-sm-3">Date of Birth</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Dob)</dd>
 
-                <dt class="col-sm-3">Scheduled Arrival Time</dt>
+                <dt class="col-sm-3">Gender</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Gender)</dd>
 
-                <dt class="col-sm-3">From</dt>
+                <dt class="col-sm-3">Country</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Country)</dd>
 
-                <dt class="col-sm-3">To</dt>
+                <dt class="col-sm-3">Type</dt>
                 <dd class="col-sm-9">@Html.DisplayFor(model => model.Passenger.Type)</dd>
             </dl>
         </div>

@@ -34,24 +34,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
 
         public async Task<IActionResult> OnPostCancelAsync(string id)
         {
-            var client = CreateAuthorizedClient();
-            var response = await APIHelper.PutAsJson(client, $"Booking/cancel", id);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var bookingsResponse = await APIHelper.GetAsJsonAsync<List<UserBookingResponseModel>>(client, "Booking/own");
-                if (bookingsResponse != null)
-                {
-                    int currentPage = Bookings?.PageIndex ?? 1;
-                    Bookings = PaginatedList<UserBookingResponseModel>.Create(bookingsResponse, currentPage, 10);
-                }
-                return Page();
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "Failed to cancel the booking. Please try again.";
-                return Page();
-            }
+            return RedirectToPage("./CreateRefundBankAccount", new { bookingId = id });
         }
 
         public async Task<IActionResult> OnPostCheckoutAsync(string bookingId)

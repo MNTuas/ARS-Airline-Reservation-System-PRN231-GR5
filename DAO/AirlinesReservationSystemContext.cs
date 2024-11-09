@@ -1,4 +1,6 @@
-﻿using BusinessObjects.Models;
+﻿using System;
+using System.Collections.Generic;
+using BusinessObjects.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -60,7 +62,7 @@ public partial class AirlinesReservationSystemContext : DbContext
     {
         modelBuilder.Entity<Airline>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC0746D4E504");
+            entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC071C774312");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
@@ -72,7 +74,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Airplane>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC077734B7DC");
+            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC079DDD9D3F");
 
             entity.ToTable("Airplane");
 
@@ -96,7 +98,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<AirplaneSeat>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC0765CD8981");
+            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC074C61D289");
 
             entity.ToTable("AirplaneSeat");
 
@@ -130,7 +132,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Airport>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airport__3214EC072E2294D8");
+            entity.HasKey(e => e.Id).HasName("PK__Airport__3214EC07743BAF4E");
 
             entity.ToTable("Airport");
 
@@ -155,6 +157,7 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasMaxLength(36)
                 .IsUnicode(false)
                 .IsFixedLength();
+            entity.Property(e => e.CancelDate).HasColumnType("datetime");
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
             entity.Property(e => e.Status)
                 .HasMaxLength(10)
@@ -249,7 +252,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Rank>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Rank__3214EC07BAA03B27");
+            entity.HasKey(e => e.Id).HasName("PK__Rank__3214EC07DB09C6EE");
 
             entity.ToTable("Rank");
 
@@ -292,7 +295,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<SeatClass>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__SeatClas__3214EC07735FEA33");
+            entity.HasKey(e => e.Id).HasName("PK__SeatClas__3214EC07CB9003FE");
 
             entity.ToTable("SeatClass");
 

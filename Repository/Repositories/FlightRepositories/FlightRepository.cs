@@ -10,14 +10,14 @@ namespace Repository.Repositories.FlightRepositories
 
         public async Task<List<Flight>> GetAllFlights(string? flightNumber = null)
         {
-            Expression<Func<Flight, bool>> filter = f => true; 
+            Expression<Func<Flight, bool>> filter = f => true;
 
             if (!string.IsNullOrEmpty(flightNumber))
             {
                 filter = f => f.FlightNumber.Contains(flightNumber);
             }
 
-            var list = await Get(filter, includeProperties: "FromNavigation,ToNavigation,Airplane.Airlines");
+            var list = await Get(filter, orderBy: f => f.OrderBy(f => f.DepartureTime), includeProperties: "FromNavigation,ToNavigation,Airplane.Airlines,TicketClasses");
             return list.ToList();
         }
 
@@ -29,6 +29,7 @@ namespace Repository.Repositories.FlightRepositories
         public async Task<List<Flight>> GetFlightsByFilter(string from, string to, DateTime checkin, DateTime? checkout)
         {
             var allFlights = await GetAllFlights();
+            allFlights = allFlights.Where(f => f.TicketClasses.Any(t => t.RemainSeat > 0)).ToList();
 
             var filteredFlights = allFlights.Where(f => f.From.Equals(from)
                                                       && f.To.Equals(to)
