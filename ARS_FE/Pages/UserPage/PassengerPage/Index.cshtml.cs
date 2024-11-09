@@ -8,11 +8,9 @@ namespace ARS_FE.Pages.UserPage.PassengerPage
     public class IndexModel : PageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        public IndexModel(IHttpClientFactory httpClientFactory, IHttpContextAccessor httpContextAccessor)
+        public IndexModel(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public List<PassengerResposeModel> PassengerRespose { get; set; } = default!;

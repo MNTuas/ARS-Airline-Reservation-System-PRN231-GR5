@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using BusinessObjects.Models;
+using BusinessObjects.RequestModels.Airport;
 using BusinessObjects.RequestModels.Ticket;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
 using Repository.Repositories.BookingRepositories;
 using Repository.Repositories.PassengerRepositories;
+using Repository.Repositories.TicketClassRepositories;
 using Repository.Repositories.TicketRepositories;
 using Service.Enums;
 using Service.Helper;
@@ -18,16 +20,18 @@ namespace Service.Services.TicketServices
         private readonly IBookingRepository _bookingRepository;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ITicketClassRepository _ticketClassRepository;
 
         public TicketService(ITicketRepository TicketRepository, IPassengerRepository passengerRepository,
                              IBookingRepository bookingRepository, IMapper mapper,
-                             IHttpContextAccessor httpContextAccessor)
+                             IHttpContextAccessor httpContextAccessor, ITicketClassRepository ticketClassRepository)
         {
             _ticketRepository = TicketRepository;
             _passengerRepository = passengerRepository;
             _bookingRepository = bookingRepository;
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
+            _ticketClassRepository = ticketClassRepository;
         }
 
         public async Task<Result<List<Ticket>>> addTicket(List<CreateTicketRequest> createTicketRequest)
@@ -54,7 +58,15 @@ namespace Service.Services.TicketServices
                         TicketClassId = ticket.TicketClassId,
                     };
                     ticketList.Add(newTicket);
+
+                    var updateTickerClass = await _ticketClassRepository.GetTicketClassById(ticket.TicketClassId);
+                    if (updateTickerClass != null)
+                    {
+                        updateTickerClass.RemainSeat -= 1;
+                        await _ticketClassRepository.Update(updateTickerClass);
+                    }
                 }
+
 
                 await _ticketRepository.InsertRange(ticketList);
                 return new Result<List<Ticket>>

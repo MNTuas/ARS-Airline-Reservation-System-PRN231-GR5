@@ -4,6 +4,7 @@ using BusinessObjects.RequestModels.Passenger;
 using BusinessObjects.ResponseModels.Passenger;
 using FFilms.Application.Shared.Response;
 using Microsoft.AspNetCore.Http;
+using Repository.Enums;
 using Repository.Repositories.PassengerRepositories;
 using Repository.Repositories.UserRepositories;
 using Service.Helper;
@@ -30,9 +31,33 @@ namespace Service.Services.PassengerServices
         {
             try
             {
-
                 var idclaim = _httpContextAccessor.HttpContext.User.FindFirst(MySetting.CLAIM_USERID);
                 var userid = idclaim.Value;
+
+                // Tính toán tuổi hiện tại
+                var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+                var age = currentDate.Year - createPassengerRequest.Dob.Year;
+
+                // Nếu ngày sinh chưa đến ngày hiện tại trong năm nay, giảm tuổi đi 1
+                if (currentDate < createPassengerRequest.Dob.AddYears(age))
+                {
+                    age--;
+                }
+
+                // Thiết lập loại hành khách dựa trên độ tuổi
+                PassengerTypeEnum passengerType;
+                if (age < 2)
+                {
+                    passengerType = PassengerTypeEnum.Infant;
+                }
+                else if (age >= 2 && age < 12)
+                {
+                    passengerType = PassengerTypeEnum.Child;
+                }
+                else
+                {
+                    passengerType = PassengerTypeEnum.Adult;
+                }
 
                 var newPassenger = new Passenger
                 {
@@ -42,8 +67,8 @@ namespace Service.Services.PassengerServices
                     FirstName = createPassengerRequest.FirstName,
                     LastName = createPassengerRequest.LastName,
                     Gender = createPassengerRequest.Gender,
-                    Type = createPassengerRequest.Type,
                     UserId = userid,
+                    Type = passengerType.ToString() // Gán giá trị loại hành khách vào thuộc tính Type
                 };
 
                 await _PassengerRepository.Insert(newPassenger);
@@ -94,6 +119,26 @@ namespace Service.Services.PassengerServices
         public async Task UpdatePassenger(string id, UpdatePassengerRequest request)
         {
             var passenger = await _PassengerRepository.GetById(id);
+            var currentDate = DateOnly.FromDateTime(DateTime.UtcNow);
+            var age = currentDate.Year - request.Dob.Year;
+            if (currentDate < request.Dob.AddYears(age))
+            {
+                age--;
+            }
+            PassengerTypeEnum passengerType;
+            if (age < 2)
+            {
+                passengerType = PassengerTypeEnum.Infant;
+            }
+            else if (age >= 2 && age < 12)
+            {
+                passengerType = PassengerTypeEnum.Child;
+            }
+            else
+            {
+                passengerType = PassengerTypeEnum.Adult;
+            }
+            passenger.Type = passengerType.ToString();
             _mapper.Map(request, passenger);
             await _PassengerRepository.Update(passenger);
         }
@@ -101,6 +146,10 @@ namespace Service.Services.PassengerServices
         public async Task DeletePassenger(string id)
         {
             var passenger = await _PassengerRepository.GetById(id);
+            if(passenger == null)
+            {
+                throw new Exception("Passenger not found");
+            }
             await _PassengerRepository.Delete(passenger);
         }
     }
