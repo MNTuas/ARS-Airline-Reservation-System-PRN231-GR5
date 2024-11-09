@@ -54,5 +54,13 @@ namespace AirlinesReservationSystem.Controllers
             return Ok("Update successfully");
         }
 
+        [HttpPost]
+        [Route("staff")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateStaff(StaffCreateModel model)
+        {
+            await _userService.CreateStaffAccount(model);
+            return Ok("Create staff successfully");
+        }
     }
 }

@@ -43,26 +43,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.FromName, opt => opt.MapFrom(src => src.FromNavigation.Name))
                 .ForMember(dest => dest.ToName, opt => opt.MapFrom(src => src.ToNavigation.Name))
                 .ForMember(dest => dest.TicketClassPrices, opt => opt.MapFrom(src => src.TicketClasses))
-                .AfterMap((src, dest) =>
-                {
-                    var airplaneSeats = src.Airplane.AirplaneSeats.ToList();
-                    var ticketClasses = src.TicketClasses.ToList();
-
-                    for (int i = 0; i < ticketClasses.Count; i++)
-                    {
-                        if (i < airplaneSeats.Count)
-                        {
-                            dest.TicketClassPrices[i].TotalSeat = airplaneSeats[i].SeatCount;
-                        }
-
-                        int paidTicketsCount = ticketClasses[i].Tickets
-                            .Count(ticket => ticket.Status == BookingStatusEnums.Paid.ToString());
-                        dest.TicketClassPrices[i].RemainSeat = airplaneSeats[i].SeatCount - paidTicketsCount;
-                    }
-                });
-
-
-
+                ;
 
             //TicketClass
             CreateMap<TicketClassPrice, TicketClass>()
@@ -147,6 +128,12 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Discount, otp => otp.MapFrom(src => src.Rank.Discount))
                 ;
             CreateMap<UserInfoUpdateModel, User>();
+            CreateMap<StaffCreateModel, User>()
+                .ForMember(dest => dest.Id, otp => otp.MapFrom(src => Guid.NewGuid().ToString()))
+                .ForMember(dest => dest.Role, otp => otp.MapFrom(src => UserRolesEnums.Staff.ToString()))
+                .ForMember(dest => dest.Password, otp => otp.MapFrom(src => BCrypt.Net.BCrypt.HashPassword(src.Password)))
+                .ForMember(dest => dest.Status, otp => otp.MapFrom(src => UserStatusEnums.Active.ToString()))
+                ;
             //Transaction
             CreateMap<Transaction, TransactionResponseModel>()
                 .ForMember(dest => dest.Booking, otp => otp.MapFrom(src => src.Booking));

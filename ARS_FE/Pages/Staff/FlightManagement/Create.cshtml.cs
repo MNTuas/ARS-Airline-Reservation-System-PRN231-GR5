@@ -101,7 +101,9 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                         ticketClassPrices.Add(new TicketClassPrice
                         {
                             SeatClassId = seatClass.SeatClassId,
-                            SeatClassName = seatClass.SeatClassName
+                            SeatClassName = seatClass.SeatClassName,
+                            TotalSeat = seatClass.SeatCount,
+                            RemainSeat = seatClass.SeatCount,
                         });
                     }
                 }

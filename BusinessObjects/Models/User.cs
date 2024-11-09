@@ -16,9 +16,9 @@ public partial class User
 
     public string? Address { get; set; }
 
-    public int Point { get; set; }
+    public int? Point { get; set; }
 
-    public string RankId { get; set; } = null!;
+    public string? RankId { get; set; }
 
     public string Role { get; set; } = null!;
 
@@ -28,7 +28,7 @@ public partial class User
 
     public virtual ICollection<Passenger> Passengers { get; set; } = new List<Passenger>();
 
-    public virtual Rank Rank { get; set; } = null!;
+    public virtual Rank? Rank { get; set; }
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
