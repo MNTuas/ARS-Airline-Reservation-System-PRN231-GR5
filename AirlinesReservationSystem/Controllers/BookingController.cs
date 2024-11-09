@@ -50,6 +50,15 @@ namespace AirlinesReservationSystem.Controllers
             return Ok("Update successfully!");
         }
 
+        [HttpPut]
+        [Authorize(Roles = "Staff")]
+        [Route("{id}/refund")]
+        public async Task<IActionResult> UpdateBookingRefundStatus(string id)
+        {
+            await _bookingService.UpdateRefundBooking(id);
+            return Ok("Update successfully!");
+        }
+
         [HttpGet]
         [Authorize(Roles = "User")]
         [Route("own")]
@@ -82,6 +91,15 @@ namespace AirlinesReservationSystem.Controllers
         public async Task<IActionResult> GetAllBookings()
         {
             var response = await _bookingService.GetAllBookings();
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("refund")]
+        [Authorize(Roles = "Staff")]
+        public async Task<IActionResult> GetAllRefundBookings()
+        {
+            var response = await _bookingService.GetAllRefundBooking();
             return Ok(response);
         }
     }

@@ -1,4 +1,7 @@
-﻿namespace BusinessObjects.Models;
+﻿using System;
+using System.Collections.Generic;
+
+namespace BusinessObjects.Models;
 
 public partial class BookingInformation
 {
@@ -11,6 +14,10 @@ public partial class BookingInformation
     public string UserId { get; set; } = null!;
 
     public string Status { get; set; } = null!;
+
+    public bool? IsRefund { get; set; }
+
+    public DateTime? CancelDate { get; set; }
 
     public virtual ICollection<RefundBankAccount> RefundBankAccounts { get; set; } = new List<RefundBankAccount>();
 

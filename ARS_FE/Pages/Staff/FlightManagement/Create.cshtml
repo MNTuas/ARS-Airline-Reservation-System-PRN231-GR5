@@ -88,6 +88,8 @@
             const AIRPLANE_API_URL = './Create?handler=Airplane&id=';
             const TICKET_CLASS_API_URL = './Create?handler=TicketClassPrices&airplaneId=';
 
+            const seatClassOrder = ["FirstClass", "Business", "Economy"];
+
             // Function to fetch airplanes based on selected airline
             function fetchAirplanes(airlineId) {
                 if (airlineId) {
@@ -130,6 +132,8 @@
                                 ticketClassPricesDiv.innerHTML = '<p>No seat classes available for this airplane.</p>';
                             }
 
+                            const ticketClassInputs = []; // Track each input for validation
+
                             data.forEach((ticketClass, index) => {
                                 const div = document.createElement('div');
                                 div.classList.add('form-group', 'row');
@@ -150,33 +154,37 @@
                                 input.name = `Flight.TicketClassPrices[${index}].Price`; // Correctly bind using index
                                 input.placeholder = 'Enter price';
                                 input.required = true;
+                                input.dataset.seatClassName = ticketClass.seatClassName; // Store SeatClassName for validation
 
-                                // Hidden input
+                                // Add to ticketClassInputs array for validation purposes
+                                ticketClassInputs.push(input);
+
+                                // Hidden inputs
                                 const seatClassIdInput = document.createElement('input');
                                 seatClassIdInput.type = 'hidden';
-                                seatClassIdInput.name = `Flight.TicketClassPrices[${index}].SeatClassId`; // Correctly bind SeatClassId
-                                seatClassIdInput.value = ticketClass.seatClassId; // Assuming ticketClass has SeatClassId
+                                seatClassIdInput.name = `Flight.TicketClassPrices[${index}].SeatClassId`;
+                                seatClassIdInput.value = ticketClass.seatClassId;
 
                                 const seatClassNameInput = document.createElement('input');
                                 seatClassNameInput.type = 'hidden';
-                                seatClassNameInput.name = `Flight.TicketClassPrices[${index}].SeatClassName`; // Bind SeatClassName
-                                seatClassNameInput.value = ticketClass.seatClassName
+                                seatClassNameInput.name = `Flight.TicketClassPrices[${index}].SeatClassName`;
+                                seatClassNameInput.value = ticketClass.seatClassName;
 
                                 const totalSeat = document.createElement('input');
                                 totalSeat.type = 'hidden';
-                                totalSeat.name = `Flight.TicketClassPrices[${index}].TotalSeat`; // Bind TotalSeat
-                                totalSeat.value = ticketClass.totalSeat
+                                totalSeat.name = `Flight.TicketClassPrices[${index}].TotalSeat`;
+                                totalSeat.value = ticketClass.totalSeat;
 
                                 const remainSeat = document.createElement('input');
                                 remainSeat.type = 'hidden';
-                                remainSeat.name = `Flight.TicketClassPrices[${index}].RemainSeat`; // Bind RemainSeat
-                                remainSeat.value = ticketClass.remainSeat
+                                remainSeat.name = `Flight.TicketClassPrices[${index}].RemainSeat`;
+                                remainSeat.value = ticketClass.remainSeat;
 
                                 // Append elements to the div
                                 inputDiv.appendChild(input);
                                 div.appendChild(labelDiv);
                                 div.appendChild(inputDiv);
-                                div.appendChild(seatClassIdInput); // Add hidden input for SeatClassId
+                                div.appendChild(seatClassIdInput);
                                 div.appendChild(seatClassNameInput);
                                 div.appendChild(totalSeat);
                                 div.appendChild(remainSeat);
@@ -185,10 +193,52 @@
                                 ticketClassPricesDiv.appendChild(div);
                             });
 
+                            // Add event listeners for real-time validation
+                            ticketClassInputs.forEach(input => {
+                                input.addEventListener('input', () => validatePriceOrder(ticketClassInputs));
+                            });
+
                         })
                         .catch(error => console.error('Failed to retrieve ticket class prices: ', error));
                 }
             }
+
+            // Validation function to check price order
+            function validatePriceOrder(inputs) {
+                let isValid = true;
+
+                // Sort inputs by seat class order
+                const orderedInputs = inputs
+                    .sort((a, b) => seatClassOrder.indexOf(a.dataset.seatClassName) - seatClassOrder.indexOf(b.dataset.seatClassName));
+
+                // Loop through ordered inputs and check price order
+                for (let i = 0; i < orderedInputs.length - 1; i++) {
+                    const currentPrice = parseFloat(orderedInputs[i].value);
+                    const nextPrice = parseFloat(orderedInputs[i + 1].value);
+
+                    if (!isNaN(currentPrice) && !isNaN(nextPrice) && currentPrice <= nextPrice) {
+                        isValid = false;
+                        break;
+                    }
+                }
+
+                // Show error message or clear it
+                const errorMessageDiv = document.getElementById('priceErrorMessage');
+                if (!isValid) {
+                    if (!errorMessageDiv) {
+                        const messageDiv = document.createElement('div');
+                        messageDiv.id = 'priceErrorMessage';
+                        messageDiv.classList.add('text-danger');
+                        messageDiv.textContent = 'The price order should be First Class > Business Class > Economy Class.';
+                        ticketClassPricesDiv.appendChild(messageDiv);
+                    }
+                } else if (errorMessageDiv) {
+                    errorMessageDiv.remove();
+                }
+
+                return isValid;
+            }
+
 
             // Event listeners for select elements
             airlineSelect.addEventListener('change', function () {
@@ -220,8 +270,17 @@
 
                 // Check if "From" and "To" fields are the same
                 if (fromSelect.value === toSelect.value) {
-                    event.preventDefault(); // Prevent form submission
-                    alert("The departure location and destination must be different."); // Show alert
+                    event.preventDefault();
+                    alert("The departure location and destination must be different.");
+                    return; // Prevent further checks
+                }
+
+                // Validate price order before submitting the form
+                const ticketClassInputs = Array.from(ticketClassPricesDiv.querySelectorAll('input[type="number"]'));
+                const isPriceOrderValid = validatePriceOrder(ticketClassInputs);
+
+                if (!isPriceOrderValid) {
+                    event.preventDefault(); // Prevent form submission if prices are not in order
                 }
             });
 
