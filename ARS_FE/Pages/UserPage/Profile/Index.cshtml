@@ -5,64 +5,57 @@
     Layout = "_LayoutUser";
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm">
-                <div class="card-body p-4">
-                    <h4 class="card-title text-center mb-4">User Profile</h4>
+<div class="text-center my-4">
+    <h2><strong>User Profile</strong></h2>
+</div>
 
-                    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-                    {
-                        <div class="alert alert-success mb-3" role="alert">
-                            @Model.SuccessMessage
-                        </div>
-                    }
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-                    <form method="post" class="needs-validation">
-                        <div asp-validation-summary="ModelOnly" class="text-danger mb-3 small"></div>
-
-                        <!-- Name Field -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="UserInfo.Name" class="form-control" placeholder="Name" />
-                            <label asp-for="UserInfo.Name">Name</label>
-                            <span asp-validation-for="UserInfo.Name" class="text-danger small"></span>
-                        </div>
-
-                        <!-- Phone Number Field -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="UserInfo.PhoneNumber" class="form-control" placeholder="Phone Number" />
-                            <label asp-for="UserInfo.PhoneNumber">Phone Number</label>
-                            <span asp-validation-for="UserInfo.PhoneNumber" class="text-danger small"></span>
-                        </div>
-
-                        <!-- Email Field -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="UserInfo.Email" class="form-control" placeholder="Email" />
-                            <label asp-for="UserInfo.Email">Email</label>
-                            <span asp-validation-for="UserInfo.Email" class="text-danger small"></span>
-                        </div>
-
-                        <!-- Address Field -->
-                        <div class="form-floating mb-3">
-                            <input asp-for="UserInfo.Address" class="form-control" placeholder="Address" />
-                            <label asp-for="UserInfo.Address">Address</label>
-                            <span asp-validation-for="UserInfo.Address" class="text-danger small"></span>
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="d-flex gap-2 justify-content-between mt-4">
-                            <a asp-page="/UserPage/Index" class="btn btn-light px-4">
-                                <i class="bi bi-arrow-left me-1"></i>Back
-                            </a>
-                            <button type="submit" class="btn btn-primary px-4">
-                                <i class="bi bi-save me-1"></i>Save
-                            </button>
-                        </div>
-                    </form>
-                </div>
+            <!-- Name Field -->
+            <div class="form-group">
+                <label asp-for="UserInfo.Name" class="control-label font-weight-bold text-center d-block"></label>
+                <input asp-for="UserInfo.Name" class="form-control" />
+                <span asp-validation-for="UserInfo.Name" class="text-danger"></span>
             </div>
-        </div>
+
+            <!-- Phone Number Field -->
+            <div class="form-group">
+                <label asp-for="UserInfo.PhoneNumber" class="control-label font-weight-bold"></label>
+                <input asp-for="UserInfo.PhoneNumber" class="form-control" />
+                <span asp-validation-for="UserInfo.PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label font-weight-bold">Email:</label>
+                <p class="form-control-plaintext">@Model.UserInfo.Email</p>
+
+                <!-- Trường ẩn để gửi giá trị Email -->
+                <input type="hidden" asp-for="UserInfo.Email" />
+
+                <span asp-validation-for="UserInfo.Email" class="text-danger"></span>
+            </div>
+
+
+            <!-- Address Field -->
+            <div class="form-group">
+                <label asp-for="UserInfo.Address" class="control-label font-weight-bold"></label>
+                <input asp-for="UserInfo.Address" class="form-control" />
+                <span asp-validation-for="UserInfo.Address" class="text-danger"></span>
+            </div>
+
+            <!-- Save Button -->
+            <div class="form-group text-center">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+
+            <!-- Change Password Button -->
+            <div class="form-group text-center">
+                <a asp-page="/UserPage/Profile/ChangePassword" class="btn btn-secondary">Change Password</a>
+            </div>
+        </form>
     </div>
 </div>
 
