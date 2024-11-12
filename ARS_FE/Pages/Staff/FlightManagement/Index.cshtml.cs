@@ -21,38 +21,32 @@ namespace ARS_FE.Pages.Staff.FlightManagement
         [BindProperty(SupportsGet = true)]
         public DateTime? FromDate { get; set; }
 
-        public string FlightNumberSearch { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string FlightNumberSearch { get; set; } = string.Empty;
 
         [BindProperty]
         public IFormFile UploadedFile { get; set; }
-
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex, DateTime? fromDate)
         {
             var client = CreateAuthorizedClient();
 
             var query = "flights";
-
-            if (fromDate != null)
-            {
-                FromDate = fromDate;
-            }
+            var filters = new List<string>();
 
             if (FromDate.HasValue)
             {
-                query += $"?$filter=DepartureTime ge {FromDate.Value.ToString("yyyy-MM-dd")}";
+                filters.Add($"DepartureTime ge {FromDate.Value.ToString("yyyy-MM-dd")}");
             }
 
             if (!string.IsNullOrEmpty(FlightNumberSearch))
             {
-                if (query.Contains("?"))
-                {
-                    query += $"&$filter=contains(FlightNumber, '{FlightNumberSearch}')";
-                }
-                else
-                {
-                    query += $"?$filter=contains(FlightNumber, '{FlightNumberSearch}')";
-                }
+                filters.Add($"contains(FlightNumber, '{FlightNumberSearch}')");
+            }
+
+            if (filters.Count > 0)
+            {
+                query += "?$filter=" + string.Join(" and ", filters);
             }
 
             var response = await APIHelper.GetAsJsonAsync<ODataResponse<List<FlightResponseModel>>>(client, query);
@@ -95,7 +89,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 if (success)
                 {
                     TempData["SuccessMessage"] = message;
-                    return RedirectToPage("./Index"); 
+                    return RedirectToPage("./Index");
                 }
                 else
                 {
@@ -118,7 +112,6 @@ namespace ARS_FE.Pages.Staff.FlightManagement
             }
         }
 
-       
         private HttpClient CreateAuthorizedClient()
         {
             var client = _httpClientFactory.CreateClient("OdataClient");

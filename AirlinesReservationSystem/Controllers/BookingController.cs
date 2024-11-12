@@ -52,8 +52,8 @@ namespace AirlinesReservationSystem.Controllers
 
         [HttpPut]
         [Authorize(Roles = "Staff")]
-        [Route("{id}/refund")]
-        public async Task<IActionResult> UpdateBookingRefundStatus(string id)
+        [Route("refund")]
+        public async Task<IActionResult> UpdateBookingRefundStatus([FromBody] string id)
         {
             await _bookingService.UpdateRefundBooking(id);
             return Ok("Update successfully!");
@@ -69,7 +69,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Staff,Admin")]
         [Route("{id}")]
         public async Task<IActionResult> GetBookingById(string id)
         {

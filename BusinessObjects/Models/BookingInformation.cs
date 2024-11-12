@@ -21,6 +21,8 @@ public partial class BookingInformation
 
     public virtual ICollection<RefundBankAccount> RefundBankAccounts { get; set; } = new List<RefundBankAccount>();
 
+    public virtual ICollection<RefundTransaction> RefundTransactions { get; set; } = new List<RefundTransaction>();
+
     public virtual ICollection<Ticket> Tickets { get; set; } = new List<Ticket>();
 
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();

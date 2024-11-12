@@ -18,6 +18,7 @@ using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.PassengerRepositories;
 using Repository.Repositories.RankRepositories;
 using Repository.Repositories.RefundBankAccountRepositories;
+using Repository.Repositories.RefundTransactionRepositories;
 using Repository.Repositories.SeatClassRepositories;
 using Repository.Repositories.TicketClassRepositories;
 using Repository.Repositories.TicketRepositories;
@@ -35,6 +36,7 @@ using Service.Services.FlightServices;
 using Service.Services.PassengerServices;
 using Service.Services.RankServices;
 using Service.Services.RefundBankAccountServices;
+using Service.Services.RefundTransactionServices;
 using Service.Services.SeatClassServices;
 using Service.Services.TicketClassServices;
 using Service.Services.TicketServices;
@@ -137,6 +139,7 @@ builder.Services.AddScoped<ITicketClassRepository, TicketClassRepository>();
 builder.Services.AddScoped<ITicketRepository, TicketRepository>();
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRefundTransactionRepository, RefundTransactionRepository>();
 
 //=========================================== SERVICE =============================================
 builder.Services.AddScoped<IAirlineService, AirlineService>();
@@ -155,6 +158,7 @@ builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<ITicketClassService, TicketClassService>();
+builder.Services.AddScoped<IRefundTransactionService, RefundTransactionService>();
 
 //=========================================== CORS ================================================
 builder.Services.AddCors(options =>

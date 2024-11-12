@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http.Headers;
 using BusinessObjects.ResponseModels.User;
+using BusinessObjects.ResponseModels.Flight;
 
 
 namespace ARS_FE.Pages.UserPage.BookingManager
@@ -19,6 +20,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
 
         public List<TicketResponseModel> Tickets { get; set; } = default!;
         public decimal Discount { get; set; }
+        public FlightResponseModel Flight { get; set; } = default!;
 
 
         public async Task<IActionResult> OnGetAsync(string id)
@@ -33,6 +35,12 @@ namespace ARS_FE.Pages.UserPage.BookingManager
             var userInfo = await APIHelper.GetAsJsonAsync<UserInfoResponseModel>(client, "users/own");
 
             Discount = userInfo.Discount.Value;
+            var flight = await APIHelper.GetAsJsonAsync<FlightResponseModel>(client, $"Flight/{response.FlightId}");
+
+            if (flight != null)
+            {
+                Flight = flight;
+            }
 
             if (response != null)
             {
