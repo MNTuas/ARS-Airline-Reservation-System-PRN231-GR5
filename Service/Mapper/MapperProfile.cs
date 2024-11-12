@@ -55,7 +55,7 @@ namespace Service.Mapper
                 .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<TicketClass, TicketClassPriceResponse>()
                 .ForMember(dest => dest.SeatClassName, opt => opt.MapFrom(src => src.SeatClass.Name));
-            
+
             //Airlines
             CreateMap<AirlinesCreateModel, Airline>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
@@ -90,7 +90,10 @@ namespace Service.Mapper
             CreateMap<CreateBookingRequest, BookingInformation>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => BookingStatusEnums.Pending.ToString()));
+
             CreateMap<BookingInformation, UserBookingResponseModel>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.Name))
+                .ForMember(dest => dest.Discount, opt => opt.MapFrom(src => src.User.Rank.Discount))
                 .ForMember(dest => dest.Tickets, opt => opt.MapFrom(src => src.Tickets))
                 .ForMember(dest => dest.FlightId, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.FlightId))
                 .ForMember(dest => dest.FlightStatus, opt => opt.MapFrom(src => src.Tickets.FirstOrDefault().TicketClass.Flight.Status))
