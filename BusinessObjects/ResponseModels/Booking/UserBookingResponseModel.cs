@@ -6,6 +6,10 @@ namespace BusinessObjects.ResponseModels.Booking
     {
         public string Id { get; set; } = null!;
 
+        public string UserName { get; set; } = null!;
+
+        public decimal Discount { get; set; }
+
         public DateTime CreatedDate { get; set; }
 
         public int Quantity { get; set; }

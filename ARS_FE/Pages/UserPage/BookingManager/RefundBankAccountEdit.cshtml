@@ -2,47 +2,51 @@
 @model ARS_FE.Pages.UserPage.BookingManager.RefundBankAccountEditModel
 
 @{
-    ViewData["Title"] = "RefundBankAccountEdit";
+    ViewData["Title"] = "Edit Refund Bank Account";
     Layout = "_LayoutUser";
 }
 
-<h1>RefundBankAccountEdit</h1>
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4>Refund Bank Account</h4>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <input type="hidden" asp-for="RefundBankAccount.UpdateId" />
 
-<h4>RefundBankAccount</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="RefundBankAccount.UpdateId" />
-            <div class="form-group">
-                <label asp-for="RefundBankAccount.AccountName" class="control-label"></label>
-                <input asp-for="RefundBankAccount.AccountName" class="form-control" />
-                <span asp-validation-for="RefundBankAccount.AccountName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RefundBankAccount.AccountNumber" class="control-label"></label>
-                <input asp-for="RefundBankAccount.AccountNumber" class="form-control" />
-                <span asp-validation-for="RefundBankAccount.AccountNumber" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="RefundBankAccount.BankName" class="control-label"></label>
-                <input asp-for="RefundBankAccount.BankName" class="form-control" />
-                <span asp-validation-for="RefundBankAccount.BankName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+                <div class="mb-3">
+                    <label asp-for="RefundBankAccount.AccountName" class="form-label fw-bold"></label>
+                    <input asp-for="RefundBankAccount.AccountName" class="form-control" />
+                    <span asp-validation-for="RefundBankAccount.AccountName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RefundBankAccount.AccountNumber" class="form-label fw-bold"></label>
+                    <input asp-for="RefundBankAccount.AccountNumber" class="form-control" />
+                    <span asp-validation-for="RefundBankAccount.AccountNumber" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="RefundBankAccount.BankName" class="form-label fw-bold"></label>
+                    <input asp-for="RefundBankAccount.BankName" class="form-control" />
+                    <span asp-validation-for="RefundBankAccount.BankName" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a asp-page="./BookingList" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left"></i> Back to List
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Save
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-page="./BookingList">Back to List</a>
-</div>
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <partial name="_ValidationScriptsPartial" />
 }
