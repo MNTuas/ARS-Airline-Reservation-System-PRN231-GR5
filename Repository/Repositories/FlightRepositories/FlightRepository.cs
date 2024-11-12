@@ -29,7 +29,7 @@ namespace Repository.Repositories.FlightRepositories
         public async Task<List<Flight>> GetFlightsByFilter(string from, string to, DateTime checkin, DateTime? checkout)
         {
             var allFlights = await GetAllFlights();
-            allFlights = allFlights.Where(f => f.TicketClasses.Any(t => t.RemainSeat > 0)).ToList();
+            allFlights = allFlights.Where(f => f.TicketClasses.Any(t => t.RemainSeat > 0)).OrderBy(f => f.DepartureTime).ToList();
 
             var filteredFlights = allFlights.Where(f => f.From.Equals(from)
                                                       && f.To.Equals(to)
