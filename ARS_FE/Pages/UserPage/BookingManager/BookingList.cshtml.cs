@@ -40,6 +40,7 @@ namespace ARS_FE.Pages.UserPage.BookingManager
         public async Task<IActionResult> OnPostCheckoutAsync(string bookingId)
         {
             var client = CreateAuthorizedClient();
+            HttpContext.Session.SetString("BookingId", bookingId);
 
             var returnUrlResponse = await APIHelper.PostAsJson(client, $"Transaction", bookingId);
             var returnUrl = await returnUrlResponse.Content.ReadFromJsonAsync<string>();

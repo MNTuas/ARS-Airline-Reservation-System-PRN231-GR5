@@ -15,13 +15,13 @@ namespace Repository.Repositories.BookingRepositories
         public async Task<List<BookingInformation>> GetAllBookingOfUser(string userId)
         {
             var list = await Get(b => b.UserId.Equals(userId),
-    orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight");
+    orderBy: b => b.OrderByDescending(b => b.CreatedDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User.Rank");
             return list.ToList();
         }
 
         public async Task<BookingInformation> GetById(string id)
         {
-            return await GetSingle(a => a.Id.Equals(id), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight");
+            return await GetSingle(a => a.Id.Equals(id), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User.Rank");
         }
 
         public async Task<decimal> GetTotalPriceOfBooking(string id)
@@ -34,7 +34,7 @@ namespace Repository.Repositories.BookingRepositories
         public async Task<List<BookingInformation>> GetAllPendingBookings()
         {
             var list = await Get(b => b.Status.Equals(BookingStatusEnums.Pending.ToString())
-                                    , includeProperties: "Tickets.TicketClass.SeatClass,Transactions");
+                                    , includeProperties: "Tickets.TicketClass.SeatClass,Transactions,User.Rank");
             return list.ToList();
         }
 

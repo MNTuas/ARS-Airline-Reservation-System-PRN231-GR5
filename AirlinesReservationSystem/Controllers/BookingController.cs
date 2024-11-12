@@ -69,7 +69,7 @@ namespace AirlinesReservationSystem.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User,Admin")]
+        [Authorize(Roles = "User,Staff,Admin")]
         [Route("{id}")]
         public async Task<IActionResult> GetBookingById(string id)
         {

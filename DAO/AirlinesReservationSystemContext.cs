@@ -35,6 +35,8 @@ public partial class AirlinesReservationSystemContext : DbContext
 
     public virtual DbSet<RefundBankAccount> RefundBankAccounts { get; set; }
 
+    public virtual DbSet<RefundTransaction> RefundTransactions { get; set; }
+
     public virtual DbSet<SeatClass> SeatClasses { get; set; }
 
     public virtual DbSet<Ticket> Tickets { get; set; }
@@ -62,7 +64,7 @@ public partial class AirlinesReservationSystemContext : DbContext
     {
         modelBuilder.Entity<Airline>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC071C774312");
+            entity.HasKey(e => e.Id).HasName("PK__Airlines__3214EC073C479B47");
 
             entity.Property(e => e.Id)
                 .HasMaxLength(36)
@@ -74,7 +76,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Airplane>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC079DDD9D3F");
+            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC0731E7B387");
 
             entity.ToTable("Airplane");
 
@@ -98,7 +100,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<AirplaneSeat>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC074C61D289");
+            entity.HasKey(e => e.Id).HasName("PK__Airplane__3214EC070A383BBE");
 
             entity.ToTable("AirplaneSeat");
 
@@ -132,7 +134,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Airport>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Airport__3214EC07743BAF4E");
+            entity.HasKey(e => e.Id).HasName("PK__Airport__3214EC0724ABC53A");
 
             entity.ToTable("Airport");
 
@@ -252,7 +254,7 @@ public partial class AirlinesReservationSystemContext : DbContext
 
         modelBuilder.Entity<Rank>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Rank__3214EC07DB09C6EE");
+            entity.HasKey(e => e.Id).HasName("PK__Rank__3214EC07C56E7EDE");
 
             entity.ToTable("Rank");
 
@@ -293,9 +295,42 @@ public partial class AirlinesReservationSystemContext : DbContext
                 .HasConstraintName("FK_RefundBankAccount_BookingInformation");
         });
 
+        modelBuilder.Entity<RefundTransaction>(entity =>
+        {
+            entity.ToTable("RefundTransaction");
+
+            entity.Property(e => e.Id)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.BookingId)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.RefundAmount).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.RefundBy)
+                .HasMaxLength(36)
+                .IsUnicode(false)
+                .IsFixedLength();
+            entity.Property(e => e.Status)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.Booking).WithMany(p => p.RefundTransactions)
+                .HasForeignKey(d => d.BookingId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RefundTransaction_BookingInformation");
+
+            entity.HasOne(d => d.RefundByNavigation).WithMany(p => p.RefundTransactions)
+                .HasForeignKey(d => d.RefundBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_RefundTransaction_User");
+        });
+
         modelBuilder.Entity<SeatClass>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__SeatClas__3214EC07CB9003FE");
+            entity.HasKey(e => e.Id).HasName("PK__SeatClas__3214EC072255AE47");
 
             entity.ToTable("SeatClass");
 
