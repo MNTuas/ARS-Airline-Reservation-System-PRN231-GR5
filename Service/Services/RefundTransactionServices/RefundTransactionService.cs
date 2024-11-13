@@ -89,5 +89,25 @@ namespace Service.Services.RefundTransactionServices
             transaction.Status = status;
             await _refundTransactionRepository.Update(transaction);
         }
+
+        public async Task<string> AutoUpdateRefundTransactionStatus()
+        {
+            var list = await _refundTransactionRepository.GetAllPendingRefundTransaction();
+            var updateList = new List<RefundTransaction>();
+            foreach (var transaction in list)
+            {
+                if (DateTime.Now.Subtract(transaction.CreatedDate).TotalMinutes >= 15)
+                {
+                    updateList.Add(transaction);
+                }
+            }
+            foreach (var transaction in updateList)
+            {
+                transaction.Status = BookingStatusEnums.Cancelled.ToString();
+            }
+
+            await _refundTransactionRepository.UpdateRange(updateList);
+            return "Update refund transactions status successfully";
+        }
     }
 }
