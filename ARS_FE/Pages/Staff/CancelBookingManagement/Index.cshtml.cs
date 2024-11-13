@@ -15,14 +15,23 @@ namespace ARS_FE.Pages.Staff.CancelBookingManagement
             _httpClientFactory = httpClientFactory;
         }
 
+        [BindProperty(SupportsGet = true)]
+        public string? Username { get; set; }
+
         public PaginatedList<BookingResponseModel> Bookings { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var client = CreateAuthorizedClient();
             var response = await APIHelper.GetAsJsonAsync<List<BookingResponseModel>>(client, "Booking/refund");
+
             if (response != null)
             {
+                if (!string.IsNullOrEmpty(Username))
+                {
+                    response = response.Where(b => b.UserName.Contains(Username, StringComparison.OrdinalIgnoreCase)).ToList();
+                }
+
                 Bookings = PaginatedList<BookingResponseModel>.Create(response, pageIndex ?? 1, 10);
                 return Page();
             }
