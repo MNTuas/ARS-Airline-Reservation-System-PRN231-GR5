@@ -40,7 +40,7 @@ namespace Repository.Repositories.BookingRepositories
 
         public async Task<List<BookingInformation>> GetAllRefundBooking()
         {
-            var list = await Get(b => b.IsRefund != null, orderBy: b => b.OrderBy(b => b.CancelDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User.Rank");
+            var list = await Get(b => b.IsRefund != null, orderBy: b => b.OrderBy(b => b.IsRefund).ThenBy(b => b.CancelDate), includeProperties: "Tickets.TicketClass.SeatClass,Transactions,Tickets.TicketClass.Flight,User.Rank");
             return list.ToList();
         }
     }
