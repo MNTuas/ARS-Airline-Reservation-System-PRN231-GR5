@@ -22,7 +22,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
         public DateTime? FromDate { get; set; }
 
         [BindProperty(SupportsGet = true)]
-        public string FlightNumberSearch { get; set; } = string.Empty;
+        public string? FlightNumberSearch { get; set; } 
 
         [BindProperty]
         public IFormFile UploadedFile { get; set; }
@@ -93,7 +93,7 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, message);
+                    ModelState.AddModelError(string.Empty, message);  // Add message to ModelState
                     return await OnGetAsync(null, null);
                 }
             }
@@ -107,10 +107,11 @@ namespace ARS_FE.Pages.Staff.FlightManagement
                     ? messageProperty.GetString()
                     : "Error occurred while uploading the file.";
 
-                ModelState.AddModelError(string.Empty, errorMessage);
+                ModelState.AddModelError(string.Empty, errorMessage);  // Add error to ModelState
                 return await OnGetAsync(null, null);
             }
         }
+
 
         private HttpClient CreateAuthorizedClient()
         {
