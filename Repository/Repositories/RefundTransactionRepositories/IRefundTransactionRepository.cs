@@ -11,5 +11,6 @@ namespace Repository.Repositories.RefundTransactionRepositories
     public interface IRefundTransactionRepository : IGenericRepository<RefundTransaction>
     {
         Task<RefundTransaction> GetRefundTransactionById(string id);
+        Task<List<RefundTransaction>> GetAllPendingRefundTransaction();
     }
 }
