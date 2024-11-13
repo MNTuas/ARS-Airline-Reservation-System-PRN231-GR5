@@ -33,5 +33,7 @@ public partial class User
 
     public virtual Rank? Rank { get; set; }
 
+    public virtual ICollection<RefundTransaction> RefundTransactions { get; set; } = new List<RefundTransaction>();
+
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 }
