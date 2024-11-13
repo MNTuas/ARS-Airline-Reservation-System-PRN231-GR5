@@ -1,4 +1,6 @@
+using BusinessObjects.Models;
 using BusinessObjects.ResponseModels.Booking;
+using BusinessObjects.ResponseModels.Flight;
 using BusinessObjects.ResponseModels.RefundBankAccount;
 using BusinessObjects.ResponseModels.Ticket;
 using Microsoft.AspNetCore.Mvc;
@@ -24,12 +26,17 @@ namespace ARS_FE.Pages.Staff.CancelBookingManagement
         [BindProperty]
         public UserBookingResponseModel Booking { get; set; } = default!;
 
+        public FlightResponseModel Flight { get; set; } = default!;
+
+        public decimal RefundPercent { get; set; }
+
         public async Task<IActionResult> OnGetAsync(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
+
             var client = CreateAuthorizedClient();
             var response = await APIHelper.GetAsJsonAsync<RefundBankAccountResponseModel>(client, $"refund-bank-account/{id}");
 
@@ -40,6 +47,26 @@ namespace ARS_FE.Pages.Staff.CancelBookingManagement
                 Tickets = responseBooking.Tickets;
                 Booking = responseBooking;
             }
+            var flight = await APIHelper.GetAsJsonAsync<FlightResponseModel>(client, $"Flight/{Booking.FlightId}");
+
+            if (flight != null)
+            {
+                Flight = flight;
+            }
+
+            var distanceToFlight = flight.DepartureTime.Subtract(Booking.CancelDate.Value).TotalDays;
+            var refundPercent = 100;
+
+            if (distanceToFlight < 7 && distanceToFlight > 1)
+            {
+                refundPercent = 90;
+            }
+            else if (distanceToFlight < 1 && distanceToFlight > 0)
+            {
+                refundPercent = 70;
+            }
+
+            RefundPercent = refundPercent;
 
             if (response != null)
             {

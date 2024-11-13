@@ -2,9 +2,11 @@
 using BusinessObjects.RequestModels.VnPay;
 using Microsoft.AspNetCore.Http;
 using Repository.Repositories.BookingRepositories;
+using Repository.Repositories.FlightRepositories;
 using Repository.Repositories.RefundTransactionRepositories;
 using Repository.Repositories.UserRepositories;
 using Service.Enums;
+using Service.Services.FlightServices;
 using Service.Services.VNPayServices;
 using Service.Ultis;
 using System;
@@ -21,13 +23,15 @@ namespace Service.Services.RefundTransactionServices
         private readonly IBookingRepository _bookingRepository;
         private readonly IUserRepository _userRepository;
         private readonly IVnPayService _vnPayService;
+        private readonly IFlightRepository _flightRepository;
 
-        public RefundTransactionService(IRefundTransactionRepository refundTransactionRepository, IUserRepository userRepository, IBookingRepository bookingRepository, IVnPayService vnPayService)
+        public RefundTransactionService(IRefundTransactionRepository refundTransactionRepository, IUserRepository userRepository, IBookingRepository bookingRepository, IVnPayService vnPayService, IFlightRepository flightRepository)
         {
             _refundTransactionRepository = refundTransactionRepository;
             _userRepository = userRepository;
             _bookingRepository = bookingRepository;
             _vnPayService = vnPayService;
+            _flightRepository = flightRepository;
         }
 
         public async Task<string> RefundBookingTransaction(string bookingId, string token, HttpContext httpContext)
@@ -36,11 +40,25 @@ namespace Service.Services.RefundTransactionServices
             var booking = await _bookingRepository.GetById(bookingId);
             var user = await _userRepository.GetUserById(booking.UserId);
             var totalPrice = await _bookingRepository.GetTotalPriceOfBooking(bookingId);
+            var flightId = booking.Tickets.FirstOrDefault().TicketClass.FlightId;
+            var flight = await _flightRepository.GetFlightById(flightId);
+            var distanceToFlight = flight.DepartureTime.Subtract(booking.CancelDate.Value).TotalDays;
+            var refundPercent = 100;
+
+            if (distanceToFlight < 7 && distanceToFlight > 1)
+            {
+                refundPercent = 90;
+            }
+            else if (distanceToFlight < 1 && distanceToFlight > 0)
+            {
+                refundPercent = 70;
+            }
+
             RefundTransaction newTransaction = new RefundTransaction
             {
                 Id = Guid.NewGuid().ToString(),
                 BookingId = bookingId,
-                RefundAmount = totalPrice * (100 - user.Rank.Discount) / 100,
+                RefundAmount = (totalPrice * (100 - user.Rank.Discount) / 100) * refundPercent / 100,
                 CreatedDate = DateTime.Now,
                 RefundBy = staffId,
                 Status = BookingStatusEnums.Pending.ToString()
@@ -49,7 +67,7 @@ namespace Service.Services.RefundTransactionServices
             VnPaymentRequestModel vnPayment = new VnPaymentRequestModel
             {
                 OrderId = bookingId,
-                Amount = totalPrice * (100 - user.Rank.Discount) / 100,
+                Amount = (totalPrice * (100 - user.Rank.Discount) / 100) * refundPercent / 100,
                 CreatedDate = DateTime.Now,
                 PaymentId = newTransaction.Id,
                 RedirectUrl = "https://localhost:7223/Staff/CancelBookingManagement/RefundTransactionResponse"
