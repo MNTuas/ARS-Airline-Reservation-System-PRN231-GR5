@@ -9,104 +9,153 @@
     <!-- Page Title -->
     <h1 class="text-primary mb-4">Booking Details for @Model.Booking.UserName</h1>
 
+    <!-- Flight Information Section -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header text-white bg-secondary">
+            <h5 class="mb-0"><i class="bi bi-airplane"></i> Flight Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-4">Airline</dt>
+                <dd class="col-sm-8">@Model.Flight.Airlines</dd>
+
+                <dt class="col-sm-4">Airplane Code</dt>
+                <dd class="col-sm-8">@Model.Flight.AirplaneCode</dd>
+
+                <dt class="col-sm-4">Departure Time</dt>
+                <dd class="col-sm-8">@Model.Flight.DepartureTime.ToString("yyyy-MM-dd HH:mm")</dd>
+
+                <dt class="col-sm-4">Arrival Time</dt>
+                <dd class="col-sm-8">@Model.Flight.ArrivalTime.ToString("yyyy-MM-dd HH:mm")</dd>
+
+                <dt class="col-sm-4">From</dt>
+                <dd class="col-sm-8">@Model.Flight.FromName</dd>
+
+                <dt class="col-sm-4">To</dt>
+                <dd class="col-sm-8">@Model.Flight.ToName</dd>
+
+                <dt class="col-sm-4">Status</dt>
+                <dd class="col-sm-8"><span class="badge bg-info">@Model.Flight.Status</span></dd>
+            </dl>
+        </div>
+    </div>
+
     <!-- Ticket Details Section -->
     <section class="mb-5">
-        <h2 class="text-center mb-4 text-secondary">Ticket Details</h2>
-
-        @if (Model.Tickets == null || !Model.Tickets.Any())
-        {
-            <div class="alert alert-info text-center">
-                No tickets found for this booking.
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0"><i class="bi bi-ticket"></i> Ticket Details</h5>
             </div>
-        }
-        else
-        {
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover text-center">
-                    <thead class="bg-primary text-white">
-                        <tr>
-                            <th>Class</th>
-                            <th>Price</th>
-                            <th>Passenger Name</th>
-                            <th>Gender</th>
-                            <th>Date of Birth</th>
-                            <th>Country</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var ticket in Model.Tickets)
-                        {
-                            <tr>
-                                <td>@ticket.ClassName</td>
-                                <td>@String.Format("{0:#,##0} VND", Convert.ToDecimal(ticket.ClassPrice))</td>
-                                <td>@ticket.FirstName @ticket.LastName</td>
-                                <td>@ticket.Gender</td>
-                                <td>@ticket.Dob.ToString("yyyy-MM-dd")</td>
-                                <td>@ticket.Country</td>
-                                <td>
-                                    @{
-                                        string statusClass = ticket.Status switch
-                                        {
-                                            "Pending" => "badge bg-warning text-dark",
-                                            "Paid" => "badge bg-success text-white",
-                                            "Cancelled" => "badge bg-danger",
-                                            _ => "badge bg-secondary"
-                                        };
-                                    }
-                                    <span class="@statusClass">@ticket.Status</span>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <div class="card-body">
+                @if (Model.Tickets == null || !Model.Tickets.Any())
+                {
+                    <div class="alert alert-info text-center">
+                        No tickets found for this booking.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover text-center">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>Class</th>
+                                    <th>Price</th>
+                                    <th>Passenger Name</th>
+                                    <th>Gender</th>
+                                    <th>Date of Birth</th>
+                                    <th>Country</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var ticket in Model.Tickets)
+                                {
+                                    <tr>
+                                        <td>@ticket.ClassName</td>
+                                        <td>@String.Format("{0:#,##0} VND", Convert.ToDecimal(ticket.ClassPrice))</td>
+                                        <td>@ticket.FirstName @ticket.LastName</td>
+                                        <td>@ticket.Gender</td>
+                                        <td>@ticket.Dob.ToString("yyyy-MM-dd")</td>
+                                        <td>@ticket.Country</td>
+                                        <td>
+                                            <span class="badge @GetStatusClass(ticket.Status)">@ticket.Status</span>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
-        }
+        </div>
     </section>
 
     <!-- Booking Summary Section -->
     <section class="mb-5">
-        <h4 class="text-secondary">Booking Summary</h4>
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Total Amount:</strong>
-                <span>@String.Format("{0:#,##0} VND", Model.Booking.TotalAmount)</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Discount:</strong>
-                <span>@Model.Booking.Discount%</span>
-            </li>
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <strong>Price After Discount:</strong>
-                <span>@String.Format("{0:#,##0} VND", Model.Booking.TotalAmount * (100 - Model.Booking.Discount) / 100)</span>
-            </li>
-        </ul>
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0"><i class="bi bi-receipt"></i> Booking Summary</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Total Amount:</strong>
+                        <span>@String.Format("{0:#,##0} VND", Model.Booking.TotalAmount)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Discount:</strong>
+                        <span>@Model.Booking.Discount%</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Price After Discount:</strong>
+                        <span>@String.Format("{0:#,##0} VND", Model.Booking.TotalAmount * (100 - Model.Booking.Discount) / 100)</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Refund Percentage:</strong>
+                        <span>@Model.RefundPercent%</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <strong>Refund Amount:</strong>
+                        @* Calculate the refund amount *@
+                        @{
+                            decimal refundAmount = (Model.Booking.TotalAmount * (100 - Model.Booking.Discount) / 100) * (Model.RefundPercent / 100);
+                        }
+                        <span>@String.Format("{0:#,##0} VND", refundAmount)</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </section>
 
     <!-- Refund Bank Account Details Section -->
     <section class="mb-5">
-        <h4 class="text-center mb-4 text-secondary">Refund Bank Account Details</h4>
-        <div class="card shadow-sm p-4">
-            <dl class="row">
-                <dt class="col-sm-3 fw-bold">Account Name</dt>
-                <dd class="col-sm-9">@Model.RefundBankAccount.AccountName</dd>
+        <div class="card shadow-sm">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0"><i class="bi bi-bank"></i> Refund Bank Account Details</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4 fw-bold">Account Name</dt>
+                    <dd class="col-sm-8">@Model.RefundBankAccount.AccountName</dd>
 
-                <dt class="col-sm-3 fw-bold">Account Number</dt>
-                <dd class="col-sm-9">@Model.RefundBankAccount.AccountNumber</dd>
+                    <dt class="col-sm-4 fw-bold">Account Number</dt>
+                    <dd class="col-sm-8">@Model.RefundBankAccount.AccountNumber</dd>
 
-                <dt class="col-sm-3 fw-bold">Bank Name</dt>
-                <dd class="col-sm-9">@Model.RefundBankAccount.BankName</dd>
-            </dl>
+                    <dt class="col-sm-4 fw-bold">Bank Name</dt>
+                    <dd class="col-sm-8">@Model.RefundBankAccount.BankName</dd>
+                </dl>
+            </div>
         </div>
     </section>
 
     <!-- Action Buttons Section -->
-    <section class="d-flex justify-content-between">
+    <section class="d-flex justify-content-between mt-4">
         <a asp-page="./Index" class="btn btn-secondary">
             <i class="bi bi-arrow-left"></i> Back to List
         </a>
 
-        @if (Model.Booking.IsRefund == false)
+        @if (!Model.Booking.IsRefund.Value)
         {
             <form method="post" asp-page-handler="Cancel">
                 <input type="hidden" name="id" value="@Model.RefundBankAccount.BookingId" />
@@ -120,4 +169,17 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+}
+
+@functions {
+    private string GetStatusClass(string status)
+    {
+        return status switch
+        {
+            "Pending" => "badge bg-warning text-dark",
+            "Paid" => "badge bg-success text-white",
+            "Cancelled" => "badge bg-danger",
+            _ => "badge bg-secondary"
+        };
+    }
 }
