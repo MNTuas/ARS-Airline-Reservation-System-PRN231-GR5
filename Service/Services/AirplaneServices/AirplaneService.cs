@@ -2,8 +2,11 @@
 using BusinessObjects.Models;
 using BusinessObjects.RequestModels.Airplane;
 using BusinessObjects.ResponseModels.Airplane;
+using BusinessObjects.ResponseModels.Flight;
 using Repository.Repositories.AirlineRepositories;
 using Repository.Repositories.AirplaneRepositories;
+using Repository.Repositories.AirporRepositories;
+using Repository.Repositories.FlightRepositories;
 
 namespace Service.Services.AirplaneServices
 {
@@ -11,13 +14,17 @@ namespace Service.Services.AirplaneServices
     {
         private readonly IAirplaneRepository _airplaneRepository;
         private readonly IAirlineRepository _airlineRepository;
+        private readonly IFlightRepository _flightRepository;
+        private readonly IAirportRepository _airportRepository;
         private readonly IMapper _mapper;
 
-        public AirplaneService(IAirplaneRepository airplaneRepository, IMapper mapper, IAirlineRepository airlineRepository)
+        public AirplaneService(IAirplaneRepository airplaneRepository, IMapper mapper, IAirlineRepository airlineRepository,IFlightRepository flightRepository,IAirportRepository airportRepository)
         {
             _airplaneRepository = airplaneRepository;
             _mapper = mapper;
             _airlineRepository = airlineRepository;
+            _flightRepository = flightRepository;
+            _airportRepository = airportRepository;
         }
 
         public async Task AddAirplane(AddAirplaneRequest model)
@@ -35,7 +42,26 @@ namespace Service.Services.AirplaneServices
         public async Task<AirplaneResponseModel> GetAirplane(string id)
         {
             var airplane = await _airplaneRepository.GetAirplane(id);
-            return _mapper.Map<AirplaneResponseModel>(airplane);
+            var flights = await _flightRepository.Get(x => x.AirplaneId == id);
+
+            var airplaneModel = _mapper.Map<AirplaneResponseModel>(airplane);
+            airplaneModel.Flights = new List<FlightResponseModel>();
+
+            foreach (var flight in flights)
+            {
+                var flightModel = _mapper.Map<FlightResponseModel>(flight);
+
+                var fromAirport = await _airportRepository.GetById(flight.From);
+                var toAirport = await _airportRepository.GetById(flight.To);
+                var airline = await _airlineRepository.GetById(airplane.AirlinesId);
+                flightModel.FromName = fromAirport?.Name;
+                flightModel.ToName = toAirport?.Name;
+                flightModel.Airlines = airline.Name;
+                flightModel.AirplaneCode = airplane.CodeNumber;
+                airplaneModel.Flights.Add(flightModel);
+            }
+
+            return airplaneModel;
         }
 
         public async Task<List<AirplaneResponseModel>> GetAllAirplane()
