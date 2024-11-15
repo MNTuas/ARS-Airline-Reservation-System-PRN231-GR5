@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Service.Services.BookingServices;
 using Service.Services.FlightServices;
+using Service.Services.RefundTransactionServices;
 
 namespace Service.Services.BackgroundServices
 {
@@ -22,12 +23,15 @@ namespace Service.Services.BackgroundServices
                 {
                     var bookingService = scope.ServiceProvider.GetRequiredService<IBookingService>();
                     var flightService = scope.ServiceProvider.GetRequiredService<IFlightService>();
+                    var refundService = scope.ServiceProvider.GetRequiredService<IRefundTransactionService>();
 
                     var message1 = await bookingService.AutoUpdateBookingStatus();
                     var message2 = await flightService.AutoUpdateFlightStatus();
+                    var message3 = await refundService.AutoUpdateRefundTransactionStatus();
 
                     Console.WriteLine($"Message {message1}");
                     Console.WriteLine($"Message {message2}");
+                    Console.WriteLine($"Message {message3}");
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);

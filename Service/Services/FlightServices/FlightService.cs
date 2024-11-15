@@ -81,7 +81,16 @@ namespace Service.Services.FlightServices
         {
             var flight = await _flightRepository.GetFlightById(id);
             flight.TicketClasses = flight.TicketClasses.OrderBy(t => t.Price).ToList();
-            return _mapper.Map<FlightResponseModel>(flight);
+            var flightModel = _mapper.Map<FlightResponseModel>(flight);
+            var airplane = await _airplaneRepository.GetAirplane(flight.AirplaneId);
+            var airline = await _airlineRepository.GetById(flightModel.AirlinesId);
+            flightModel.Airlines = airline.Name;
+            flightModel.AirplaneCode = airplane.CodeNumber;
+            var from = await _airportRepository.GetById(flightModel.From);
+            var to = await _airportRepository.GetById(flightModel.From);
+            flightModel.FromName = from.Name;
+            flightModel.ToName = to.Name;
+            return flightModel;
         }
 
         public async Task<List<FlightResponseModel>> GetFlightByFilter(string from, string to, DateTime checkin, DateTime? checkout)

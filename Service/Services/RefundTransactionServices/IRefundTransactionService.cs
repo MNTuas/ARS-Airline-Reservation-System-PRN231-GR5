@@ -12,5 +12,7 @@ namespace Service.Services.RefundTransactionServices
         Task<string> RefundBookingTransaction(string bookingId, string token, HttpContext httpContext);
 
         Task UpdateRefundTransactionStatus(string id, string status);
+
+        Task<string> AutoUpdateRefundTransactionStatus();
     }
 }
