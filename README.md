@@ -17,7 +17,7 @@
 
 ## 🛠️ Technologies Used
 
-- **Backend**: ASP.NET MVC 5, C#  
+- **Backend**: ASP.NET Core Web API, C#  
 - **Frontend**: Razor Views, HTML, CSS, JavaScript  
 - **Database**: SQL Server  
 - **ORM**: Entity Framework  
